@@ -34,19 +34,23 @@ public class OpenGLUtils {
 		if (usedTexId == NO_TEXTURE) {
 			GLES20.glGenTextures(1, textures, 0);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
-			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,//放大
 					GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,//缩小
 					GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-//			ByteBuffer buffer = SaveMyBitmap(img);
+			ByteBuffer buffer = SaveMyBitmap(img);
+//			img.setHasAlpha(true);
+//			img.setConfig(Con);
 //			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0 , GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0 , GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,buffer);
 
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
+//			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, 1024, 1024, 0,
+//					GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, buffer);
 //			myTexImage2D(img);
 		} else {
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, usedTexId);

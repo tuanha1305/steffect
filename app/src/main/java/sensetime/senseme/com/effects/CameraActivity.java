@@ -209,6 +209,8 @@ public class CameraActivity extends Activity implements View.OnClickListener{
         GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
 
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+
+
         mSurfaceViewOverlap = (SurfaceView) findViewById(R.id.surfaceViewOverlap);
         mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
         mCameraDisplay = new CameraDisplay(getApplicationContext(), mListener, glSurfaceView);
@@ -302,9 +304,9 @@ public class CameraActivity extends Activity implements View.OnClickListener{
         }
 
 
-        mSurfaceViewOverlap.setZOrderOnTop(true);
-        mSurfaceViewOverlap.setZOrderMediaOverlay(true);
-        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//        mSurfaceViewOverlap.setZOrderOnTop(true);
+//        mSurfaceViewOverlap.setZOrderMediaOverlay(true);
+//        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
         mPaint = new Paint();
         mPaint.setColor(Color.rgb(240, 100, 100));
