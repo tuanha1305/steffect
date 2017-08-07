@@ -52,7 +52,40 @@ import sensetime.senseme.com.effects.glutils.Utils;
 import sensetime.senseme.com.effects.utils.Accelerometer;
 import sensetime.senseme.com.effects.utils.FileUtils;
 import sensetime.senseme.com.effects.utils.LogUtils;
+import sensetime.senseme.com.effects.utils.OpenGLUtil;
 
+<<<<<<< HEAD
+=======
+import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_NEAREST;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glAttachShader;
+import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glCompileShader;
+import static android.opengl.GLES20.glCreateProgram;
+import static android.opengl.GLES20.glCreateShader;
+import static android.opengl.GLES20.glDeleteShader;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glLinkProgram;
+import static android.opengl.GLES20.glShaderSource;
+import static android.opengl.GLES20.glTexParameteri;
+import static android.opengl.GLES20.glUniform1i;
+import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.glVertexAttribPointer;
+
+>>>>>>> 更新代码
 /**
  * CameraDisplay is used for camera preview
  */
@@ -98,11 +131,17 @@ public class CameraDisplay implements Renderer {
             " \n" +
             "void main()\n" +
             "{ \n" +
+<<<<<<< HEAD
             "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
 //            "   texColor.r = 1.0f;" +
 //            "   texColor.b = 1.0f;" +
 //            "   texColor.g = 1.0f;" +
             "if (texColor.a <0.01f){" +
+=======
+             "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
+
+            "if (texColor.a <0.1f){" +
+>>>>>>> 更新代码
             "discard;" +
             "}" +
             "     gl_FragColor = texColor;\n" +
@@ -595,7 +634,11 @@ public class CameraDisplay implements Renderer {
 //                                PNGInfoHandle.getPNGHandle(mContext.getAssets(), "browleft.png").
 //                                        glPngTexImage2D(GLES20.GL_TEXTURE_2D, 0);
                             id = OpenGLUtils.loadTexture(bitmap,textureMId,true);
+<<<<<<< HEAD
                             textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId, true);
+=======
+                            textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId,true);
+>>>>>>> 更新代码
 
                             for(int i =0;i<arrayFaces.length;i++){
                                 STPoint[] stPoints = arrayFaces[i].getPoints_array();
@@ -1398,7 +1441,11 @@ public class CameraDisplay implements Renderer {
         GLES20.glUseProgram(mGLProgId);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
+<<<<<<< HEAD
         GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+=======
+        GLES20.glBlendFunc(GLES20.GL_SRC_COLOR,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+>>>>>>> 更新代码
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
@@ -1748,7 +1795,11 @@ public class CameraDisplay implements Renderer {
 
         GLES20.glUniform1i(mGLUniformTexture, 0);
         GLES20.glUseProgram(mGLProgId);
+<<<<<<< HEAD
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+=======
+//        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+>>>>>>> 更新代码
         GLES20.glEnable(GLES20.GL_BLEND);
 //        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 //        GLES20.glDisable(GLES20.GL_BLEND);
@@ -1757,23 +1808,38 @@ public class CameraDisplay implements Renderer {
 //        GLES20.glDisable(GLES20.GL_BLEND);
 //        GLES20.glBlendColor(0,0,0,0);
 //        GLES20.glBlendColor(1.0f,1.0f,1.0f,1.0f);
+<<<<<<< HEAD
         GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+=======
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+>>>>>>> 更新代码
 //        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ZERO);
 //        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 //        GLES20.glBlendFunc(GLES20.GL_ONE_MINUS_SRC_ALPHA,GLES20.GL_ONE);
 //        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ZERO);
 //        GLES20.glBlendFunc(GLES20.GL_ZERO,GLES20.GL_ONE);
 
+<<<<<<< HEAD
 
+=======
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+>>>>>>> 更新代码
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+<<<<<<< HEAD
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glDisable(GLES20.GL_BLEND);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+=======
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisable(GLES20.GL_BLEND);
+//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+>>>>>>> 更新代码
     }
 
 }
