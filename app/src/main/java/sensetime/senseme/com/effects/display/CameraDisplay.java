@@ -10,6 +10,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
 import android.hardware.Camera;
 import android.opengl.GLES20;
+import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
@@ -139,9 +140,16 @@ public class CameraDisplay implements Renderer {
             "if (texColor.a <0.01f){" +
 =======
              "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
+<<<<<<< HEAD
 
             "if (texColor.a <0.1f){" +
 >>>>>>> 更新代码
+=======
+//            "   texColor.r = 1.0f;" +
+//            "   texColor.b = 1.0f;" +
+//            "   texColor.g = 1.0f;" +
+            "if (texColor.a <0.01f){" +
+>>>>>>> 修改透明处理
             "discard;" +
             "}" +
             "     gl_FragColor = texColor;\n" +
@@ -341,10 +349,17 @@ public class CameraDisplay implements Renderer {
 //        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 //        GLES20.glEnable( GLES20.GL_BLEND );
 //        GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA , GLES20.GL_ONE_MINUS_SRC_ALPHA );
+<<<<<<< HEAD
         mGLProgId = OpenGLUtils.loadProgram(vertexShaderCode, fragmentShaderCode);
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
+=======
+         mGLProgId = OpenGLUtils.loadProgram(vertexShaderCode, fragmentShaderCode);
+         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
+         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
+          mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
+>>>>>>> 修改透明处理
         if (mCameraProxy.getCamera() != null) {
             setUpCamera();
         }
@@ -635,10 +650,14 @@ public class CameraDisplay implements Renderer {
 //                                        glPngTexImage2D(GLES20.GL_TEXTURE_2D, 0);
                             id = OpenGLUtils.loadTexture(bitmap,textureMId,true);
 <<<<<<< HEAD
+<<<<<<< HEAD
                             textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId, true);
 =======
                             textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId,true);
 >>>>>>> 更新代码
+=======
+                            textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId, true);
+>>>>>>> 修改透明处理
 
                             for(int i =0;i<arrayFaces.length;i++){
                                 STPoint[] stPoints = arrayFaces[i].getPoints_array();
@@ -1442,10 +1461,14 @@ public class CameraDisplay implements Renderer {
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
 <<<<<<< HEAD
+<<<<<<< HEAD
         GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 =======
         GLES20.glBlendFunc(GLES20.GL_SRC_COLOR,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 >>>>>>> 更新代码
+=======
+        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+>>>>>>> 修改透明处理
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
@@ -1796,10 +1819,14 @@ public class CameraDisplay implements Renderer {
         GLES20.glUniform1i(mGLUniformTexture, 0);
         GLES20.glUseProgram(mGLProgId);
 <<<<<<< HEAD
+<<<<<<< HEAD
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 =======
 //        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 >>>>>>> 更新代码
+=======
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+>>>>>>> 修改透明处理
         GLES20.glEnable(GLES20.GL_BLEND);
 //        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 //        GLES20.glDisable(GLES20.GL_BLEND);
@@ -1809,10 +1836,14 @@ public class CameraDisplay implements Renderer {
 //        GLES20.glBlendColor(0,0,0,0);
 //        GLES20.glBlendColor(1.0f,1.0f,1.0f,1.0f);
 <<<<<<< HEAD
+<<<<<<< HEAD
         GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 =======
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 >>>>>>> 更新代码
+=======
+        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+>>>>>>> 修改透明处理
 //        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ZERO);
 //        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
 //        GLES20.glBlendFunc(GLES20.GL_ONE_MINUS_SRC_ALPHA,GLES20.GL_ONE);
@@ -1820,15 +1851,20 @@ public class CameraDisplay implements Renderer {
 //        GLES20.glBlendFunc(GLES20.GL_ZERO,GLES20.GL_ONE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
 >>>>>>> 更新代码
+=======
+
+>>>>>>> 修改透明处理
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+<<<<<<< HEAD
 <<<<<<< HEAD
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
@@ -1840,6 +1876,13 @@ public class CameraDisplay implements Renderer {
         GLES20.glDisable(GLES20.GL_BLEND);
 //        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 >>>>>>> 更新代码
+=======
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+>>>>>>> 修改透明处理
     }
 
 }

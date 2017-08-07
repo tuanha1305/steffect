@@ -48,7 +48,8 @@ public class OpenGLUtils {
 //			img.setConfig(Con);
 //			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0 , GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0 , GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,buffer);
 
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
+//            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
+			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img, 0);
 //			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, 1024, 1024, 0,
 //					GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, buffer);
 //			myTexImage2D(img);
