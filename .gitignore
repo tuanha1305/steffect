@@ -1,0 +1,10 @@
+app/build/
+app/src/main/obj/
+STMobileJNI/build/
+STMobileJNI/src/main/obj/
+app/src/main/libs/
+.idea/
+build/
+.gradle/
+STMobileJNI/src/main/libs/
+*.iml
