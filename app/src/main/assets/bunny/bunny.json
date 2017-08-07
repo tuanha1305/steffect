@@ -1,0 +1,221 @@
+{
+    "parts": {
+        "ear": {
+            "frameCount": 18,
+            "height": 429,
+            "position": {
+                "positionX": [
+                    {
+                        "index": 43,
+                        "x": 344.79,
+                        "y": 566.5
+                    }
+                ],
+                "positionY": [
+                ]
+            },
+            "positionRelationType": 1,
+            "positionType": 1,
+            "rotateCenter": [
+                {
+                    "index": 46,
+                    "x": 345,
+                    "y": 677.09
+                }
+            ],
+            "scale": {
+                "scaleX": {
+                    "pointA": [
+                        {
+                            "index": 74,
+                            "x": 240.5,
+                            "y": 573.20
+                        }
+                    ],
+                    "pointB": [
+                        {
+                            "index": 77,
+                            "x": 447,
+                            "y": 572.79
+                        }
+                    ]
+                },
+                "scaleY": {
+                    "pointA": [
+                    ],
+                    "pointB": [
+                    ]
+                }
+            },
+            "triggerDelay": 0,
+            "triggerLoop": 0,
+            "triggerStop": false,
+            "triggerType": 0,
+            "width": 711,
+            "zPosition": 3
+        },
+        "hearta": {
+            "frameCount": 23,
+            "height": 399,
+            "position": {
+                "positionX": [
+                    {
+                        "index": 61,
+                        "x": 15.60,
+                        "y": 322.10
+                    }
+                ],
+                "positionY": [
+                ]
+            },
+            "positionRelationType": 1,
+            "positionType": 1,
+            "rotateCenter": [
+                {
+                    "index": 46,
+                    "x": -131,
+                    "y": 428.10
+                }
+            ],
+            "scale": {
+                "scaleX": {
+                    "pointA": [
+                        {
+                            "index": 74,
+                            "x": -235.5,
+                            "y": 324.20
+                        }
+                    ],
+                    "pointB": [
+                        {
+                            "index": 77,
+                            "x": -29,
+                            "y": 323.79
+                        }
+                    ]
+                },
+                "scaleY": {
+                    "pointA": [
+                    ],
+                    "pointB": [
+                    ]
+                }
+            },
+            "triggerDelay": 0,
+            "triggerLoop": 2,
+            "triggerStop": false,
+            "triggerType": 2,
+            "width": 303,
+            "zPosition": 2
+        },
+        "heartb": {
+            "frameCount": 23,
+            "height": 411,
+            "position": {
+                "positionX": [
+                    {
+                        "index": 52,
+                        "x": 271.5,
+                        "y": 319.60
+                    }
+                ],
+                "positionY": [
+                ]
+            },
+            "positionRelationType": 1,
+            "positionType": 1,
+            "rotateCenter": [
+                {
+                    "index": 46,
+                    "x": 421,
+                    "y": 425.10
+                }
+            ],
+            "scale": {
+                "scaleX": {
+                    "pointA": [
+                        {
+                            "index": 74,
+                            "x": 316.5,
+                            "y": 321.20
+                        }
+                    ],
+                    "pointB": [
+                        {
+                            "index": 77,
+                            "x": 523,
+                            "y": 320.79
+                        }
+                    ]
+                },
+                "scaleY": {
+                    "pointA": [
+                    ],
+                    "pointB": [
+                    ]
+                }
+            },
+            "triggerDelay": 10,
+            "triggerLoop": 2,
+            "triggerStop": false,
+            "triggerType": 2,
+            "width": 255,
+            "zPosition": 1
+        },
+        "ring": {
+            "frameCount": 14,
+            "height": 288,
+            "position": {
+                "positionX": [
+                    {
+                        "index": 43,
+                        "x": 228.80,
+                        "y": -309.5
+                    }
+                ],
+                "positionY": [
+                ]
+            },
+            "positionRelationType": 1,
+            "positionType": 1,
+            "rotateCenter": [
+                {
+                    "index": 46,
+                    "x": 229,
+                    "y": -198.89
+                }
+            ],
+            "scale": {
+                "scaleX": {
+                    "pointA": [
+                        {
+                            "index": 74,
+                            "x": 124.5,
+                            "y": -302.79
+                        }
+                    ],
+                    "pointB": [
+                        {
+                            "index": 77,
+                            "x": 331,
+                            "y": -303.20
+                        }
+                    ]
+                },
+                "scaleY": {
+                    "pointA": [
+                    ],
+                    "pointB": [
+                    ]
+                }
+            },
+            "triggerDelay": 0,
+            "triggerLoop": 0,
+            "triggerStop": false,
+            "triggerType": 0,
+            "width": 438,
+            "zPosition": 0
+        }
+    },
+    "version": "1.1"
+}

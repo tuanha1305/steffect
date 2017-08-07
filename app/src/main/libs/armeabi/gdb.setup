@@ -1,0 +1,2 @@
+set solib-search-path /Users/wangdi/Downloads/SenseME_Effects_v4.5.3（全功能）-20170819/st_mobile-4.5.3-sticker_effects-android-0a909b8/samples/SenseMeEffects/app/src/main/obj/local/armeabi
+directory /Users/wangdi/Library/Android/sdk/ndk-bundle/sysroot libpng /Users/wangdi/Downloads/SenseME_Effects_v4.5.3（全功能）-20170819/st_mobile-4.5.3-sticker_effects-android-0a909b8/samples/SenseMeEffects/app/src/main/jni/libpng/. /Users/wangdi/Library/Android/sdk/ndk-bundle/sources/cxx-stl/stlport/stlport /Users/wangdi/Library/Android/sdk/ndk-bundle/sources/cxx-stl//gabi++/include
