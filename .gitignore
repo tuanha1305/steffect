@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.iml
 
 .idea
@@ -11,3 +12,15 @@ gradlew
 gradlew.bat
 gradle.properties
 local.properties
+=======
+app/build/
+app/src/main/obj/
+STMobileJNI/build/
+STMobileJNI/src/main/obj/
+app/src/main/libs/
+.idea/
+build/
+.gradle/
+STMobileJNI/src/main/libs/
+*.iml
+>>>>>>> 修改属性配置
