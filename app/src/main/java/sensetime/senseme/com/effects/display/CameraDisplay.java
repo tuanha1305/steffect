@@ -38,6 +38,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -52,6 +53,11 @@ import sensetime.senseme.com.effects.glutils.Utils;
 import sensetime.senseme.com.effects.utils.Accelerometer;
 import sensetime.senseme.com.effects.utils.FileUtils;
 import sensetime.senseme.com.effects.utils.LogUtils;
+
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glVertexAttribPointer;
 
 /**
  * CameraDisplay is used for camera preview
@@ -98,7 +104,7 @@ public class CameraDisplay implements Renderer {
             " \n" +
             "void main()\n" +
             "{ \n" +
-            "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
+             "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
 //            "   texColor.r = 1.0f;" +
 //            "   texColor.b = 1.0f;" +
 //            "   texColor.g = 1.0f;" +
@@ -109,7 +115,28 @@ public class CameraDisplay implements Renderer {
 //            "     gl_FragColor = vec4(texColor.r,texColor.g,texColor.b,texColor.a);\n" +
 //            "     gl_FragColor = vec4(texColor.rgb,texColor.a);\n" +
             "}";
-    //texture2D(inputImageTexture, textureCoordinate)
+//texture2D(inputImageTexture, textureCoordinate)
+
+    private final String vertexShaderCode2 = "uniform mat4 projection;\n" +
+            "uniform mat4 modelView;\n" +
+            "attribute vec4 vPosition;\n" +
+            "attribute vec4 SourceColor; // color of vertex\n" +
+            "varying vec4 DestinationColor; // will pass out to fragment shader\n" +
+            "\n" +
+            "void main(void)\n" +
+            "{\n" +
+            "    DestinationColor = SourceColor;\n" +
+            "    gl_Position =  vPosition;\n" +
+            "}\n";
+    private final String fragmentShaderCode2 ="precision mediump float;\n" +
+            "uniform highp float color_selector;\n" +
+            "varying lowp vec4 DestinationColor;\n" +
+            "\n" +
+            "void main()\n" +
+            "{\n" +
+            "        gl_FragColor = DestinationColor;\n" +
+            "    \n" +
+            "}\n";
     private Context mContext;
 
     public CameraProxy mCameraProxy;
@@ -179,11 +206,14 @@ public class CameraDisplay implements Renderer {
     private boolean mIsObjectTracking = false;
     int textureMId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
+    int textJiemao = OpenGLUtils.NO_TEXTURE;
     //face extra info swicth
     private boolean mNeedFaceExtraInfo = true;
     private int id=0;
     private int mHumanActionCreateConfig = STMobileHumanActionNative.ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_VIDEO;
-    private int mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;
+    private int mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;//贴图
+    private int mGLMouseId, mGLAttribMousePos,mGLUniformTexture2, mGLAttribMouseColor;//绘图
+
 //    private int mHumanActionCreateConfig = STCommon.ST_MOBILE_ENABLE_FACE_240_DETECT;
 
     public interface ChangePreviewSizeListener {
@@ -302,10 +332,15 @@ public class CameraDisplay implements Renderer {
 //        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 //        GLES20.glEnable( GLES20.GL_BLEND );
 //        GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA , GLES20.GL_ONE_MINUS_SRC_ALPHA );
-        mGLProgId = OpenGLUtils.loadProgram(vertexShaderCode, fragmentShaderCode);
+         mGLProgId = OpenGLUtils.loadProgram(vertexShaderCode, fragmentShaderCode);
+        mGLMouseId =OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
+
+
+        mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
+        mGLAttribMouseColor = GLES20.glGetUniformLocation(mGLMouseId,"SourceColor");
         if (mCameraProxy.getCamera() != null) {
             setUpCamera();
         }
@@ -477,7 +512,7 @@ public class CameraDisplay implements Renderer {
 
 //        if (mBeautifyTextureId == null) {
 //            mBeautifyTextureId = new int[1];
-        //GlUtil.initEffectTexture(mImageWidth, mImageHeight, mBeautifyTextureId, GLES20.GL_TEXTURE_2D);
+            //GlUtil.initEffectTexture(mImageWidth, mImageHeight, mBeautifyTextureId, GLES20.GL_TEXTURE_2D);
 //        }
 //
 //        if (mTextureOutId == null) {
@@ -589,6 +624,7 @@ public class CameraDisplay implements Renderer {
 //                            //在屏幕画点
                             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
                             Bitmap bitmapSaihong = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
+                            Bitmap bitmapjiemao = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ziranjiemao);
 
 //                                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 //                                ByteBuffer buffer = SaveMyBitmap(bitmap);
@@ -596,7 +632,7 @@ public class CameraDisplay implements Renderer {
 //                                        glPngTexImage2D(GLES20.GL_TEXTURE_2D, 0);
                             id = OpenGLUtils.loadTexture(bitmap,textureMId,true);
                             textSiaHongId = OpenGLUtils.loadTexture(bitmapSaihong,textSiaHongId, true);
-
+                            textJiemao = OpenGLUtils.loadTexture(bitmapjiemao,textJiemao,true);
                             for(int i =0;i<arrayFaces.length;i++){
                                 STPoint[] stPoints = arrayFaces[i].getPoints_array();
                                 STPoint[] stPoint240 = new STPoint[240];
@@ -620,21 +656,23 @@ public class CameraDisplay implements Renderer {
                                 }
                                 //左眉毛
                                 for(int j = 0 ;j<13;j++){
-                                    stPoint240[106+22+13+j] =pointsBrowLeft[j];
+                                    stPoint240[106+22+22+j] =pointsBrowLeft[j];
                                 }
                                 //右眉毛
                                 for(int j = 0 ;j<13;j++){
-                                    stPoint240[106+22+13+13+j] =pointsEyeRight[j];
+                                    stPoint240[106+22*2+13+j] =pointsEyeRight[j];
                                 }
                                 //嘴
                                 for(int j = 0 ;j<64;j++){
-                                    stPoint240[106+22+13+13+j] =pointsLips[j];
+                                    stPoint240[106+22*2+13*2+j] =pointsLips[j];
                                 }
                                 drawLeft(pointsBrowLeft, id);
                                 drawRight(pointsBrowRight,id);
                                 drawSaiHong(stPoint240,textSiaHongId);
+                                drawRightJiemao(stPoint240,textJiemao);
+                                drawZuichun(stPoint240);
 //                        }
-                            }
+                        }
                         }
                     }
 
@@ -1150,7 +1188,7 @@ public class CameraDisplay implements Renderer {
     public void drawBrow(STPoint[] points,int textureId){
         float x,y,x0,y0,x3,y3,x4,y4;
         float x1,y1,x2,y2,k,theta,d;
-        //画右眉毛
+       //画右眉毛
         x0 = points[12].getX();
         y0 = points[12].getY();
         x = points[6].getX();
@@ -1416,7 +1454,7 @@ public class CameraDisplay implements Renderer {
 
     }
 
-    public void drawJiemao(STPoint[] points,int textureId,int width,int _height){
+    public void drawRightJiemao(STPoint[] points,int textureId){
         float x0,y0,x,y,x1,y1,x2,y2,x3,y3,x4,y4,k,d,b;
         double theta,theta0;
         //右上
@@ -1456,38 +1494,35 @@ public class CameraDisplay implements Renderer {
         y3 = changeToGLPointR(y3);
 
         x4  = changeToGLPointT(x4);
-        y4 = changeToGLPointT(y4);
+        y4 = changeToGLPointR(y4);
 
         float squareVertices[] = {
-
                 x1,y1,
                 x2,y2,
                 x3,y3,
                 x4,y4,
-
         };
 
         float textureVertices1[] = {
-                0.0f,  0.332f,
-                1.0f,  0.332f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
-
+                0.0f,  0.332f,
+                1.0f,  0.332f,
         };
-
         GLES20.glUniform1i(mGLUniformTexture, 0);
         GLES20.glUseProgram(mGLProgId);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
-
-        GLES20.glBlendFunc(GLES20.GL_SRC_COLOR,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-
+        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         //右下
         x =points[58].getX();
@@ -1501,14 +1536,14 @@ public class CameraDisplay implements Renderer {
         x4 = (float) (x0 + (x0 - x)*0.8);
         y4 = (float) (y0 + (y0 - y)*0.8);
 
-        x0 =points[76].getX();
+        x0 = points[76].getX();
         y0 = points[76].getY();
 
         k = (y4-y3)/(x4-x3);
         theta = Math.atan(k);
 
         d = (float) (Math.abs(k*x0-y0+y3-k*x3)/Math.sqrt(k*k+1)*2.2);//106
-        //    d = fabsf(k*x0-y0+y1-k*x1)/sqrtf(k*k+1)*2.1;//240
+        //    (Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2.1);
 
         x1 =(float)(x3 - d * Math.sin(theta));
         y1 = (float) (y3 + d * Math.cos(theta));
@@ -1516,16 +1551,16 @@ public class CameraDisplay implements Renderer {
         x2 = (float) (x4 - d * Math.sin(theta));
         y2 = (float) (y4 + d * Math.cos(theta));
 
-        x1  = changeToGLPointT(x1);
+        x1 = changeToGLPointT(x1);
         y1 = changeToGLPointR(y1);
 
-        x2  = changeToGLPointT(x2);
-        y2 =changeToGLPointR(y2);
+        x2 = changeToGLPointT(x2);
+        y2 = changeToGLPointR(y2);
 
-        x3  = changeToGLPointT(x3);
+        x3 = changeToGLPointT(x3);
         y3 = changeToGLPointR(y3);
 
-        x4  = changeToGLPointT(x4);
+        x4 = changeToGLPointT(x4);
         y4 = changeToGLPointR(y4);
 
         squareVertices[0] = x1;
@@ -1545,12 +1580,16 @@ public class CameraDisplay implements Renderer {
 
         };
 
+
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices2));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         //左上
         x0 =points[52].getX();
@@ -1599,18 +1638,25 @@ public class CameraDisplay implements Renderer {
         squareVertices[7] = y4;
 
         float textureVertices3[] = {
-                1.0f,  0.332f,
-                0.0f,  0.332f,
                 1.0f, 1.0f,
                 0.0f, 1.0f,
-
+                1.0f,  0.332f,
+                0.0f,  0.332f,
         };
-
+        GLES20.glUniform1i(mGLUniformTexture, 0);
+        GLES20.glUseProgram(mGLProgId);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices3));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         //左下
         x0 = points[52].getX();
@@ -1671,8 +1717,12 @@ public class CameraDisplay implements Renderer {
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices4));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+
 
     }
 
@@ -1742,31 +1792,14 @@ public class CameraDisplay implements Renderer {
                 1.0f, 1.0f,
 
         };
-//        GLES20.glClearColor(0.0f,0.0f,0.0f,0.0f);
-//        GLES20.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-//        GLES20.glClear(GL_COLOR_BUFFER_BIT);
-
         GLES20.glUniform1i(mGLUniformTexture, 0);
         GLES20.glUseProgram(mGLProgId);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
-//        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-//        GLES20.glDisable(GLES20.GL_BLEND);
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-
-//        GLES20.glDisable(GLES20.GL_BLEND);
-//        GLES20.glBlendColor(0,0,0,0);
-//        GLES20.glBlendColor(1.0f,1.0f,1.0f,1.0f);
         GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-//        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ZERO);
-//        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-//        GLES20.glBlendFunc(GLES20.GL_ONE_MINUS_SRC_ALPHA,GLES20.GL_ONE);
-//        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ZERO);
-//        GLES20.glBlendFunc(GLES20.GL_ZERO,GLES20.GL_ONE);
-
-
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
+
         GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
         GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -1774,6 +1807,143 @@ public class CameraDisplay implements Renderer {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glDisable(GLES20.GL_BLEND);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+    }
+
+
+    public  void drawZuichun(STPoint[] points){
+        //绘制下嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
+        float[] squareVertices = new float[200];
+        float[] squareVertices2 = new float[400];
+
+        List<STPoint> pointMouseList = new ArrayList<>();
+        List<STPoint> pointDownList = new ArrayList<>();
+
+//        float[] _mousecolors = new {};
+
+        STPoint fitPoint;
+        float p0,p1,p2,p3;
+
+        pointMouseList.add(points[176]);
+        for(int i =1;i<=15;i++) {
+            pointMouseList.add(points[209+i]);
+        }
+        pointMouseList.add(points[192]);
+        pointDownList.add(points[176]);
+
+        for(int i=0;i<=13;i++) {
+            pointMouseList.add(points[225+i]);
+        }
+
+        pointDownList.add(points[192]);
+        for(int  i= 0;i<pointMouseList.size(); i++) {
+            pointDownList.add(points[192]);
+        }
+//
+//    [self AddPointsToArr:upMouseBeAdd resultPointsNum:[upMouseBeAdd count]*2 fitPoint:upMouse];
+//    [self AddPointsToArr:downMouseBeAdd resultPointsNum:[upMouseBeAdd count]*2+1 fitPoint:downMouse];
+        //上段
+        for(int i = 0; i<pointMouseList.size(); i++) {
+
+            p0 = changeToGLPointT(pointMouseList.get(i).getX());
+            p1 =  changeToGLPointR(pointMouseList.get(i).getY());
+            p2 = changeToGLPointT(pointDownList.get(i).getX());
+            p3 =  changeToGLPointR(pointDownList.get(i).getY());
+
+            squareVertices[i*4]   = (float) (p0*1.1-p2*0.1);
+            squareVertices[i*4+1] = (float) (p1*1.1-p3*0.1);
+            squareVertices[i*4+2] = (float) (p0*4.0/5.0 + p2/5.0);
+            squareVertices[i*4+3] = (float) (p1*4.0/5.0 + p3/5.0);
+        }
+
+        double k0=1.0;
+
+        for(int i = 0; i<pointMouseList.size(); i++) {
+            squareVertices2[i*8] = 0.5f;
+            squareVertices2[i*8+1] = 0.6f;
+            squareVertices2[i*8+2] = 0.7f;
+//        squareVertices2[_index*8+3] = _mousecolors[3]/2.0;
+            squareVertices2[i*8+3] = 0.9f/6.0f;
+
+            squareVertices2[i*8+4] = 0.5f;
+            squareVertices2[i*8+5] = 0.4f;
+            squareVertices2[i*8+6] = 0.3f;
+
+            if(i==0 || i == pointMouseList.size()-1)
+            k0=5.0;
+        else
+            k0=1.0;
+            squareVertices2[i*8+7] = (float) (0.5f/k0);
+        }
+
+        GLES20.glUseProgram(mGLMouseId);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_BLEND);
+//    glEnable(GL_LINE_SMOOTH_HINT);
+//    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        GLES20. glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
+        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
+        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
+        //中段
+        for(int i  = 0; i<pointMouseList.size(); i++) {
+            p0 =changeToGLPointT(pointMouseList.get(i).getX());
+            p1 =changeToGLPointR(pointMouseList.get(i).getY());
+            p2 = changeToGLPointT(pointDownList.get(i).getX());
+            p3 = changeToGLPointT(pointDownList.get(i).getY());
+
+            squareVertices[i*4]   = (float) (p0*4.0/5.0 + p2/5.0);
+            squareVertices[i*4+1] = (float) (p1*4.0/5.0 + p3/5.0);
+            squareVertices[i*4+2] = (float) (p0/5.0 + p2*4.0/5.0);
+            squareVertices[i*4+3] = (float) (p1/5.0 + p3*4.0/5.0);
+        }
+
+        for(int i = 0; i<pointMouseList.size(); i++) {
+            if(i==0 || i == pointMouseList.size()-1)
+            k0=5.0;
+        else
+            k0=1.0;
+            squareVertices2[i*8+3] = (float)(1.0f/k0);
+            squareVertices2[i*8+7] = 1.0f;
+        }
+
+        //下段
+        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
+        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0,  Utils.getFloatBuffer(squareVertices2));
+        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
+
+        for(int i = 0; i<pointMouseList.size(); i++) {
+            p0 =changeToGLPointT(pointMouseList.get(i).getX());
+            p1 =changeToGLPointR(pointMouseList.get(i).getY());
+            p2 = changeToGLPointT(pointDownList.get(i).getX());
+            p3 = changeToGLPointT(pointDownList.get(i).getY());
+
+            squareVertices[i*4]   = (float) (p0/5.0 + p2*4.0/5.0);
+            squareVertices[i*4+1] = (float) (p1/5.0 + p3*4.0/5.0);
+            squareVertices[i*4+2] = (float) (p2*1.1-p0*0.1);
+            squareVertices[i*4+3] =(float) (p3*1.1-p1*0.1);
+        }
+
+        for(int i = 0; i<pointMouseList.size(); i++) {
+            squareVertices2[i*8+7] = 0.01f;
+        }
+
+        glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
+        glEnableVertexAttribArray(mGLAttribMousePos);
+        glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
+        glEnableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
+
+        GLES20. glDisable( GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+//
+//    [upMouse removeAllObjects];upMouse = nil;
+//    [downMouse removeAllObjects];downMouse = nil;
+//    [upMouseBeAdd removeAllObjects];upMouse = nil;
+//    [downMouseBeAdd removeAllObjects];downMouse = nil;
     }
 
 }

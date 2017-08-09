@@ -11,3 +11,8 @@ gradlew
 gradlew.bat
 gradle.properties
 local.properties
+*.d
+*.o
+app/src/main/obj/
+app/src/main/libs/
+STMobileJNI/src/main/libs/
