@@ -1480,7 +1480,7 @@ public class CameraDisplay implements Renderer {
 
         x3 = (float) (x1 + d * Math.sin(theta));
         y3 = (float) (y1 - d * Math.cos(theta));
-
+     
         x4 =(float) ( x2 + d * Math.sin(theta));
         y4 = (float) (y2 - d * Math.cos(theta));
 
