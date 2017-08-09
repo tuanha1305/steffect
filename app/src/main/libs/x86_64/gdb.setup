@@ -1,2 +1,0 @@
-set solib-search-path /Users/Yhyu/Documents/work/other/code/SenseMeEffects/app/src/main/obj/local/x86_64
-directory /Users/Yhyu/Library/Android/sdk/ndk-bundle/sysroot libpng /Users/Yhyu/Documents/work/other/code/SenseMeEffects/app/src/main/jni/libpng/. /Users/Yhyu/Library/Android/sdk/ndk-bundle/sources/cxx-stl/stlport/stlport /Users/Yhyu/Library/Android/sdk/ndk-bundle/sources/cxx-stl//gabi++/include
