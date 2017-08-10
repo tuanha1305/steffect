@@ -16,3 +16,4 @@ local.properties
 app/src/main/obj/
 app/src/main/libs/
 STMobileJNI/src/main/libs/
+STMobileJNI/src/main/obj/
