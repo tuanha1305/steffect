@@ -207,23 +207,18 @@ public class CameraActivity extends Activity implements View.OnClickListener{
         mAccelerometer = new Accelerometer(getApplicationContext());
 
         GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
-
-        glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-
-
         mSurfaceViewOverlap = (SurfaceView) findViewById(R.id.surfaceViewOverlap);
         mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
         mCameraDisplay = new CameraDisplay(getApplicationContext(), mListener, glSurfaceView);
         mCameraDisplay.setHandler(mHandler);
-        glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+
         //layout elements
         mStickersRecycleView = (RecyclerView) findViewById(R.id.rv_stickers);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mStickersRecycleView.setLayoutManager(layoutManager);
         mStickersRecycleView.addItemDecoration(new SpaceItemDecoration(0));
-        mStickersRecycleView.getBackground().setAlpha(0);
+        mStickersRecycleView.getBackground().setAlpha(100);
 
         //copy sticker zips to sdcard and get file paths
         mStickerList = FileUtils.getStickerFiles(this);
@@ -304,9 +299,9 @@ public class CameraActivity extends Activity implements View.OnClickListener{
         }
 
 
-//        mSurfaceViewOverlap.setZOrderOnTop(true);
-//        mSurfaceViewOverlap.setZOrderMediaOverlay(true);
-//        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        mSurfaceViewOverlap.setZOrderOnTop(true);
+        mSurfaceViewOverlap.setZOrderMediaOverlay(true);
+        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
         mPaint = new Paint();
         mPaint.setColor(Color.rgb(240, 100, 100));
@@ -384,7 +379,7 @@ public class CameraActivity extends Activity implements View.OnClickListener{
                     mCameraDisplay.resetObjectTrack();
                 }else{
                     mIsObjectOpen = true;
-                    mCameraDisplay.enableObject(true);
+                    mCameraDisplay.enableObject(false);
                     mGuideBitmap = BitmapFactory.decodeResource(mContext.getResources(), mObjectList.get(position).drawableID);
                     mCameraDisplay.resetIndexRect();
                 }
@@ -891,6 +886,7 @@ public class CameraActivity extends Activity implements View.OnClickListener{
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
         mCameraDisplay.onDestroy();
         mStickerList.clear();
