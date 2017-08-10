@@ -14,6 +14,10 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.WindowManager;
+
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -38,7 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import sensetime.senseme.com.effects.CameraActivity;
+//import sensetime.senseme.com.effects.CameraActivity;
+import sensetime.senseme.com.effects.CameraActivityNew;
 import sensetime.senseme.com.effects.R;
 import sensetime.senseme.com.effects.camera.CameraProxy;
 import sensetime.senseme.com.effects.glutils.OpenGLUtils;
@@ -172,7 +177,7 @@ public class CameraDisplay implements Renderer {
             STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO,
             STBeautyParamsType.ST_BEAUTIFY_SHRINK_JAW_RATIO
     };
-    private Handler mHandler;
+//    private Handler mHandler;
     private String mFaceAttribute;
     private Handler mHandlerUpdateAtrrbute = new Handler();
     private boolean mIsPaused = false;
@@ -276,7 +281,7 @@ public class CameraDisplay implements Renderer {
         mNeedSave = true;
     }
     public void setHandler(Handler handler) {
-        mHandler = handler;
+//        mHandler = handler;
     }
     /**
      * 工作在opengl线程, 当前Renderer关联的view创建的时候调用
@@ -492,30 +497,30 @@ public class CameraDisplay implements Renderer {
                         if(outputRect.getRect().equals(new Rect(0,0,0,0)) || score[0] < 0.1f){
                             mNeedObject = false;
                             mSTMobileObjectTrackNative.reset();
-                            Message msg = mHandler.obtainMessage(CameraActivity.MSG_MISSED_OBJECT_TRACK);
-                            mHandler.sendMessage(msg);
+//                            Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_MISSED_OBJECT_TRACK);
+//                            mHandler.sendMessage(msg);
                         }
                     }
-                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
-                    msg.obj = rect;
-                    mHandler.sendMessage(msg);
+//                    Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_DRAW_OBJECT_IMAGE);
+//                    msg.obj = rect;
+//                    mHandler.sendMessage(msg);
                     mIndexRect = rect;
                 }else{
                     if (mNeedShowRect) {
-                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE_AND_RECT);
-                        msg.obj = mIndexRect;
-                        mHandler.sendMessage(msg);
+//                        Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_DRAW_OBJECT_IMAGE_AND_RECT);
+//                        msg.obj = mIndexRect;
+//                        mHandler.sendMessage(msg);
                     } else {
-                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
-                        msg.obj = rect;
-                        mHandler.sendMessage(msg);
+//                        Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_DRAW_OBJECT_IMAGE);
+//                        msg.obj = rect;
+//                        mHandler.sendMessage(msg);
                         mIndexRect = rect;
                     }
                 }
             }else{
                 if(!mNeedFaceExtraInfo || !(mNeedBeautify || mNeedSticker || mNeedFaceAttribute)){
-                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
-                    mHandler.sendMessage(msg);
+//                    Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_CLEAR_OBJECT);
+//                    mHandler.sendMessage(msg);
                 }
             }
             if(mNeedBeautify || mNeedSticker || mNeedFaceAttribute && mIsCreateHumanActionHandleSucceeded) {
@@ -610,8 +615,8 @@ public class CameraDisplay implements Renderer {
                     }
                     if(humanAction.faceExtraInfo != null && humanAction.faceExtraInfo.eyebrowCount == 0 &&
                             humanAction.faceExtraInfo.eyeCount == 0 && humanAction.faceExtraInfo.lipsCount == 0){
-                        Message msg1 = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
-                        mHandler.sendMessage(msg1);
+//                        Message msg1 = mHandler.obtainMessage(CameraActivityNew.MSG_CLEAR_OBJECT);
+//                        mHandler.sendMessage(msg1);
                     }
                 }
                 if(mNeedBeautify || mNeedFaceAttribute){
@@ -711,8 +716,8 @@ public class CameraDisplay implements Renderer {
 //            }
             LogUtils.i(TAG, "frame cost time total: %d", System.currentTimeMillis() - mStartTime);
         }else{
-            Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
-            mHandler.sendMessage(msg);
+//            Message msg = mHandler.obtainMessage(CameraActivityNew.MSG_CLEAR_OBJECT);
+//            mHandler.sendMessage(msg);
             resetObjectTrack();
         }
         if(mNeedSave) {
@@ -725,17 +730,17 @@ public class CameraDisplay implements Renderer {
         }
     }
     private void savePicture(int textureId) {
-        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
-        mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
-        mTmpBuffer.position(0);
-        Message msg = Message.obtain(mHandler);
-        msg.what = CameraActivity.MSG_SAVING_IMG;
-        msg.obj = mTmpBuffer;
-        Bundle bundle = new Bundle();
-        bundle.putInt("imageWidth", mImageWidth);
-        bundle.putInt("imageHeight", mImageHeight);
-        msg.setData(bundle);
-        msg.sendToTarget();
+//        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+//        mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
+//        mTmpBuffer.position(0);
+//        Message msg = Message.obtain(mHandler);
+//        msg.what = CameraActivityNew.MSG_SAVING_IMG;
+//        msg.obj = mTmpBuffer;
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("imageWidth", mImageWidth);
+//        bundle.putInt("imageHeight", mImageHeight);
+//        msg.setData(bundle);
+//        msg.sendToTarget();
     }
     private int getCurrentOrientation() {
         int dir = Accelerometer.getDirection();
@@ -763,10 +768,11 @@ public class CameraDisplay implements Renderer {
             mSurfaceTexture = new SurfaceTexture(mTextureId);
             mSurfaceTexture.setOnFrameAvailableListener(mOnFrameAvailableListener);
         }
-        String size = mSupportedPreviewSizes.get(mCurrentPreview);
-        int index = size.indexOf('x');
-        mImageHeight = Integer.parseInt(size.substring(0, index));
-        mImageWidth = Integer.parseInt(size.substring(index + 1));
+//        String size = mSupportedPreviewSizes.get(mCurrentPreview);
+//        int index = size.indexOf('x');
+//        mImageHeight = Integer.parseInt(size.substring(0, index));
+//        mImageWidth = Integer.parseInt(size.substring(index + 1));
+//        mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
         mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
         boolean flipHorizontal = mCameraProxy.isFlipHorizontal();
         mGLRender.adjustTextureBuffer(mCameraProxy.getOrientation(), flipHorizontal);
@@ -801,6 +807,26 @@ public class CameraDisplay implements Renderer {
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
             }
         }
+//        DisplayMetrics dm = new DisplayMetrics();
+//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//        wm.getDefaultDisplay().getMetrics(dm);//2392=====1440
+////        mImageWidth = dm.widthPixels;
+////        mImageHeight = dm.heightPixels;
+//
+//        Log.d("liupan",dm.heightPixels+"====="+ dm.widthPixels);
+
+        List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
+        for(Camera.Size size:sizes){
+            Log.d("liupan",size.height+"++++++"+size.width);
+        }
+//       Camera.Size size =  mCameraProxy.getCamera().getParameters().getPreviewSize();
+//        Log.d("liupan",size.height+"!!!!!!!"+size.width);
+        mImageWidth = sizes.get(0).height;
+        mImageHeight = sizes.get(0).width;
+
+//        mImageWidth =1080;
+//        mImageHeight = 1920;
+
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
     }
@@ -1010,11 +1036,13 @@ public class CameraDisplay implements Renderer {
         GLES20.glDisable(GLES20.GL_BLEND);
     }
     public float changeToGLPointT(float x){
-        float tempX = (x - mSurfaceWidth/2) / (mSurfaceWidth/2);
+//        float tempX = (x - mSurfaceWidth/2) / (mSurfaceWidth/2);
+        float tempX = (x - mImageWidth/2) / (mImageWidth/2);
         return tempX;
     };
     public float changeToGLPointR(float y){
-        float tempY = (mSurfaceHeight/2-y) / (mSurfaceHeight/2);
+//        float tempY = (mSurfaceHeight/2-y) / (mSurfaceHeight/2);
+        float tempY = (mImageHeight/2-y) / (mImageHeight/2);
         return tempY;
     };
     public void resetIndexRect(){
@@ -1026,6 +1054,7 @@ public class CameraDisplay implements Renderer {
         }else {
             mScreenIndexRectWidth = (mIndexRectWidthSmall * mSurfaceWidth/mImageWidth);
         }
+
         mIndexRect.left = (mSurfaceWidth - mScreenIndexRectWidth)/2;
         mIndexRect.top = (mSurfaceHeight - mScreenIndexRectWidth)/2;
         mIndexRect.right = mIndexRect.left + mScreenIndexRectWidth;

@@ -53,10 +53,10 @@ public class WelcomeActivity extends Activity {
                                 PERMISSION_REQUEST_CAMERA);
                     } else {
                         // Permission is already available, start camera preview
-                        startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+                        startActivity(new Intent(getApplicationContext(), CameraActivityNew.class));
                     }
                 } else {
-                    startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+                    startActivity(new Intent(getApplicationContext(), CameraActivityNew.class));
                 }
             }
         });
@@ -106,7 +106,7 @@ public class WelcomeActivity extends Activity {
             // Request for camera permission.
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission has been granted. Start camera preview Activity.
-                startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+                startActivity(new Intent(getApplicationContext(), CameraActivityNew.class));
             } else {
                 // Permission request was denied.
                 Toast.makeText(this, "Camera权限被拒绝", Toast.LENGTH_SHORT)

@@ -28,7 +28,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import sensetime.senseme.com.effects.CameraActivity;
+//import sensetime.senseme.com.effects.CameraActivity;
 import sensetime.senseme.com.effects.ImageActivity;
 import sensetime.senseme.com.effects.glutils.GlUtil;
 import sensetime.senseme.com.effects.glutils.OpenGLUtils;

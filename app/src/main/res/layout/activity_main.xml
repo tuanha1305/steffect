@@ -18,12 +18,18 @@
             android:id="@+id/id_gl_sv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             />
         <SurfaceView
             android:id="@+id/surfaceViewOverlap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             />
+        <sensetime.senseme.com.effects.SensemeView
+            android:id="@+id/sensemeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </FrameLayout>
 
     <TextView
