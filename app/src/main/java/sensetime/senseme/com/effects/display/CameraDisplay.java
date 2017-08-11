@@ -307,7 +307,7 @@ public class CameraDisplay implements Renderer {
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
         mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
-        mGLAttribMouseColor = GLES20.glGetUniformLocation(mGLMouseId,"SourceColor");
+        mGLAttribMouseColor = GLES20.glGetAttribLocation(mGLMouseId,"SourceColor");
         if (mCameraProxy.getCamera() != null) {
             setUpCamera();
         }
