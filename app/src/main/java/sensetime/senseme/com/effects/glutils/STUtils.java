@@ -462,10 +462,11 @@ public class STUtils {
     static public void drawPoints(Canvas canvas, Paint paint, STPoint[] points) {
 
         if (canvas == null) return;
-        int strokeWidth = 1;
-        Log.i("info",points.length+"-----");
+        int strokeWidth = 5;
+
         for(int i = 0; i< points.length; i++){
             PointF p = new PointF(points[i].getX(),points[i].getY());
+
             paint.setColor(Color.rgb(0, 0, 255));
             canvas.drawCircle(p.x, p.y, strokeWidth, paint);
         }
