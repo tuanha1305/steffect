@@ -298,16 +298,29 @@ public class STGLRender {
         }
     }
 
-    public void drawMeizhuang(STPoint[] stPoint240,int texture_left,int texture_right,int saiHong)
+    public void drawMeizhuang(STPoint[] stPoint240,int texture_left_meimao,int texture_right_meimao,int texture_jiemao,int texture_yanxian,int texture_yanying,int texture_saihong,float _upmousecolors[],float _downmousecolors[] )
     {
+//        if( stPoint240 != null) {
+//            drawLeftMeiMao(stPoint240, texture_left_meimao);
+////            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
+//
+//            drawUPMouSe(stPoint240,_upmousecolors);
+//            drawZuichun(stPoint240,_downmousecolors);
+//            drawRightJiemao(stPoint240,texture_jiemao);
+//            drawSaiHong(stPoint240,texture_saihong);
+//            GlUtil.checkGlError("test");
+//        }
         if( stPoint240 != null) {
-            drawLeftMeiMao(stPoint240, texture_left);
-            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-            drawUPMouSe(stPoint240,_mousecolors);
-            drawZuichun(stPoint240,_mousecolors);
-            drawRightJiemao(stPoint240,texture_right);
-            drawSaiHong(stPoint240,saiHong);
-            drawRightMeiMao(stPoint240,texture_left);
+            drawLeftMeiMao(stPoint240, texture_left_meimao);
+            drawRightMeiMao(stPoint240,texture_right_meimao);
+//            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
+            drawUPMouSe(stPoint240,_upmousecolors);
+            drawZuichun(stPoint240,_downmousecolors);
+            drawRightJiemao(stPoint240,texture_jiemao);
+            drawRightJiemao(stPoint240,texture_yanxian);
+            drawRightJiemao(stPoint240,texture_yanying);
+            drawSaiHong(stPoint240,texture_saihong);
+
             GlUtil.checkGlError("test");
         }
 

@@ -2,6 +2,7 @@ package sensetime.senseme.com.effects;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import sensetime.senseme.com.effects.display.CameraDisplay;
+import sensetime.senseme.com.effects.glutils.OpenGLUtils;
 import sensetime.senseme.com.effects.utils.Accelerometer;
 import sensetime.senseme.com.effects.utils.FileUtils;
 import sensetime.senseme.com.effects.utils.STLicenseUtils;
@@ -133,11 +135,48 @@ public class SensemeView extends RelativeLayout {
         }
     };
 
-    public void setSaihong(int textureId) {
+    public void setLeftMeiMao(){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
+
+        mCameraDisplay.setLeftMeiMao(bitmap);
+    }
+    public void setRightMeiMao(){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
+        mCameraDisplay.setRightMeiMao(bitmap);
+    }
+    public void setYanJieMao(){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
+        mCameraDisplay.setYanJieMao(bitmap);
+
+    }
+    public void setYanXian(){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
+        mCameraDisplay.setYanXian(bitmap);
+
+    }
+    public void setYanYing(){
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
+        mCameraDisplay.setYanYing(bitmap);
 
     }
 
-//    public void setSaihong
+    public void setSaihong(int resourceId) {
+        Bitmap bitmap = null;
+        if (resourceId!=-1){
+            bitmap = BitmapFactory.decodeResource(mContext.getResources(), resourceId);
+        }
+        mCameraDisplay.setSaihong(bitmap);
+    }
+
+    public void setUpMouse(float red, float green, float blue, float alpha) {
+        float _mousecolors[] = {red, green, blue, alpha};
+        mCameraDisplay.setUpMouseColors(_mousecolors);
+    }
+
+    public void setDownMouse(float red, float green, float blue, float alpha) {
+        float _mousecolors[] = {red, green, blue, alpha};
+        mCameraDisplay.setDownMouseColors(_mousecolors);
+    }
 
     public void onResume() {
         mAccelerometer.start();

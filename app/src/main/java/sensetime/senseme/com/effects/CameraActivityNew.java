@@ -214,6 +214,19 @@ public class CameraActivityNew extends Activity implements View.OnClickListener{
         sensemeView = (SensemeView) findViewById(R.id.sensemeView);
         sensemeView.init(this);
 
+
+        sensemeView.setLeftMeiMao();
+        sensemeView.setRightMeiMao();
+
+        sensemeView.setYanJieMao();
+        sensemeView.setYanXian();
+        sensemeView.setYanYing();
+
+        sensemeView.setSaihong(R.mipmap.saihong);
+
+        sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
+        sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
+
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
 //        mSurfaceViewOverlap = (SurfaceView) findViewById(R.id.surfaceViewOverlap);
 //        mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
