@@ -1,7 +1,5 @@
 package sensetime.senseme.com.effects.display;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
@@ -15,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import sensetime.senseme.com.effects.R;
 import sensetime.senseme.com.effects.glutils.GlUtil;
 import sensetime.senseme.com.effects.glutils.OpenGLUtils;
 import sensetime.senseme.com.effects.glutils.TextureRotationUtil;
@@ -298,29 +295,16 @@ public class STGLRender {
         }
     }
 
-    public void drawMeizhuang(STPoint[] stPoint240,int texture_left_meimao,int texture_right_meimao,int texture_jiemao,int texture_yanxian,int texture_yanying,int texture_saihong,float _upmousecolors[],float _downmousecolors[] )
+    public void drawMeizhuang(STPoint[] stPoint240, int texture_left, int texture_right, int saiHong)
     {
-//        if( stPoint240 != null) {
-//            drawLeftMeiMao(stPoint240, texture_left_meimao);
-////            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-//
-//            drawUPMouSe(stPoint240,_upmousecolors);
-//            drawZuichun(stPoint240,_downmousecolors);
-//            drawRightJiemao(stPoint240,texture_jiemao);
-//            drawSaiHong(stPoint240,texture_saihong);
-//            GlUtil.checkGlError("test");
-//        }
         if( stPoint240 != null) {
-            drawLeftMeiMao(stPoint240, texture_left_meimao);
-            drawRightMeiMao(stPoint240,texture_right_meimao);
-//            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-            drawUPMouSe(stPoint240,_upmousecolors);
-            drawZuichun(stPoint240,_downmousecolors);
-            drawRightJiemao(stPoint240,texture_jiemao);
-            drawRightJiemao(stPoint240,texture_yanxian);
-            drawRightJiemao(stPoint240,texture_yanying);
-            drawSaiHong(stPoint240,texture_saihong);
-
+            drawLeftMeiMao(stPoint240, texture_left);
+            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
+            drawUPMouSe(stPoint240,_mousecolors);
+            drawZuichun(stPoint240,_mousecolors);
+            drawRightJiemao(stPoint240,texture_right);
+            drawSaiHong(stPoint240,saiHong);
+            drawRightMeiMao(stPoint240,texture_left);
             GlUtil.checkGlError("test");
         }
 
@@ -456,7 +440,7 @@ public class STGLRender {
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
-        mGLMouseId =OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
+        mGLMouseId = OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
         mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
         mGLAttribMouseColor = GLES20.glGetAttribLocation(mGLMouseId,"SourceColor");
     }
@@ -585,7 +569,7 @@ public class STGLRender {
      * 下嘴唇
      * @param points
      */
-    public  void drawZuichun(STPoint[] points,float mousecolors[]){
+    public  void drawZuichun(STPoint[] points, float mousecolors[]){
         //绘制下嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
         float[] squareVertices = new float[200];
         float[] squareVertices2 = new float[400];
@@ -682,14 +666,14 @@ public class STGLRender {
         GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
         glEnableVertexAttribArray(mGLAttribMouseColor);
         GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        GLES20. glDisable( GLES20.GL_BLEND);
-    }
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDisable(GLES20.GL_BLEND);    }
 
     /**
      * 上嘴唇
      * @param points
      */
-    public void drawUPMouSe(STPoint[] points,float mousecolors[]) {
+    public void drawUPMouSe(STPoint[] points, float mousecolors[]) {
         //绘制上嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
         float fitPoint;
         float p0, p1, p2, p3;
@@ -779,8 +763,8 @@ public class STGLRender {
         GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
         glEnableVertexAttribArray(mGLAttribMouseColor);
         GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        GLES20. glDisable( GLES20.GL_BLEND);
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+//        GLES20. glDisable( GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
 
     /**
@@ -788,7 +772,7 @@ public class STGLRender {
      * @param points
      * @param textureId
      */
-    public void drawLeftMeiMao( STPoint[] points,int textureId){
+    public void drawLeftMeiMao(STPoint[] points, int textureId){
         float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4,k;
         double d,theta;
         x0 = points[150].getX();
@@ -845,7 +829,7 @@ public class STGLRender {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20. glDisable( GLES20.GL_BLEND);
+
 
     }
     /**
@@ -853,7 +837,7 @@ public class STGLRender {
      * @param points
      * @param textureId
      */
-    public void drawRightMeiMao( STPoint[] points,int textureId){
+    public void drawRightMeiMao(STPoint[] points, int textureId){
         float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4,k;
         double d,theta;
         x0 = points[175].getX();
@@ -915,7 +899,7 @@ public class STGLRender {
      * @param points
      * @param textureId
      */
-    public void drawSaiHong(STPoint[] points,int textureId){
+    public void drawSaiHong(STPoint[] points, int textureId){
         float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4;
         double theta,d,k;
         //画腮红
@@ -979,7 +963,7 @@ public class STGLRender {
 
 
     public int getFrameBufferId(){
-        return  mFrameBuffers[0];
+      return  mFrameBuffers[0];
     };
 
 }
