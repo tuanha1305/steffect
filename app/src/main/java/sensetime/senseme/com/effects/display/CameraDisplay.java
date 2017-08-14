@@ -102,7 +102,7 @@ public class CameraDisplay implements Renderer {
     private FaceAttributeChangeListener mFaceAttributeChangeListener;
     private long mStartTime;
     private boolean mShowOriginal = false;
-    private boolean mNeedBeautify = false;
+    private boolean mNeedBeautify = true;
     private boolean mNeedFaceAttribute = false;
     private boolean mNeedUpdateFaceAttribute = true;
     private boolean mNeedSticker = false;
@@ -318,25 +318,25 @@ public class CameraDisplay implements Renderer {
 //        textYanYingId=OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
 
         if (bSaihongDirty && saihongBitmap != null) {
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
             bSaihongDirty = false;
         } else {
             Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
             bSaihongDirty = false;
         }
 
         if (bLeftMeiDirty && leftMeiBitmap != null) {
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
             bLeftMeiDirty = false;
         } else {
             Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
             bLeftMeiDirty = false;
         }
 
         if (bRightMeiDirty && rightMeiBitmap != null) {
-            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, true);
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
             bRightMeiDirty = false;
         } else {
             Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
