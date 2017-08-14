@@ -211,18 +211,18 @@ public class CameraActivityNew extends Activity implements View.OnClickListener{
 
 //        mAccelerometer = new Accelerometer(getApplicationContext());
 
-        sensemeView = (SensemeView) findViewById(R.id.sensemeView);
+//        sensemeView = (SensemeView) findViewById(R.id.sensemeView);
         sensemeView.init(this);
 
 
-        sensemeView.setLeftMeiMao();
-        sensemeView.setRightMeiMao();
+//        sensemeView.setLeftMeiMao();
+//        sensemeView.setRightMeiMao();
+//
+//        sensemeView.setYanJieMao();
+//        sensemeView.setYanXian();
+//        sensemeView.setYanYing();
 
-        sensemeView.setYanJieMao();
-        sensemeView.setYanXian();
-        sensemeView.setYanYing();
-
-        sensemeView.setSaihong(R.mipmap.saihong);
+//        sensemeView.setSaihong(R.mipmap.ear_000);
 
         sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
         sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
