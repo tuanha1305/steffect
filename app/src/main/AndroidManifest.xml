@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="sensetime.senseme.com.effects.CameraActivity"
+            android:name="sensetime.senseme.com.effects.CameraActivityNew"
             android:screenOrientation="portrait"/>
         <activity
             android:name="sensetime.senseme.com.effects.ImageActivity"

@@ -34,24 +34,16 @@ public class OpenGLUtils {
 		if (usedTexId == NO_TEXTURE) {
 			GLES20.glGenTextures(1, textures, 0);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
-			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,//放大
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,//缩小
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 					GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-			ByteBuffer buffer = SaveMyBitmap(img);
-//			img.setHasAlpha(true);
-//			img.setConfig(Con);
-//			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0 , GLES20.GL_RGBA, img.getWidth(), img.getHeight(), 0 , GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,buffer);
-
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
-//			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, 1024, 1024, 0,
-//					GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, buffer);
-//			myTexImage2D(img);
+			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
 		} else {
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, usedTexId);
 			//     GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, img);
@@ -169,11 +161,14 @@ public class OpenGLUtils {
 		int[] link = new int[1];
 		iVShader = loadShader(strVSource, GLES20.GL_VERTEX_SHADER);
 		if (iVShader == 0) {
+			String strerr = GLES20.glGetShaderInfoLog(iVShader);
 			Log.d("Load Program", "Vertex Shader Failed");
 			return 0;
 		}
+		GlUtil.checkGlError("test");
 		iFShader = loadShader(strFSource, GLES20.GL_FRAGMENT_SHADER);
 		if (iFShader == 0) {
+			String strerr = GLES20.glGetShaderInfoLog(iVShader);
 			Log.d("Load Program", "Fragment Shader Failed");
 			return 0;
 		}
@@ -202,6 +197,7 @@ public class OpenGLUtils {
 		GLES20.glCompileShader(iShader);
 		GLES20.glGetShaderiv(iShader, GLES20.GL_COMPILE_STATUS, compiled, 0);
 		if (compiled[0] == 0) {
+			String strerr = GLES20.glGetShaderInfoLog(iShader);
 			Log.e("Load Shader Failed", "Compilation\n" + GLES20.glGetShaderInfoLog(iShader));
 			return 0;
 		}
@@ -304,53 +300,5 @@ public class OpenGLUtils {
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, target);
 		GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, previewData);
 //		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-	}
-
-
-	public static ByteBuffer SaveMyBitmap(Bitmap bitmap)
-	{
-		int width,height;
-		int mBitmapSize = 0;
-		width = bitmap.getWidth();
-		height = bitmap.getHeight();
-		mBitmapSize=width*height*4;
-		ByteBuffer mBuf = ByteBuffer.allocate(mBitmapSize);
-		return mBuf;
-
-	};
-
-	public static void myTexImage2D(Bitmap bitmap) {
-		// Don't loading using GLUtils, load using gl-method directly
-		// GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-		int[] pixels = extractPixels(bitmap);
-		byte[] pixelComponents = new byte[pixels.length*4];
-		int byteIndex = 0;
-		for (int i = 0; i < pixels.length; i++) {
-			int p = pixels[i];
-			// Convert to byte representation RGBA required by gl.glTexImage2D.
-			// We don't use intbuffer, because then we
-			// would be relying on the intbuffer wrapping to write the ints in
-			// big-endian format, which means it would work for the wrong
-			// reasons, and it might brake on some hardware.
-			pixelComponents[byteIndex++] = (byte) ((p >> 16) & 0xFF); // red
-			pixelComponents[byteIndex++] = (byte) ((p >> 8) & 0xFF); //
-			pixelComponents[byteIndex++] = (byte) ((p) & 0xFF); // blue
-			pixelComponents[byteIndex++] = (byte) (p >> 24);  // alpha
-		}
-		ByteBuffer pixelBuffer = ByteBuffer.wrap(pixelComponents);
-
-		GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
-				bitmap.getWidth(), bitmap.getHeight(), 0, GLES20.GL_RGBA,
-				GLES20.GL_UNSIGNED_BYTE, pixelBuffer);
-	}
-
-	private  static int[] extractPixels(Bitmap src) {
-		int x = 0;
-		int y = 0;
-		int w = src.getWidth();
-		int h = src.getHeight();
-		int[] colors = new int[w * h];
-		src.getPixels(colors, 0, w, x, y, w, h);
-		return colors;
 	}
 }
