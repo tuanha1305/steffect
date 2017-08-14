@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             />
-        <sensetime.senseme.com.effects.SensemeView
+        <com.effects.senseme.sensemesdk.view.SensemeView
             android:id="@+id/sensemeView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
