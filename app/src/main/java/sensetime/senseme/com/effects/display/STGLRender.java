@@ -963,7 +963,7 @@ public class STGLRender {
 
 
     public int getFrameBufferId(){
-      return  mFrameBuffers[0];
+        return  mFrameBuffers[0];
     };
 
 }
