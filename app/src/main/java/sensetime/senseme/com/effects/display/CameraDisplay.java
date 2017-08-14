@@ -472,6 +472,7 @@ public class CameraDisplay implements Renderer {
     }
 
 
+    private int mTemTextureId = 0;
     /**
      * 工作在opengl线程, 具体渲染的工作函数
      *
@@ -520,12 +521,15 @@ public class CameraDisplay implements Renderer {
         mRGBABuffer.rewind();
 
         long preProcessCostTime = System.currentTimeMillis();
+
         int textureId = mGLRender.preProcess(mTextureId, mRGBABuffer);
+        mTemTextureId = textureId;
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        int result = -1;
+//        stPoint240 = getAllPrint();
 
+        int result = -1;
         if(!mShowOriginal){
             if(mNeedObject) {
                 if (mNeedSetObjectTarget) {
@@ -650,7 +654,7 @@ public class CameraDisplay implements Renderer {
                     }
                 }
 
-                //调用贴纸API绘制贴纸
+//                //调用贴纸API绘制贴纸
                 if(mNeedSticker){
                     boolean needOutputBuffer = false; //如果需要输出buffer推流或其他，设置该开关为true
                     long stickerStartTime = System.currentTimeMillis();
@@ -671,8 +675,6 @@ public class CameraDisplay implements Renderer {
                     }
                 }
                 /////////
-
-
             }
 
             if(mCurrentFilterStyle != mFilterStyle){
@@ -704,7 +706,13 @@ public class CameraDisplay implements Renderer {
 //            mHandler.sendMessage(msg);
             resetObjectTrack();
         }
-         stPoint240 = getAllPrint();
+        int frameBuffer = mGLRender.getFrameBufferId();
+        if(mTemTextureId != textureId)
+        {
+            frameBuffer = mGLRender.bindFrameBuffer(textureId);
+        }
+        stPoint240 = getAllPrint(frameBuffer);
+
         if(mNeedSave) {
             savePicture(textureId);
             mNeedSave = false;
@@ -1054,7 +1062,7 @@ public class CameraDisplay implements Renderer {
      * 获取所有的点
      * @return
      */
-    public STPoint[] getAllPrint(){
+    public STPoint[] getAllPrint(int frameBuffer){
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
@@ -1064,7 +1072,7 @@ public class CameraDisplay implements Renderer {
             if(humanAction.faceExtraInfo != null){
                 arrayFaces = humanAction.getMobileFaces();
                 if(arrayFaces!=null) {
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mGLRender.getFrameBufferId());
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
                     for (int i = 0; i < arrayFaces.length; i++) {
                         STPoint[] stPoints = arrayFaces[i].getPoints_array();
                         stPoint240 = new STPoint[240];
