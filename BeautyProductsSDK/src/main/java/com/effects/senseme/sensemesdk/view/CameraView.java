@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.effects.senseme.sensemesdk.display.CameraDisplay;
 import com.effects.senseme.sensemesdk.utils.Accelerometer;
 import com.effects.senseme.sensemesdk.utils.FileUtils;
@@ -61,6 +62,7 @@ public class CameraView extends RelativeLayout {
             }
         }
     };
+
     public CameraView(Context context) {
         super(context);
     }
@@ -164,47 +166,81 @@ public class CameraView extends RelativeLayout {
         }
     };
 
+    /**
+     * 设置左眉毛，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setLeftMeiMao(Bitmap bitmap) {
-        if(bitmap!=null){
-            mCameraDisplay.setLeftMeiMao(bitmap);
-        }
+        mCameraDisplay.setLeftMeiMao(bitmap);
     }
 
+    /**
+     * 设置右眉毛，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setRightMeiMao(Bitmap bitmap) {
-        if(bitmap!=null){
-            mCameraDisplay.setRightMeiMao(bitmap);
-        }
+        mCameraDisplay.setRightMeiMao(bitmap);
     }
 
+    /**
+     * 设置眼睫毛，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setYanJieMao(Bitmap bitmap) {
-        if(bitmap!=null){
-            mCameraDisplay.setYanJieMao(bitmap);
-        }
+        mCameraDisplay.setYanJieMao(bitmap);
     }
 
+    /**
+     * 设置眼线，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setYanXian(Bitmap bitmap) {
-       if(bitmap!=null){
-           mCameraDisplay.setYanXian(bitmap);
-       }
+        mCameraDisplay.setYanXian(bitmap);
     }
 
+    /**
+     * 设置眼影，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setYanYing(Bitmap bitmap) {
-            if(bitmap!=null){
-                mCameraDisplay.setYanYing(bitmap);
-            }
+        mCameraDisplay.setYanYing(bitmap);
     }
 
+    /**
+     * 设置腮红，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
     public void setSaihong(Bitmap bitmap) {
-       if(bitmap!=null){
-           mCameraDisplay.setSaihong(bitmap);
-       }
+        mCameraDisplay.setSaihong(bitmap);
     }
 
+    /**
+     * 设置上嘴唇，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param red
+     * @param green
+     * @param blue
+     * @param alpha
+     */
     public void setUpMouse(float red, float green, float blue, float alpha) {
         float _mousecolors[] = {red, green, blue, alpha};
         mCameraDisplay.setUpMouseColors(_mousecolors);
     }
 
+    /**
+     * 设置下嘴唇，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param red
+     * @param green
+     * @param blue
+     * @param alpha
+     */
     public void setDownMouse(float red, float green, float blue, float alpha) {
         float _mousecolors[] = {red, green, blue, alpha};
         mCameraDisplay.setDownMouseColors(_mousecolors);
@@ -224,11 +260,10 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.onDestroy();
     }
 
-    public void saveImage(){
+    public void saveImage() {
         mCameraDisplay.setHandler(mHandler);
         mCameraDisplay.setSaveImage();
     }
-
 
 
     private void onPictureTaken(ByteBuffer data, File file, int mImageWidth, int mImageHeight) {
@@ -276,10 +311,11 @@ public class CameraView extends RelativeLayout {
 
     /**
      * 1.关闭贴纸  2.无贴纸  3.贴纸
+     *
      * @param position
      * @param path
      */
-    public void setTiezhi(int position,String path) {
+    public void setTiezhi(int position, String path) {
         if (position == 0) {
             mCameraDisplay.enableSticker(false);
         } else if (position == 1) {

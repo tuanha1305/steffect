@@ -31,6 +31,7 @@
         <activity
             android:name=".CameraActivityNew"
             android:screenOrientation="portrait" />
+
         <activity android:name=".DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
