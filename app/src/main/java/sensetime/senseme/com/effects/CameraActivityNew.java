@@ -237,7 +237,6 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         sensemeView.setLeftMeiMao(meimaoBitmap);
         sensemeView.setRightMeiMao(meimaoBitmap);
         sensemeView.setYanJieMao(jieMaoBitmap);
-        sensemeView.saveImage();
 
 
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
@@ -835,6 +834,8 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //
 //                break;
             case R.id.tv_capture:
+                sensemeView.saveImage();
+
 //                if (this.isWritePermissionAllowed()) {
 //                    mSavingTv.setVisibility(View.VISIBLE);
 //                    mCameraDisplay.setHandler(mHandler);
@@ -846,7 +847,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //            case R.id.tv_cancel:
 //                // back to welcome page
 //                finish();
-//                break;
+                break;
 
             default:
                 break;

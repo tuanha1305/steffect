@@ -11,7 +11,9 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.effects.senseme.sensemesdk.R;
@@ -23,6 +25,7 @@ import com.effects.senseme.sensemesdk.glutils.TextureRotationUtil;
 import com.effects.senseme.sensemesdk.utils.Accelerometer;
 import com.effects.senseme.sensemesdk.utils.FileUtils;
 import com.effects.senseme.sensemesdk.utils.LogUtils;
+import com.effects.senseme.sensemesdk.view.CameraView;
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -44,7 +47,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -104,14 +106,14 @@ public class CameraDisplay implements Renderer {
     private boolean mNeedBeautify = true;
     private boolean mNeedFaceAttribute = false;
     private boolean mNeedUpdateFaceAttribute = true;
-    private boolean mNeedSticker = true;
-    private boolean mNeedFilter = true;
-    private boolean mNeedSave = true;
+    private boolean mNeedSticker = false;
+    private boolean mNeedFilter = false;
+    private boolean mNeedSave = false;
     private boolean mNeedObject = false;
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
     private STPoint[] stPoint240;
-    private int mTemTextureId = 0;
+
 
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
@@ -320,7 +322,7 @@ public class CameraDisplay implements Renderer {
             textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
             bSaihongDirty = false;
         } else {
-            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
             textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
             bSaihongDirty = false;
         }
@@ -329,7 +331,7 @@ public class CameraDisplay implements Renderer {
             textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
             bLeftMeiDirty = false;
         } else {
-            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
             textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
             bLeftMeiDirty = false;
         }
@@ -338,7 +340,7 @@ public class CameraDisplay implements Renderer {
             textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
             bRightMeiDirty = false;
         } else {
-            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
             textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
             bRightMeiDirty = false;
         }
@@ -347,7 +349,7 @@ public class CameraDisplay implements Renderer {
             textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
             bYanXianDirty = false;
         } else {
-            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
             textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
             bYanXianDirty = false;
         }
@@ -356,7 +358,7 @@ public class CameraDisplay implements Renderer {
             textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
             bYanYingDirty = false;
         } else {
-            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
             textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
             bYanYingDirty = false;
         }
@@ -365,7 +367,7 @@ public class CameraDisplay implements Renderer {
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
             bJieMaoDirty = false;
         } else {
-            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
             bJieMaoDirty = false;
         }
@@ -471,6 +473,7 @@ public class CameraDisplay implements Renderer {
     }
 
 
+    private int mTemTextureId = 0;
     /**
      * 工作在opengl线程, 具体渲染的工作函数
      *
@@ -519,12 +522,15 @@ public class CameraDisplay implements Renderer {
         mRGBABuffer.rewind();
 
         long preProcessCostTime = System.currentTimeMillis();
+
         int textureId = mGLRender.preProcess(mTextureId, mRGBABuffer);
+        mTemTextureId = textureId;
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        int result = -1;
+//        stPoint240 = getAllPrint();
 
+        int result = -1;
         if(!mShowOriginal){
             if(mNeedObject) {
                 if (mNeedSetObjectTarget) {
@@ -649,7 +655,7 @@ public class CameraDisplay implements Renderer {
                     }
                 }
 
-                //调用贴纸API绘制贴纸
+//                //调用贴纸API绘制贴纸
                 if(mNeedSticker){
                     boolean needOutputBuffer = false; //如果需要输出buffer推流或其他，设置该开关为true
                     long stickerStartTime = System.currentTimeMillis();
@@ -670,8 +676,6 @@ public class CameraDisplay implements Renderer {
                     }
                 }
                 /////////
-
-
             }
 
             if(mCurrentFilterStyle != mFilterStyle){
@@ -703,13 +707,13 @@ public class CameraDisplay implements Renderer {
 //            mHandler.sendMessage(msg);
             resetObjectTrack();
         }
-
         int frameBuffer = mGLRender.getFrameBufferId();
         if(mTemTextureId != textureId)
         {
             frameBuffer = mGLRender.bindFrameBuffer(textureId);
         }
         stPoint240 = getAllPrint(frameBuffer);
+
         if(mNeedSave) {
             savePicture(textureId);
             mNeedSave = false;
@@ -729,15 +733,16 @@ public class CameraDisplay implements Renderer {
     private void savePicture(int textureId) {
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
+
         mTmpBuffer.position(0);
-//        Message msg = Message.obtain(mHandler);
-//        msg.what = CameraActivity.MSG_SAVING_IMG;
-//        msg.obj = mTmpBuffer;
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("imageWidth", mImageWidth);
-//        bundle.putInt("imageHeight", mImageHeight);
-//        msg.setData(bundle);
-//        msg.sendToTarget();
+        Message msg = Message.obtain(mHandler);
+        msg.what = CameraView.MSG_SAVING_IMG;
+        msg.obj = mTmpBuffer;
+        Bundle bundle = new Bundle();
+        bundle.putInt("imageWidth", mImageWidth);
+        bundle.putInt("imageHeight", mImageHeight);
+        msg.setData(bundle);
+        msg.sendToTarget();
     }
 
     private int getCurrentOrientation() {
@@ -825,9 +830,9 @@ public class CameraDisplay implements Renderer {
 //        Log.d("liupan",dm.heightPixels+"====="+ dm.widthPixels);
 
         List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
-//        for(Camera.Size size:sizes){
-////            Log.d("liupan",size.height+"++++++"+size.width);
-//        }
+        for(Camera.Size size:sizes){
+            Log.d("liupan",size.height+"++++++"+size.width);
+        }
 //       Camera.Size size =  mCameraProxy.getCamera().getParameters().getPreviewSize();
 //        Log.d("liupan",size.height+"!!!!!!!"+size.width);
         mImageWidth = sizes.get(sizes.size()-1).height;
