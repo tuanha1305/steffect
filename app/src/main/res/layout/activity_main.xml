@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             />
-        <com.effects.senseme.sensemesdk.view.SensemeView
+        <com.effects.senseme.sensemesdk.view.CameraView
             android:id="@+id/sensemeView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

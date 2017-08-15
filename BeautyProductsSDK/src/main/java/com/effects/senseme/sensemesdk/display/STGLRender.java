@@ -22,7 +22,7 @@ import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 
 /**
- * Created by sensetime on 16-11-16.
+ * Created by  on 16-11-16.
  */
 
 public class STGLRender {
@@ -285,11 +285,11 @@ public class STGLRender {
 
     public void destroyFrameBuffers() {
         if (mFrameBufferTextures != null) {
-            GLES20.glDeleteTextures(2, mFrameBufferTextures, 0);
+            GLES20.glDeleteTextures(3, mFrameBufferTextures, 0);
             mFrameBufferTextures = null;
         }
         if (mFrameBuffers != null) {
-            GLES20.glDeleteFramebuffers(2, mFrameBuffers, 0);
+            GLES20.glDeleteFramebuffers(3, mFrameBuffers, 0);
             mFrameBuffers = null;
         }
     }
@@ -319,6 +319,9 @@ public class STGLRender {
 
             GlUtil.checkGlError("test");
         }
+
+        GLES20.glUseProgram(0);
+        GLES20.glFinish();
 
     }
 
@@ -404,16 +407,39 @@ public class STGLRender {
         destroyFrameBuffers();
 
         if (mFrameBuffers == null) {
-            mFrameBuffers = new int[2];
-            mFrameBufferTextures = new int[2];
+            mFrameBuffers = new int[3];
+            mFrameBufferTextures = new int[3];
 
-            GLES20.glGenFramebuffers(2, mFrameBuffers, 0);
-            GLES20.glGenTextures(2, mFrameBufferTextures, 0);
+            GLES20.glGenFramebuffers(3, mFrameBuffers, 0);
+            GLES20.glGenTextures(3, mFrameBufferTextures, 0);
 
             bindFrameBuffer(mFrameBufferTextures[0], mFrameBuffers[0], width, height);
             bindFrameBuffer(mFrameBufferTextures[1], mFrameBuffers[1], width, height);
+            bindFrameBuffer(mFrameBufferTextures[2], mFrameBuffers[2], width, height);
+
         }
     }
+
+    public int bindFrameBuffer(int textureId){
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mViewPortWidth, mViewPortHeight, 0,
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[2]);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+                GLES20.GL_TEXTURE_2D,textureId, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        return mFrameBuffers[2];
+    }
+
 
     private void bindFrameBuffer(int textureId, int frameBuffer, int width, int height) {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
@@ -627,7 +653,7 @@ public class STGLRender {
             squareVertices2[i*8+7] = (float) (mousecolors[3]/k0);
         }
         GLES20.glUseProgram(mGLMouseId);
-//        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
@@ -674,11 +700,14 @@ public class STGLRender {
             squareVertices2[i*8+7] = 0.01f;
         }
         GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        glEnableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
         GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        glEnableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
         GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        GLES20. glDisable( GLES20.GL_BLEND);
+        GLES20.glDisableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glDisableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glDisable( GLES20.GL_BLEND);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
 
     /**
@@ -771,10 +800,12 @@ public class STGLRender {
             squareVertices2[i * 8 + 7] = (float) (mousecolors[3] / 6.0);
         }
         GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        glEnableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
         GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        glEnableVertexAttribArray(mGLAttribMouseColor);
+        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
         GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
+        GLES20.glDisableVertexAttribArray(mGLAttribMousePos);
+        GLES20.glDisableVertexAttribArray(mGLAttribMouseColor);
         GLES20. glDisable( GLES20.GL_BLEND);
 //        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
@@ -903,6 +934,8 @@ public class STGLRender {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisableVertexAttribArray(mGLAttribPosition);
+        GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
         GLES20. glDisable( GLES20.GL_BLEND);
 
     }

@@ -2,18 +2,17 @@ package sensetime.senseme.com.effects;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 
 import com.effects.senseme.sensemesdk.utils.LogUtils;
-import com.effects.senseme.sensemesdk.view.SensemeView;
-
-import sensetime.senseme.com.effects.R;
+import com.effects.senseme.sensemesdk.view.CameraView;
 
 import static android.content.ContentValues.TAG;
 
@@ -157,7 +156,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //    private boolean mCanMove = false;
 //
 //
-    SensemeView sensemeView;
+    CameraView sensemeView;
 //
 //    private Handler mHandler = new Handler() {
 //        @Override
@@ -229,10 +228,16 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //        FileUtils.copyModelFiles(this);
 
 //        mAccelerometer = new Accelerometer(getApplicationContext());
-
-        sensemeView = (SensemeView) findViewById(R.id.sensemeView);
+        Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
+        Bitmap meimaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.oushimei);
+        sensemeView = (CameraView) findViewById(R.id.sensemeView);
         sensemeView.init(this);
-
+        sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
+        sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
+        sensemeView.setLeftMeiMao(meimaoBitmap);
+        sensemeView.setRightMeiMao(meimaoBitmap);
+        sensemeView.setYanJieMao(jieMaoBitmap);
+        sensemeView.saveImage();
 
 
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
@@ -459,7 +464,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //        mSmallerResolutionTvGrad.setColor(Color.parseColor("#fe5553"));
 //        mSmallerResolutionTv.setClickable(false);
 //        mBeautify.setOnClickListener(this);
-//        findViewById(R.id.tv_capture).setOnClickListener(this);
+        findViewById(R.id.tv_capture).setOnClickListener(this);
 //        findViewById(R.id.tv_cancel).setOnClickListener(this);
 //
 //        findViewById(R.id.tv_change_camera).setOnClickListener(this);
@@ -660,8 +665,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //                break;
 
             case R.id.ll_beauty:
-                sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
-                sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
+
 //                sensemeView.setLeftMeiMao();
 //                mFaceAttribute.setEnabled(false);
 //                mSticker.setEnabled(false);
@@ -830,7 +834,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //                }
 //
 //                break;
-//            case R.id.tv_capture:
+            case R.id.tv_capture:
 //                if (this.isWritePermissionAllowed()) {
 //                    mSavingTv.setVisibility(View.VISIBLE);
 //                    mCameraDisplay.setHandler(mHandler);
@@ -992,49 +996,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //
 //    }
 //
-//    private void onPictureTaken(ByteBuffer data, File file, int mImageWidth, int mImageHeight) {
-//        if (mImageWidth <= 0 || mImageHeight <= 0)
-//            return;
-//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
-//        data.position(0);
-//        srcBitmap.copyPixelsFromBuffer(data);
-//        saveToSDCard(file, srcBitmap);
-//        srcBitmap.recycle();
-//    }
-//
-//
-//    private void saveToSDCard(File file, Bitmap bmp) {
-//
-//        BufferedOutputStream bos = null;
-//        try {
-//            bos = new BufferedOutputStream(new FileOutputStream(file));
-//            bmp.compress(Bitmap.CompressFormat.JPEG, 90, bos);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (bos != null)
-//                try {
-//                    bos.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//        }
-//
-//        if (mHandler != null) {
-//            String path = file.getAbsolutePath();
-//            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//            Uri contentUri = Uri.fromFile(file);
-//            mediaScanIntent.setData(contentUri);
-//            this.sendBroadcast(mediaScanIntent);
-//
-//            if (Build.VERSION.SDK_INT >= 19) {
-//
-//                MediaScannerConnection.scanFile(this, new String[]{path}, null, null);
-//            }
-//
-//            mHandler.sendEmptyMessage(MSG_SAVED_IMG);
-//        }
-//    }
+
 //
 //
 //    void showFaceAttributeInfo() {
