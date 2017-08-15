@@ -274,4 +274,21 @@ public class CameraView extends RelativeLayout {
         }
     }
 
+    /**
+     * 1.关闭贴纸  2.无贴纸  3.贴纸
+     * @param position
+     * @param path
+     */
+    public void setTiezhi(int position,String path) {
+        if (position == 0) {
+            mCameraDisplay.enableSticker(false);
+        } else if (position == 1) {
+            mCameraDisplay.enableSticker(true);
+            mCameraDisplay.setShowSticker(null);
+        } else {
+            mCameraDisplay.enableSticker(true);
+            mCameraDisplay.setShowSticker(path);
+        }
+    }
+
 }

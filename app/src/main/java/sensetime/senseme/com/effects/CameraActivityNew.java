@@ -237,6 +237,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         sensemeView.setLeftMeiMao(meimaoBitmap);
         sensemeView.setRightMeiMao(meimaoBitmap);
         sensemeView.setYanJieMao(jieMaoBitmap);
+        sensemeView.setTiezhi(3,"/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip");
 
 
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
