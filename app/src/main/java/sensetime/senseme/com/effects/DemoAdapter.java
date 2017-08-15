@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -77,12 +76,9 @@ public class DemoAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    level =1;
+                    level = 1;
                     index1 = position;
                     notifyDataSetChanged();
-//                    int level;  //0,1,2
-//                    int index1;//保存选择的品牌
-//                    int index2;//保存选择的器官
                 }
             });
         } else if (level == 1) {
@@ -95,7 +91,7 @@ public class DemoAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        level =0;
+                        level = 0;
                         index1 = 0;
                         notifyDataSetChanged();
                     }
@@ -107,8 +103,8 @@ public class DemoAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        level =2;
-                        index2= position-1;
+                        level = 2;
+                        index2 = position - 1;
                         notifyDataSetChanged();
                     }
                 });
@@ -122,7 +118,7 @@ public class DemoAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        level=1;
+                        level = 1;
                         index2 = 0;
                         notifyDataSetChanged();
                     }
@@ -135,7 +131,7 @@ public class DemoAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View view) {
                         //TODO  设置纹理
-                        Toast.makeText(context,"设置纹理",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "设置纹理", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
