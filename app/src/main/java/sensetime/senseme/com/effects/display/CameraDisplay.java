@@ -7,15 +7,13 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
 import android.hardware.Camera;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
+
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -31,6 +29,7 @@ import com.sensetime.stmobile.STMobileStreamFilterNative;
 import com.sensetime.stmobile.model.STMobile106;
 import com.sensetime.stmobile.model.STPoint;
 import com.sensetime.stmobile.model.STRect;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -39,21 +38,16 @@ import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
 import sensetime.senseme.com.effects.R;
 import sensetime.senseme.com.effects.camera.CameraProxy;
 import sensetime.senseme.com.effects.glutils.GlUtil;
 import sensetime.senseme.com.effects.glutils.OpenGLUtils;
 import sensetime.senseme.com.effects.glutils.STUtils;
 import sensetime.senseme.com.effects.glutils.TextureRotationUtil;
-import sensetime.senseme.com.effects.glutils.Utils;
 import sensetime.senseme.com.effects.utils.Accelerometer;
 import sensetime.senseme.com.effects.utils.FileUtils;
 import sensetime.senseme.com.effects.utils.LogUtils;
-import android.opengl.GLES11Ext;
-
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttribPointer;
 
 /**
  * CameraDisplay is used for camera preview
@@ -108,7 +102,7 @@ public class CameraDisplay implements Renderer {
     private FaceAttributeChangeListener mFaceAttributeChangeListener;
     private long mStartTime;
     private boolean mShowOriginal = false;
-    private boolean mNeedBeautify = false;
+    private boolean mNeedBeautify = true;
     private boolean mNeedFaceAttribute = false;
     private boolean mNeedUpdateFaceAttribute = true;
     private boolean mNeedSticker = false;
@@ -185,11 +179,7 @@ public class CameraDisplay implements Renderer {
         initHumanAction(); //因为人脸模型加载较慢，建议异步调用
         initFaceAttribute();
         initObjectTrack();
-        downMouseColors =new float[4];
-        downMouseColors[0]=0.0f;
-        downMouseColors[1]=0.0f;
-        downMouseColors[2]=0.0f;
-        downMouseColors[3]=0.0f;
+
     }
 
     public void setFpsChangeListener(FpsChangeListener listener) {
@@ -280,7 +270,7 @@ public class CameraDisplay implements Renderer {
         initBeauty();
         initSticker();
         initFilter();
-//        initMeizhuang();
+        initMeizhuang();
     }
 
     private void initFaceAttribute() {
@@ -312,22 +302,74 @@ public class CameraDisplay implements Renderer {
     }
 
     private void initMeizhuang(){
-        Bitmap leftMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
-        Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
-        Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
-        Bitmap yanxianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
-        Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
-        Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
-//        texture_left = OpenGLUtils.loadTexture(bitmap, textureMId, true);
-//        texture_right = OpenGLUtils.loadTexture(bitmapRight, textureMId, true);
-//        saiHong = OpenGLUtils.loadTexture(bitmapSaiHong, textureMId, true);
-        textLeftMeiMaoId=OpenGLUtils.loadTexture(leftMeiMaobitmap, textLeftMeiMaoId, true);
-        textRightMeiMaoId=OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
-        textJieMaoId=OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
-        textYanXianId=OpenGLUtils.loadTexture(yanxianBitmap, textYanXianId, true);
-        textYanYingId=OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
-        textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
+//        Bitmap leftMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
+//        Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
+//        Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
+//        Bitmap yanxianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
+//        Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
+//
+////        texture_left = OpenGLUtils.loadTexture(bitmap, textureMId, true);
+////        texture_right = OpenGLUtils.loadTexture(bitmapRight, textureMId, true);
+////        saiHong = OpenGLUtils.loadTexture(bitmapSaiHong, textureMId, true);
+//        textLeftMeiMaoId=OpenGLUtils.loadTexture(leftMeiMaobitmap, textLeftMeiMaoId, true);
+//        textRightMeiMaoId=OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
+//        textJieMaoId=OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
+//        textYanXianId=OpenGLUtils.loadTexture(yanxianBitmap, textYanXianId, true);
+//        textYanYingId=OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
 
+        if (bSaihongDirty && saihongBitmap != null) {
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
+            bSaihongDirty = false;
+        } else {
+            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
+            bSaihongDirty = false;
+        }
+
+        if (bLeftMeiDirty && leftMeiBitmap != null) {
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
+            bLeftMeiDirty = false;
+        } else {
+            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
+            bLeftMeiDirty = false;
+        }
+
+        if (bRightMeiDirty && rightMeiBitmap != null) {
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
+            bRightMeiDirty = false;
+        } else {
+            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
+            bRightMeiDirty = false;
+        }
+
+        if (bYanXianDirty && yanXianBitmap != null) {
+            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
+            bYanXianDirty = false;
+        } else {
+            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
+            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
+            bYanXianDirty = false;
+        }
+
+        if (bYanYingDirty && yanYingBitmap != null) {
+            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
+            bYanYingDirty = false;
+        } else {
+            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
+            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
+            bYanYingDirty = false;
+        }
+
+        if (bJieMaoDirty && jieMaoBitmap != null) {
+            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
+            bJieMaoDirty = false;
+        } else {
+            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
+            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
+            bJieMaoDirty = false;
+        }
     }
     private void initBeauty() {
         // 初始化beautify,preview的宽高
@@ -430,6 +472,7 @@ public class CameraDisplay implements Renderer {
     }
 
 
+    private int mTemTextureId = 0;
     /**
      * 工作在opengl线程, 具体渲染的工作函数
      *
@@ -478,12 +521,15 @@ public class CameraDisplay implements Renderer {
         mRGBABuffer.rewind();
 
         long preProcessCostTime = System.currentTimeMillis();
+
         int textureId = mGLRender.preProcess(mTextureId, mRGBABuffer);
+        mTemTextureId = textureId;
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        int result = -1;
+//        stPoint240 = getAllPrint();
 
+        int result = -1;
         if(!mShowOriginal){
             if(mNeedObject) {
                 if (mNeedSetObjectTarget) {
@@ -608,7 +654,7 @@ public class CameraDisplay implements Renderer {
                     }
                 }
 
-                //调用贴纸API绘制贴纸
+//                //调用贴纸API绘制贴纸
                 if(mNeedSticker){
                     boolean needOutputBuffer = false; //如果需要输出buffer推流或其他，设置该开关为true
                     long stickerStartTime = System.currentTimeMillis();
@@ -629,8 +675,6 @@ public class CameraDisplay implements Renderer {
                     }
                 }
                 /////////
-
-
             }
 
             if(mCurrentFilterStyle != mFilterStyle){
@@ -662,7 +706,13 @@ public class CameraDisplay implements Renderer {
 //            mHandler.sendMessage(msg);
             resetObjectTrack();
         }
-         stPoint240 = getAllPrint();
+        int frameBuffer = mGLRender.getFrameBufferId();
+        if(mTemTextureId != textureId)
+        {
+            frameBuffer = mGLRender.bindFrameBuffer(textureId);
+        }
+        stPoint240 = getAllPrint(frameBuffer);
+
         if(mNeedSave) {
             savePicture(textureId);
             mNeedSave = false;
@@ -784,11 +834,11 @@ public class CameraDisplay implements Renderer {
         }
 //       Camera.Size size =  mCameraProxy.getCamera().getParameters().getPreviewSize();
 //        Log.d("liupan",size.height+"!!!!!!!"+size.width);
-        mImageWidth = sizes.get(0).height;
-        mImageHeight = sizes.get(0).width;
+        mImageWidth = sizes.get(sizes.size()-1).height;
+        mImageHeight = sizes.get(sizes.size()-1).width;
 
-//        mImageWidth =1080;
-//        mImageHeight = 1920;
+        mImageWidth =1080;
+        mImageHeight = 1920;
 
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
@@ -1012,7 +1062,7 @@ public class CameraDisplay implements Renderer {
      * 获取所有的点
      * @return
      */
-    public STPoint[] getAllPrint(){
+    public STPoint[] getAllPrint(int frameBuffer){
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
@@ -1022,7 +1072,7 @@ public class CameraDisplay implements Renderer {
             if(humanAction.faceExtraInfo != null){
                 arrayFaces = humanAction.getMobileFaces();
                 if(arrayFaces!=null) {
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mGLRender.getFrameBufferId());
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
                     for (int i = 0; i < arrayFaces.length; i++) {
                         STPoint[] stPoints = arrayFaces[i].getPoints_array();
                         stPoint240 = new STPoint[240];
@@ -1057,6 +1107,9 @@ public class CameraDisplay implements Renderer {
                             stPoint240[106 + 22 * 2 + 13 * 2 + j] = pointsLips[j];
                         }
 //                        mGLRender.drawMeizhuang(stPoint240,texture_left,texture_right,textSiaHongId,downMouseColors);
+                        if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
+                            initMeizhuang();
+                        }
                         mGLRender.drawMeizhuang(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
@@ -1074,62 +1127,47 @@ public class CameraDisplay implements Renderer {
     int textJieMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanYingId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
-    float[] upMouseColors;
-    float[] downMouseColors;
+    float[] upMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] downMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+    boolean bLeftMeiDirty = false;
+    Bitmap leftMeiBitmap;
+    boolean bRightMeiDirty = false;
+    Bitmap rightMeiBitmap;
+    boolean bYanXianDirty = false;
+    Bitmap yanXianBitmap;
+    boolean bJieMaoDirty = false;
+    Bitmap jieMaoBitmap;
+    boolean bYanYingDirty = false;
+    Bitmap yanYingBitmap;
+    boolean bSaihongDirty = false;
+    Bitmap saihongBitmap;
 
     public void setLeftMeiMao(Bitmap bitmap) {
-        if (bitmap != null) {
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(bitmap, textureMId, true);
-        } else {
-            //默认
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(defaultBitmap, textureMId, true);
-        }
+        bLeftMeiDirty =true;
+        leftMeiBitmap = bitmap;
     }
 
     public void setRightMeiMao(Bitmap bitmap) {
-        if (bitmap != null) {
-            textRightMeiMaoId = OpenGLUtils.loadTexture(bitmap, textRightMeiMaoId, true);
-        } else {
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
-            textRightMeiMaoId = OpenGLUtils.loadTexture(defaultBitmap, textRightMeiMaoId, true);
-        }
+        bRightMeiDirty =true;
+        rightMeiBitmap = bitmap;
     }
 
     public void setYanXian(Bitmap bitmap) {
-        if (bitmap != null) {
-            textYanXianId = OpenGLUtils.loadTexture(bitmap, textYanXianId, true);
-        } else {
-            //默认透明腮红
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
-            textYanXianId = OpenGLUtils.loadTexture(defaultBitmap, textYanXianId, true);
-        }
+        bYanXianDirty = true;
+        yanXianBitmap =bitmap;
     }
 
     public void setYanJieMao(Bitmap bitmap) {
-        if (bitmap != null) {
-           textJieMaoId =  OpenGLUtils.loadTexture(bitmap, textJieMaoId, true);
-        } else {
-            //默认透明腮红
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
-            textJieMaoId = OpenGLUtils.loadTexture(defaultBitmap, textJieMaoId, true);
-        }
+        bJieMaoDirty = true;
+        jieMaoBitmap = bitmap;
     }
     public void setYanYing(Bitmap bitmap) {
-        if (bitmap != null) {
-            textYanYingId =  OpenGLUtils.loadTexture(bitmap, textYanYingId, true);
-        } else {
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
-            textYanYingId = OpenGLUtils.loadTexture(defaultBitmap, textYanYingId, true);
-        }
+        bYanYingDirty =true;
+        yanYingBitmap = bitmap;
     }
     public void setSaihong(Bitmap bitmap) {
-        if (bitmap != null) {
-            textSiaHongId = OpenGLUtils.loadTexture(bitmap, textSiaHongId, true);
-        } else {
-            Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
-            textSiaHongId = OpenGLUtils.loadTexture(defaultBitmap, textSiaHongId, true);
-        }
+        bSaihongDirty = true;
+        saihongBitmap = bitmap;
     }
 
     public void setUpMouseColors(float[] upMouseColors) {

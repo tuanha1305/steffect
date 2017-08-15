@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
 import android.opengl.GLSurfaceView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -135,37 +136,55 @@ public class SensemeView extends RelativeLayout {
         }
     };
 
-    public void setLeftMeiMao(){
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
-
-        mCameraDisplay.setLeftMeiMao(bitmap);
-    }
-    public void setRightMeiMao(){
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.biaozhunmei);
-        mCameraDisplay.setRightMeiMao(bitmap);
-    }
-    public void setYanJieMao(){
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
-        mCameraDisplay.setYanJieMao(bitmap);
-
-    }
-    public void setYanXian(){
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
-        mCameraDisplay.setYanXian(bitmap);
-
-    }
-    public void setYanYing(){
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
-        mCameraDisplay.setYanYing(bitmap);
-
-    }
-
-    public void setSaihong(int resourceId) {
-        Bitmap bitmap = null;
-        if (resourceId!=-1){
-            bitmap = BitmapFactory.decodeResource(mContext.getResources(), resourceId);
+    public void setLeftMeiMao(String leftMeiMaoUrl){
+        if(TextUtils.isEmpty(leftMeiMaoUrl)){
+            mCameraDisplay.setLeftMeiMao(null);
+        }else {
+//            mCameraDisplay.setLeftMeiMao(bitmap);
         }
-        mCameraDisplay.setSaihong(bitmap);
+    }
+    public void setRightMeiMao(String rightMeiMaoUrl){
+        if(TextUtils.isEmpty(rightMeiMaoUrl)){
+            mCameraDisplay.setRightMeiMao(null);
+        }else {
+//            mCameraDisplay.setRightMeiMao(bitmap);
+        }
+    }
+    public void setYanJieMao(String yanJieMaoUrl){
+        if(TextUtils.isEmpty(yanJieMaoUrl)){
+            mCameraDisplay.setYanJieMao(null);
+        }else {
+//            mCameraDisplay.setYanJieMao(bitmap);
+        }
+
+    }
+    public void setYanXian(String yanXianUrl){
+        if(TextUtils.isEmpty(yanXianUrl)){
+            mCameraDisplay.setYanXian(null);
+        }else {
+//            mCameraDisplay.setYanXian(bitmap);
+        }
+    }
+    public void setYanYing(String yanYingUrl){
+        if(TextUtils.isEmpty(yanYingUrl)){
+            mCameraDisplay.setYanYing(null);
+        }else {
+//            mCameraDisplay.setYanYing(bitmap);
+        }
+
+    }
+
+    public void setSaihong(String saihongUrl) {//int resourceId
+        if(TextUtils.isEmpty(saihongUrl)){
+            mCameraDisplay.setSaihong(null);
+        }else {
+//            mCameraDisplay.setSaihong(bitmap);
+        }
+//        Bitmap bitmap = null;
+//        if (resourceId!=-1){
+//            bitmap = BitmapFactory.decodeResource(mContext.getResources(), resourceId);
+//        }
+//        mCameraDisplay.setSaihong(bitmap);
     }
 
     public void setUpMouse(float red, float green, float blue, float alpha) {
