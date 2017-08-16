@@ -1,6 +1,7 @@
 package sensetime.senseme.com.effects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.effects.senseme.sensemesdk.view.CameraView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.List;
 
@@ -112,6 +114,19 @@ public class DemoAdapter extends BaseAdapter {
                         notifyDataSetChanged();
                     }
                 });
+                if(organ.getOrganName().trim().equals("嘴唇")){
+                    qiguanIndex = 1;
+                }else if(organ.getOrganName().trim().equals("眉毛")){
+                    qiguanIndex = 2;
+                }else if(organ.getOrganName().trim().equals("睫毛")){
+                    qiguanIndex = 3;
+                }else if(organ.getOrganName().trim().equals("眼线")){
+                    qiguanIndex = 4;
+                }else if(organ.getOrganName().trim().equals("眼影")){
+                    qiguanIndex = 5;
+                }else if(organ.getOrganName().trim().equals("腮红")){
+                    qiguanIndex = 6;
+                }
             }
         } else {
             //选择了一个品牌，并选择了一个器官
@@ -122,25 +137,6 @@ public class DemoAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "部位"+organ.getOrganName(), Toast.LENGTH_SHORT).show();
-
-                        level = 1;
-                        if(level==2){
-                            if(organ.getOrganName().equals("嘴唇")){
-                                qiguanIndex = 1;
-                            }else if(organ.getOrganName().equals("眉毛")){
-                                qiguanIndex = 2;
-                            }else if(organ.getOrganName().equals("睫毛")){
-                                qiguanIndex = 3;
-                            }else if(organ.getOrganName().equals("眼线")){
-                                qiguanIndex = 4;
-                            }else if(organ.getOrganName().equals("眼影")){
-                                qiguanIndex = 5;
-                            }else if(organ.getOrganName().equals("腮红")){
-                                qiguanIndex = 6;
-                            }
-                        }
-
                         notifyDataSetChanged();
                     }
                 });
@@ -162,18 +158,32 @@ public class DemoAdapter extends BaseAdapter {
                                 float k = Float.valueOf(moust[3]);
                                 cameraView.setDownMouse(r,g,b, k);
                                 cameraView.setUpMouse(r,g,b, k);
-                                Toast.makeText(context, "lziiii", Toast.LENGTH_SHORT).show();
-
                                 break;
                             case 2:
+                                //眉毛
+                                Bitmap bitmap = ImageLoader.getInstance().loadImageSync(cosmetic.getMaterialImage());
+                                cameraView.setLeftMeiMao(bitmap);
+                                cameraView.setRightMeiMao(bitmap);
                                 break;
                             case 3:
+                                //睫毛
+                                Bitmap bitmapJiemao = ImageLoader.getInstance().loadImageSync(cosmetic.getMaterialImage());
+                                cameraView.setYanJieMao(bitmapJiemao);
                                 break;
                             case 4:
+                                //眼线
+                                Bitmap bitmapYanxian = ImageLoader.getInstance().loadImageSync(cosmetic.getMaterialImage());
+                                cameraView.setYanXian(bitmapYanxian);
                                 break;
                             case 5:
+                                 //眼影
+                                Bitmap bitmapYanying = ImageLoader.getInstance().loadImageSync(cosmetic.getMaterialImage());
+                                cameraView.setYanYing(bitmapYanying);
                                 break;
                             case 6:
+                                //腮红
+                                Bitmap bitmapSaiHong = ImageLoader.getInstance().loadImageSync(cosmetic.getMaterialImage());
+                                cameraView.setSaihong(bitmapSaiHong);
                                 break;
                         }
                     }

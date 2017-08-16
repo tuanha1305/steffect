@@ -11,7 +11,14 @@ public class Cosmetic implements Serializable {
     String cosmeticLogo;
     String cosmeticDesc;
     String rgbColor;
+    String materialImage;
 
+    public String getMaterialImage() {
+        return materialImage;
+    }
+    public void setMaterialImage(String materialImage) {
+        this.materialImage = materialImage;
+    }
     public void setRgbColor(String rgbColor) {
         this.rgbColor = rgbColor;
     }

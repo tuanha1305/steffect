@@ -242,11 +242,11 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         Bitmap meimaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.oushimei);
         sensemeView = (CameraView) findViewById(R.id.sensemeView);
         sensemeView.init(this);
-        sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
-        sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
-        sensemeView.setLeftMeiMao(meimaoBitmap);
+//        sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
+//        sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
+//        sensemeView.setLeftMeiMao(meimaoBitmap);
         sensemeView.setRightMeiMao(meimaoBitmap);
-        sensemeView.setYanJieMao(jieMaoBitmap);
+//        sensemeView.setYanJieMao(jieMaoBitmap);
         sensemeView.setTiezhi(3,"/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip");
 
         ImageLoaderConfiguration imageLoaderConfiguration = ImageLoaderConfiguration.createDefault(this);

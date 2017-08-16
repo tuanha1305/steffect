@@ -319,28 +319,28 @@ public class CameraDisplay implements Renderer {
 //        textYanYingId=OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
 
         if (bSaihongDirty && saihongBitmap != null) {
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
             bSaihongDirty = false;
         } else {
-            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.saihong);
+            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
             bSaihongDirty = false;
         }
 
         if (bLeftMeiDirty && leftMeiBitmap != null) {
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
             bLeftMeiDirty = false;
         } else {
-            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
+            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
             bLeftMeiDirty = false;
         }
 
         if (bRightMeiDirty && rightMeiBitmap != null) {
-            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, true);
             bRightMeiDirty = false;
         } else {
-            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
+            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
             bRightMeiDirty = false;
         }
@@ -349,7 +349,7 @@ public class CameraDisplay implements Renderer {
             textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
             bYanXianDirty = false;
         } else {
-            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
+            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
             bYanXianDirty = false;
         }
@@ -358,7 +358,7 @@ public class CameraDisplay implements Renderer {
             textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
             bYanYingDirty = false;
         } else {
-            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
+            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
             bYanYingDirty = false;
         }
@@ -367,7 +367,7 @@ public class CameraDisplay implements Renderer {
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
             bJieMaoDirty = false;
         } else {
-            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
+            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
             bJieMaoDirty = false;
         }
@@ -376,8 +376,6 @@ public class CameraDisplay implements Renderer {
         // 初始化beautify,preview的宽高
 //        int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         int result = 0;
-
-        LogUtils.i(TAG, "the result        int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);\n is for initBeautify " + result);
         if (result == 0) {
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.55f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
