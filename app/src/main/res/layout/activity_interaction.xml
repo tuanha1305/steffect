@@ -362,15 +362,19 @@
         android:id="@+id/layout_options"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#80000000"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
-
+        <sensetime.senseme.com.effects.HorizontalListView
+            android:id="@+id/listview"
+            android:layout_width="wrap_content"
+            android:gravity="bottom"
+            android:layout_height="match_parent"/>
         <LinearLayout
             android:id="@+id/ll_attribute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_attribute"
@@ -398,7 +402,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_weight="1">
+
             <ImageView
                 android:id="@+id/iv_beauty"
                 android:layout_width="wrap_content"
@@ -423,6 +429,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_sticker"
@@ -448,6 +455,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_filter"

@@ -11,8 +11,18 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.effects.senseme.sensemesdk.utils.LogUtils;
 import com.effects.senseme.sensemesdk.view.CameraView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import sensetime.senseme.com.effects.domain.Brand;
 
 import static android.content.ContentValues.TAG;
 
@@ -239,7 +249,20 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         sensemeView.setYanJieMao(jieMaoBitmap);
         sensemeView.setTiezhi(3,"/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip");
 
+        ImageLoaderConfiguration imageLoaderConfiguration = ImageLoaderConfiguration.createDefault(this);
+        ImageLoader.getInstance().init(imageLoaderConfiguration);
 
+        HorizontalListView horizontalListView = (HorizontalListView) findViewById(R.id.listview);
+        String data = openAssetsFile("makeuplist.json");
+
+        JSONObject jsonObject =  JSON.parseObject(data);
+        String dataStr =   jsonObject.getString("data");
+//       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
+        List<Brand> brandList =  JSON.parseArray(dataStr, Brand.class);
+
+        DemoAdapter adapter = new DemoAdapter(this,brandList,sensemeView);
+
+        horizontalListView.setAdapter(adapter);
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
 //        mSurfaceViewOverlap = (SurfaceView) findViewById(R.id.surfaceViewOverlap);
 //        mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
@@ -1150,4 +1173,19 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //        });
 //    }
 //
+
+    private String openAssetsFile(String filename) {
+        try {
+            InputStreamReader inputReader = new InputStreamReader(getResources().getAssets().open(filename));
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line = "";
+            String Result = "";
+            while ((line = bufReader.readLine()) != null)
+                Result += line;
+            return Result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

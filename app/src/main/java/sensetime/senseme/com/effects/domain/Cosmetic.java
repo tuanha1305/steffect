@@ -10,6 +10,15 @@ public class Cosmetic implements Serializable {
     String cosmeticId ;
     String cosmeticLogo;
     String cosmeticDesc;
+    String rgbColor;
+
+    public void setRgbColor(String rgbColor) {
+        this.rgbColor = rgbColor;
+    }
+
+    public String getRgbColor() {
+        return rgbColor;
+    }
 
     public String getCosmeticId() {
         return cosmeticId;

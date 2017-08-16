@@ -33,9 +33,9 @@ public class DemoActivity extends Activity {
 //       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
        List<Brand> brandList =  JSON.parseArray(dataStr, Brand.class);
 
-        DemoAdapter adapter = new DemoAdapter(this,brandList);
+//        DemoAdapter adapter = new DemoAdapter(this,brandList,);
 
-        horizontalListView.setAdapter(adapter);
+//        horizontalListView.setAdapter(adapter);
     }
 
     private String openAssetsFile(String filename) {

@@ -30,6 +30,7 @@
             android:id="@+id/sensemeView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
     </FrameLayout>
 
     <TextView
@@ -73,5 +74,5 @@
         android:textColor="@android:color/white"
         android:textSize="15sp" />
 
-    <include layout="@layout/activity_interaction"/>
+    <include layout="@layout/activity_interaction" />
 </RelativeLayout>

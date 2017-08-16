@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.effects.senseme.sensemesdk.view.CameraView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -28,11 +29,14 @@ public class DemoAdapter extends BaseAdapter {
     int level;  //0,1,2
     int index1;//保存选择的品牌
     int index2;//保存选择的器官
+    int qiguanIndex;
+    CameraView cameraView;
 
-    public DemoAdapter(Context context, List<Brand> brandList) {
+    public DemoAdapter(Context context, List<Brand> brandList, CameraView cameraView) {
         this.context = context;
         this.brandList = brandList;
         layoutInflater = LayoutInflater.from(context);
+        this.cameraView = cameraView;
     }
 
     @Override
@@ -111,27 +115,67 @@ public class DemoAdapter extends BaseAdapter {
             }
         } else {
             //选择了一个品牌，并选择了一个器官
-            Organ organ = brandList.get(index1).getBrandList().get(index2);
+            final Organ organ = brandList.get(index1).getBrandList().get(index2);
             if (position == 0) {
                 ImageLoader.getInstance().displayImage(organ.getOrganLogo(), holder.cover);
                 holder.back.setVisibility(View.VISIBLE);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Toast.makeText(context, "部位"+organ.getOrganName(), Toast.LENGTH_SHORT).show();
+
                         level = 1;
-                        index2 = 0;
+                        if(level==2){
+                            if(organ.getOrganName().equals("嘴唇")){
+                                qiguanIndex = 1;
+                            }else if(organ.getOrganName().equals("眉毛")){
+                                qiguanIndex = 2;
+                            }else if(organ.getOrganName().equals("睫毛")){
+                                qiguanIndex = 3;
+                            }else if(organ.getOrganName().equals("眼线")){
+                                qiguanIndex = 4;
+                            }else if(organ.getOrganName().equals("眼影")){
+                                qiguanIndex = 5;
+                            }else if(organ.getOrganName().equals("腮红")){
+                                qiguanIndex = 6;
+                            }
+                        }
+
                         notifyDataSetChanged();
                     }
                 });
             } else {
-                Cosmetic cosmetic = organ.getCosmeticList().get(position - 1);
+                final Cosmetic cosmetic = organ.getCosmeticList().get(position - 1);
                 ImageLoader.getInstance().displayImage(cosmetic.getCosmeticLogo(), holder.cover);
                 holder.back.setVisibility(View.GONE);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //TODO  设置纹理
-                        Toast.makeText(context, "设置纹理", Toast.LENGTH_SHORT).show();
+                        switch (qiguanIndex){
+                            case 1:
+                                //设置嘴唇
+                                String[] moust = cosmetic.getRgbColor().split(",");
+                                float r = Float.valueOf(moust[0])/255;
+                                float g = Float.valueOf(moust[1])/255;
+                                float b = Float.valueOf(moust[2])/255;
+                                float k = Float.valueOf(moust[3]);
+                                cameraView.setDownMouse(r,g,b, k);
+                                cameraView.setUpMouse(r,g,b, k);
+                                Toast.makeText(context, "lziiii", Toast.LENGTH_SHORT).show();
+
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+                        }
                     }
                 });
             }
