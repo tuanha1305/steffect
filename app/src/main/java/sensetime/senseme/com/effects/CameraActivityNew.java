@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.alibaba.fastjson.JSON;
@@ -144,6 +146,7 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //    private TextView mTipsTextView;
 //    private ImageView mTipsImageView;
     private Context mContext;
+    private TextView tiezhi;
 //
 //    public static final int MSG_SAVING_IMG = 1;
 //    public static final int MSG_SAVED_IMG = 2;
@@ -227,8 +230,6 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         mContext = this;
-        //LogUtils.setIsLoggable(true);
-
         initView();
         initEvents();
     }
@@ -238,20 +239,20 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //        FileUtils.copyModelFiles(this);
 
 //        mAccelerometer = new Accelerometer(getApplicationContext());
-        Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
-        Bitmap meimaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.oushimei);
         sensemeView = (CameraView) findViewById(R.id.sensemeView);
         sensemeView.init(this);
 //        sensemeView.setDownMouse(178/255f,18/255f,32/255f,0.6f);
 //        sensemeView.setUpMouse(178/255f,18/255f,32/255f,0.6f);
 //        sensemeView.setLeftMeiMao(meimaoBitmap);
-        sensemeView.setRightMeiMao(meimaoBitmap);
+//        sensemeView.setRightMeiMao(meimaoBitmap);
 //        sensemeView.setYanJieMao(jieMaoBitmap);
-        sensemeView.setTiezhi(3,"/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip");
+//        sensemeView.setTiezhi(3,"/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip");
 
-        ImageLoaderConfiguration imageLoaderConfiguration = ImageLoaderConfiguration.createDefault(this);
-        ImageLoader.getInstance().init(imageLoaderConfiguration);
-
+//        if(sensemeView.getlicenseSDK()){
+//            Toast.makeText(mContext,"成功",Toast.LENGTH_LONG).show();
+//        }else {
+//            Toast.makeText(mContext,"失败",Toast.LENGTH_LONG).show();
+//        }
         HorizontalListView horizontalListView = (HorizontalListView) findViewById(R.id.listview);
         String data = openAssetsFile("makeuplist.json");
 
@@ -263,6 +264,8 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
         DemoAdapter adapter = new DemoAdapter(this,brandList,sensemeView);
 
         horizontalListView.setAdapter(adapter);
+        tiezhi= (TextView)findViewById(R.id.tiezhi);
+        tiezhi.setOnClickListener(this);
 //        GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.id_gl_sv);
 //        mSurfaceViewOverlap = (SurfaceView) findViewById(R.id.surfaceViewOverlap);
 //        mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
@@ -857,6 +860,9 @@ public class CameraActivityNew extends Activity implements View.OnClickListener 
 //                }
 //
 //                break;
+            case R.id.tiezhi:
+
+                break;
             case R.id.tv_capture:
                 sensemeView.saveImage();
 

@@ -303,79 +303,51 @@ public class CameraDisplay implements Renderer {
     }
 
     private void initMeizhuang(){
-//        Bitmap leftMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browleft);
-//        Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.browright);
-//        Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.jiemao);
-//        Bitmap yanxianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanxian);
-//        Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.yanying);
-//
-////        texture_left = OpenGLUtils.loadTexture(bitmap, textureMId, true);
-////        texture_right = OpenGLUtils.loadTexture(bitmapRight, textureMId, true);
-////        saiHong = OpenGLUtils.loadTexture(bitmapSaiHong, textureMId, true);
-//        textLeftMeiMaoId=OpenGLUtils.loadTexture(leftMeiMaobitmap, textLeftMeiMaoId, true);
-//        textRightMeiMaoId=OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
-//        textJieMaoId=OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
-//        textYanXianId=OpenGLUtils.loadTexture(yanxianBitmap, textYanXianId, true);
-//        textYanYingId=OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
-
         if (bSaihongDirty && saihongBitmap != null) {
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
-            bSaihongDirty = false;
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
         } else {
             Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
-            bSaihongDirty = false;
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
         }
 
         if (bLeftMeiDirty && leftMeiBitmap != null) {
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
-            bLeftMeiDirty = false;
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
         } else {
             Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
-            bLeftMeiDirty = false;
         }
 
         if (bRightMeiDirty && rightMeiBitmap != null) {
-            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, true);
-            bRightMeiDirty = false;
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
         } else {
             Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
-            bRightMeiDirty = false;
         }
 
         if (bYanXianDirty && yanXianBitmap != null) {
-            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
-            bYanXianDirty = false;
+            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, false);
         } else {
             Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
-            bYanXianDirty = false;
         }
 
         if (bYanYingDirty && yanYingBitmap != null) {
-            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
-            bYanYingDirty = false;
+            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, false);
         } else {
             Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
-            bYanYingDirty = false;
         }
 
         if (bJieMaoDirty && jieMaoBitmap != null) {
-            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
-            bJieMaoDirty = false;
+            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, false);
         } else {
             Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
-            bJieMaoDirty = false;
         }
     }
     private void initBeauty() {
         // 初始化beautify,preview的宽高
-//        int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
-        int result = 0;
+        int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         if (result == 0) {
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.55f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);

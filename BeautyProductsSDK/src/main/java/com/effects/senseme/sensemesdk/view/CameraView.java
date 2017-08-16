@@ -327,4 +327,8 @@ public class CameraView extends RelativeLayout {
         }
     }
 
+    //SDK授权
+    public boolean getlicenseSDK(){
+       return STLicenseUtils.checkLicense(mContext);
+    }
 }

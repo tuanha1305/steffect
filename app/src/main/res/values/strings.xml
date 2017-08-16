@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SenseME Effects</string>
+    <string name="app_name">face</string>
     <string name="video_effect">视频特效</string>
     <string name="image_effect">图片特效</string>
     <string name="cpu_filter">CPU滤镜</string>

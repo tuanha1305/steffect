@@ -48,6 +48,7 @@
             android:text="@string/resolution_smaller"
             android:textSize="@dimen/layout_resolution_font_size"
             android:textColor="@color/white"
+            android:visibility="gone"
             android:padding="@dimen/layout_resolution_padding"/>
 
         <TextView
@@ -57,9 +58,16 @@
             android:background="@drawable/bg_right_corner_unpressed"
             android:text="@string/resolution_bigger"
             android:textSize="@dimen/layout_resolution_font_size"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:padding="@dimen/layout_resolution_padding"/>
-
+        <TextView
+            android:id="@+id/tiezhi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="贴纸"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <TextView

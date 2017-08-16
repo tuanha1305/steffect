@@ -32,7 +32,7 @@ public class WelcomeActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "You should be authorized first!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "授权失败", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -61,45 +61,6 @@ public class WelcomeActivity extends Activity {
                 }
             }
         });
-
-//        mImageStartBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                mIsImageBtn = true;
-//                if (Build.VERSION.SDK_INT >= 23) {
-//                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                            != PackageManager.PERMISSION_GRANTED) {
-//                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                                PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-//                    } else {
-//                        startActivity(new Intent(getApplicationContext(), ImageActivity.class));
-//                    }
-//                } else {
-//                    startActivity(new Intent(getApplicationContext(), ImageActivity.class));
-//                }
-//
-//            }
-//        });
-
-//        mCpuFilterBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                mIsImageBtn = false;
-//                if (Build.VERSION.SDK_INT >= 23) {
-//                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                            != PackageManager.PERMISSION_GRANTED) {
-//                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                                PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-//                    } else {
-//                        startActivity(new Intent(getApplicationContext(), CpuFilterActivity.class));
-//                    }
-//                } else {
-//                    startActivity(new Intent(getApplicationContext(), CpuFilterActivity.class));
-//                }
-//            }
-//        });
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
