@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
@@ -17,29 +18,20 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
+        android:name=".Appliction"
         android:theme="@android:style/Theme.Light.NoTitleBar">
         <activity
-            android:name="sensetime.senseme.com.effects.WelcomeActivity"
+            android:name=".WelcomeActivity"
             android:screenOrientation="portrait">
-
         </activity>
         <activity
-            android:name="sensetime.senseme.com.effects.CameraActivityNew"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="sensetime.senseme.com.effects.ImageActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="sensetime.senseme.com.effects.CpuFilterActivity"
-            android:screenOrientation="portrait" />
-       <activity android:name="sensetime.senseme.com.effects.CameraActivity">
-           <intent-filter>
-               <action android:name="android.intent.action.MAIN" />
-
-               <category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>
-       </activity>
+            android:name=".CameraActivityNew"
+            android:screenOrientation="portrait" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
     </application>
-
 
 </manifest>
