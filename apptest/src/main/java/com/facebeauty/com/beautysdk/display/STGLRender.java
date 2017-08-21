@@ -304,7 +304,7 @@ public class STGLRender {
 //            drawLeftMeiMao(stPoint240, texture_left_meimao);
 ////            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
 //
-//            drawUPMouSe(stPoint240,_upmousecolors);
+//            drawUPMouse(stPoint240,_upmousecolors);
 //            drawZuichun(stPoint240,_downmousecolors);
 //            drawRightJiemao(stPoint240,texture_jiemao);
 //            drawSaiHong(stPoint240,texture_saihong);
@@ -314,8 +314,9 @@ public class STGLRender {
             drawLeftMeiMao(stPoint240, texture_left_meimao);
             drawRightMeiMao(stPoint240,texture_right_meimao);
 //            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-//            drawUPMouSe(stPoint240,_upmousecolors);
+//            drawUPMouse(stPoint240,_upmousecolors);
 //            drawZuichun(stPoint240,_downmousecolors);
+            nativeDrawUPMouse(stPoint240, _downmousecolors);
             nativeDrawZuichun(stPoint240, _downmousecolors);
             drawRightJiemao(stPoint240,texture_jiemao);
             drawRightJiemao(stPoint240,texture_yanxian);
@@ -718,7 +719,7 @@ public class STGLRender {
      * 上嘴唇
      * @param points
      */
-    public void drawUPMouSe(STPoint[] points, float mousecolors[]) {
+    public void drawUPMouse(STPoint[] points, float mousecolors[]) {
         //绘制上嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
         float fitPoint;
         float p0, p1, p2, p3;
@@ -1016,6 +1017,7 @@ public class STGLRender {
     };
 
     public native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
+    public native void nativeDrawUPMouse(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeInitMousePrograme();
     public native void nativeInitWH(int w, int h);
 
