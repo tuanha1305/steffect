@@ -176,6 +176,7 @@ public class STGLRender {
         InitPrograme();
         mViewPortWidth = width;
         mViewPortHeight = height;
+        nativeInitWH(width, height);
         initFrameBuffers(width, height);
         mIsInitialized = true;
     }
@@ -297,8 +298,6 @@ public class STGLRender {
         }
     }
 
-    public static native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
-
     public void drawMeizhuang(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong, float _upmousecolors[], float _downmousecolors[] )
     {
 //        if( stPoint240 != null) {
@@ -315,8 +314,8 @@ public class STGLRender {
             drawLeftMeiMao(stPoint240, texture_left_meimao);
             drawRightMeiMao(stPoint240,texture_right_meimao);
 //            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-            drawUPMouSe(stPoint240,_upmousecolors);
-            drawZuichun(stPoint240,_downmousecolors);
+//            drawUPMouSe(stPoint240,_upmousecolors);
+//            drawZuichun(stPoint240,_downmousecolors);
             nativeDrawZuichun(stPoint240, _downmousecolors);
             drawRightJiemao(stPoint240,texture_jiemao);
             drawRightJiemao(stPoint240,texture_yanxian);
@@ -483,11 +482,11 @@ public class STGLRender {
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
-        mGLMouseId =OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
-        mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
-        mGLAttribMouseColor = GLES20.glGetAttribLocation(mGLMouseId,"SourceColor");
+//        mGLMouseId =OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
+//        mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
+//        mGLAttribMouseColor = GLES20.glGetAttribLocation(mGLMouseId,"SourceColor");
+        nativeInitMousePrograme();
     }
-
 
     /**
      * 睫毛
@@ -1015,5 +1014,9 @@ public class STGLRender {
     public int getFrameBufferId(){
         return  mFrameBuffers[0];
     };
+
+    public native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
+    public native void nativeInitMousePrograme();
+    public native void nativeInitWH(int w, int h);
 
 }
