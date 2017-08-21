@@ -1,0 +1,906 @@
+{
+    "data" : [
+              {
+              "brandDesc" : "迪奥",
+              "brandList" :  [
+                                         {
+                                         "cosmeticList" : [
+                                                           {
+                                                           "cosmeticDesc" : "060#温暖玫瑰粉",
+                                                           "cosmeticId" : "a436ee27e0f142658b20f540c3b7a936",
+                                                           "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/060@3x.png",
+                                                           "cosmeticName" : "060#温暖玫瑰粉",
+                                                           "cosmeticNameMini" : "060#温暖玫瑰粉",
+                                                           "rgbColor" : "253,120,141,0.6"
+                                                           },
+                                                           {
+                                                           "cosmeticDesc" : "888#烈焰蓝金",
+                                                           "cosmeticId" : "39e5c75c7e804d4885a0df337e5ea184",
+                                                           "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/888@3x.png",
+                                                           "cosmeticName" : "888#烈焰蓝金",
+                                                           "cosmeticNameMini" : "888#烈焰蓝金",
+                                                           "rgbColor" : "252,10,6,0.6"
+                                                           },
+                                                             {
+                                                           "cosmeticDesc" : "667#魅惑模特",
+                                                           "cosmeticId" : "41c6d6ed65764f068f71fe8f0d1e8ae5",
+                                                           "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/667@3x.png",
+                                                           "cosmeticName" : "667#魅惑模特",
+                                                           "cosmeticNameMini" : "667#魅惑模特",
+                                                           "rgbColor" : "217,84,87,0.6"
+                                                             },
+                                                             {
+                                                           "cosmeticDesc" : "766#想你色",
+                                                           "cosmeticId" : "c7f90c7bdbd94fc0af6b2590368c19a2",
+                                                           "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/766@3x.png",
+                                                           "cosmeticName" : "766#想你色",
+                                                           "cosmeticNameMini" : "766#想你色",
+                                                           "rgbColor" : "192,7,64,0.6"
+                                                             },
+                                                             {
+                                                             "cosmeticDesc" : "925#暗红姨妈色",
+                                                             "cosmeticId" : "cde2584aa0a6467fae6b9529dd53f34e",
+                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/925@3x.png",
+                                                             "cosmeticName" : "925#暗红姨妈色",
+                                                             "cosmeticNameMini" : "925#暗红姨妈色",
+                                                             "rgbColor" : "178,18,32,0.6"
+                                                             }
+                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "一字眉",
+                                                                             "cosmeticId" : "5daa53f388c64ba48783f211aa9d545f",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/593@3x.png",
+                                                                             "cosmeticName" : "Dior深棕色",
+                                                                             "cosmeticNameMini" : "yizhimei",
+                                                                             "materialDesc" : "一字眉",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yizimei.png",
+                                                                             "materialName" : "一字眉",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "柳叶眉",
+                                                                             "cosmeticId" : "d98ebb4e716b4238883fb3c7c5342030",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/653meibi@3x.png",
+                                                                             "cosmeticName" : "Dior粉棕色",
+                                                                             "cosmeticNameMini" : "liuyemei",
+                                                                             "materialDesc" : "柳叶眉",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/liuyemei.png",
+                                                                             "materialName" : "柳叶眉",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "欧式眉",
+                                                                             "cosmeticId" : "0cda4ca4b0e14e93aec7fac021f55926",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/593@3x.png",
+                                                                             "cosmeticName" : "Dior金棕色",
+                                                                             "cosmeticNameMini" : "oushimei",
+                                                                             "materialDesc" : "欧式眉",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/oushimei.png",
+                                                                             "materialName" : "欧式眉",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "眉笔大师三头塑形",
+                                                                             "cosmeticId" : "aa31c07a7f7f4167bac3b180f13ee432",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/G2604600_404.jpg",
+                                                                             "cosmeticName" : "Dior浅棕色",
+                                                                             "cosmeticNameMini" : "眉笔大师三头塑形",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "75,47,30,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "自然黑色",
+                                                                             "cosmeticId" : "d4c564e589794091bb468af7382b4723",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/covers-Y0696140-082014.jpg",
+                                                                             "cosmeticName" : "Dior惊艳旋翘防水睫毛膏",
+                                                                             "cosmeticNameMini" : "Dior迪奥惊艳旋翘防水睫毛膏",
+                                                                             "materialDesc" : "自然睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/ziranjiemao(1).png",
+                                                                             "materialName" : "自然睫毛",
+                                                                             "rgbColor" : "60,59,55,0.6"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "韩式黑色",
+                                                                             "cosmeticId" : "5874dfc3372442a8bef7b1c5d3ada762",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/264@2x.png",
+                                                                             "cosmeticName" : "Dior韩式睫毛膏",
+                                                                             "cosmeticNameMini" : "hanshiblack",
+                                                                             "materialDesc" : "韩式睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/hanshijiemao.png",
+                                                                             "materialName" : "韩式睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "芭比黑色",
+                                                                             "cosmeticId" : "41a89760ff5a416988344bad05550939",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/090@2x.png",
+                                                                             "cosmeticName" : "Dior设计师睫毛膏",
+                                                                             "cosmeticNameMini" : "babiblack",
+                                                                             "materialDesc" : "芭比睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/babijiemao.png",
+                                                                             "materialName" : "芭比睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "夸张黑色",
+                                                                             "cosmeticId" : "eb7208999ec748408c27a111845ac0ed",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/090@2x.png",
+                                                                             "cosmeticName" : "Dior惊艳盈密睫毛膏",
+                                                                             "cosmeticNameMini" : "kuazhangblack",
+                                                                             "materialDesc" : "夸张睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/kuazhangjiemao.png",
+                                                                             "materialName" : "夸张睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "无辜眼线黑色",
+                                                                             "cosmeticId" : "d6c7eb420ee54df0a030554c5c6ddba5",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/092wuguyanxian.png",
+                                                                             "cosmeticName" : "Dior电光眼线",
+                                                                             "cosmeticNameMini" : "wuguyanxianblack",
+                                                                             "materialDesc" : "无辜眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/wuguyanxain(1).png",
+                                                                             "materialName" : "无辜眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "上眼线黑色",
+                                                                             "cosmeticId" : "ae6fd077b0f44ef299ec680eff18a589",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/092wuguyanxian.png",
+                                                                             "cosmeticName" : "Dior惊艳眼线",
+                                                                             "cosmeticNameMini" : "shangyanxianblack",
+                                                                             "materialDesc" : "上眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/shangyanxian(2).png",
+                                                                             "materialName" : "上眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "全包眼线黑色",
+                                                                             "cosmeticId" : "74ee19c670a64fc3bd68af28bd5c9820",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/covers-Y0775350-F077535092-151023.jpg",
+                                                                             "cosmeticName" : "Dior精致眼线",
+                                                                             "cosmeticNameMini" : "qunbaoyanxianblack",
+                                                                             "materialDesc" : "全包眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/quanbaoyanxian(4).png",
+                                                                             "materialName" : "全包眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "半包眼线黑色",
+                                                                             "cosmeticId" : "baec5da41d9340579a0b82971b77edad",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/092wuguyanxian.png",
+                                                                             "cosmeticName" : "Dior放水眼线",
+                                                                             "cosmeticNameMini" : "banbaoyanxianblack",
+                                                                             "materialDesc" : "半包眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/banbaoyanxian(4).png",
+                                                                             "materialName" : "半包眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线",
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "无辜眼影大地色",
+                                                                             "cosmeticId" : "7003610b9fe149c2a4dec98eddd3c39f",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/653yanying.png",
+                                                                             "cosmeticName" : "Dior大地色",
+                                                                             "cosmeticNameMini" : "wuguyanying",
+                                                                             "materialDesc" : "无辜眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/wuguyanying(1).png",
+                                                                             "materialName" : "无辜眼影",
+                                                                             "rgbColor" : "160,124,102,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "烟熏眼影",
+                                                                             "cosmeticId" : "aef21d6fb52a4ff6be65e2c9674a1688",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/653@3x.png",
+                                                                             "cosmeticName" : "Dior烟熏黑",
+                                                                             "cosmeticNameMini" : "yanxunyanying",
+                                                                             "materialDesc" : "烟熏眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yanxunyanying(3).png",
+                                                                             "materialName" : "烟熏眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "半包眼影",
+                                                                             "cosmeticId" : "5d2f466b00e64b9c876d9ef39f85b0ff",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/783@3x.png",
+                                                                             "cosmeticName" : "Dior深棕色",
+                                                                             "cosmeticNameMini" : "banbaoyanying",
+                                                                             "materialDesc" : "半包眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/banbaoyanying(3).png",
+                                                                             "materialName" : "半包眼影",
+                                                                             "rgbColor" : "160,124,102,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "DIOR迪奥惊艳单色眼影慕丝",
+                                                                             "cosmeticId" : "c2f82407b02a40d5b43b464aab5d7747",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/covers-Y0148300_F014830661_012016.jpg",
+                                                                             "cosmeticName" : "Dior浅棕色",
+                                                                             "cosmeticNameMini" : "DIOR迪奥惊艳单色眼影慕丝",
+                                                                             "materialDesc" : "全包眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/quanbaoyanying(3).png",
+                                                                             "materialName" : "全包眼影",
+                                                                             "rgbColor" : "160,124,102,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "上眼影",
+                                                                             "cosmeticId" : "6db3769108ad4c21b0ac4b96cab8d8f4",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/506@3x.png",
+                                                                             "cosmeticName" : "Dior金棕色",
+                                                                             "cosmeticNameMini" : "shangyanying",
+                                                                             "materialDesc" : "上眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/shangyanying(2).png",
+                                                                             "materialName" : "上眼影",
+                                                                             "rgbColor" : "160,124,102,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影",
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "斑斓色彩胭脂系列",
+                                                                             "cosmeticId" : "f1f33a1951de470b9d49acda9e139991",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/676saihong.png",
+                                                                             "cosmeticName" : "676# 粉红珊瑚色",
+                                                                             "cosmeticNameMini" : "斑斓色彩胭脂系列676 粉红珊瑚色",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "237,113,103,1"
+                                                                             },
+                                                                             {
+                                                                             "cosmeticDesc" : "846 深粉红色",
+                                                                             "cosmeticId" : "fb56274b23d54d6aaea78755e8153ab2",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/746saihong.png",
+                                                                             "cosmeticName" : "846 #深粉红色",
+                                                                             "cosmeticNameMini" : "846 深粉红色",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红",
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_dior.png",
+                "brandName" : "Dior",
+                "brandNameMini" : "Dior"
+                },
+                {
+                "brandDesc" : "香奈儿",
+                "brandList" :             [
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "珊瑚色",
+                                                                             "cosmeticId" : "db7ba8bfde604cc29feacd9d15a496c0",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/libere@3x.png",
+                                                                             "cosmeticName" : "珊瑚色",
+                                                                             "cosmeticNameMini" : "珊瑚色",
+                                                                             "rgbColor" : "253,120,141,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "浅棕色",
+                                                                             "cosmeticId" : "ad4e1c38f735419d9969a63a1518021a",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/chanelmeibi@3x.png",
+                                                                             "cosmeticName" : "浅棕色",
+                                                                             "cosmeticNameMini" : "浅棕色",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "夸张睫毛",
+                                                                             "cosmeticId" : "8aebe3462b5344ca926cb385079b2627",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/litizhenmei@3x(1).png",
+                                                                             "cosmeticName" : "夸张睫毛",
+                                                                             "cosmeticNameMini" : "夸张睫毛",
+                                                                             "materialDesc" : "夸张睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/kuazhangjiemao.png",
+                                                                             "materialName" : "夸张睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "半包眼线",
+                                                                             "cosmeticId" : "b7fa1a87197945a19434c342c54964a8",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/chijiu@3x.png",
+                                                                             "cosmeticName" : "半包眼线",
+                                                                             "cosmeticNameMini" : "半包眼线",
+                                                                             "materialDesc" : "半包眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/banbaoyanxian(4).png",
+                                                                             "materialName" : "半包眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "全包眼影",
+                                                                             "cosmeticId" : "3fcf53a917b3411cb6415158e4ad746c",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yanyingmusi_selected@3x.png",
+                                                                             "cosmeticName" : "全包眼影",
+                                                                             "cosmeticNameMini" : "全包眼影",
+                                                                             "materialDesc" : "全包眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/quanbaoyanying(3).png",
+                                                                             "materialName" : "全包眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "珊瑚色",
+                                                                             "cosmeticId" : "31cadd65b6c349c48fa9139d2e936571",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/chanelsaihong@3x.png",
+                                                                             "cosmeticName" : "珊瑚色",
+                                                                             "cosmeticNameMini" : "珊瑚色",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红"
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_chanel.png",
+                "brandName" : "CHANEL",
+                "brandNameMini" : "CHANEL",
+                },
+                {
+                "brandDesc" : "雅诗兰黛",
+                "brandList" :             [
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "320#珊瑚色",
+                                                                             "cosmeticId" : "62ac2e7ff7b44a8a96baa780cacdc7d9",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/320#shanhuse@3x.png",
+                                                                             "cosmeticName" : "320#珊瑚色",
+                                                                             "cosmeticNameMini" : "320#珊瑚色",
+                                                                             "rgbColor" : "253,120,141,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "01#双头眉笔",
+                                                                             "cosmeticId" : "9988ae7eef1b45cf9f68f766442980b1",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/01#shuangtou@3x.png",
+                                                                             "cosmeticName" : "01#双头眉笔",
+                                                                             "cosmeticNameMini" : "01#双头眉笔",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "01#凝彩炫浓",
+                                                                             "cosmeticId" : "43e10b6de70146f08d01e6dd0683e7a4",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/01#xuannong@3x.png",
+                                                                             "cosmeticName" : "01#凝彩炫浓",
+                                                                             "cosmeticNameMini" : "01#凝彩炫浓",
+                                                                             "materialDesc" : "夸张睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/kuazhangjiemao.png",
+                                                                             "materialName" : "夸张睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "01#凝彩眼线",
+                                                                             "cosmeticId" : "c4aea02081b7412685bb99b57c6f7852",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/01#ningcai@3x.png",
+                                                                             "cosmeticName" : "01#凝彩眼线",
+                                                                             "cosmeticNameMini" : "01#凝彩眼线",
+                                                                             "materialDesc" : "上眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/shangyanxian(2).png",
+                                                                             "materialName" : "上眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "九宫格眼影",
+                                                                             "cosmeticId" : "414e4c3225924a98b3c6515bde598a43",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/jiuseyanying@3x.png",
+                                                                             "cosmeticName" : "九宫格眼影",
+                                                                             "cosmeticNameMini" : "九宫格眼影",
+                                                                             "materialDesc" : "烟熏眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yanxunyanying(3).png",
+                                                                             "materialName" : "烟熏眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "220#pink kiss",
+                                                                             "cosmeticId" : "02b1a146ea7a4196ba992237af8db795",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/220#pinkliss3_5g@3x.png",
+                                                                             "cosmeticName" : "220#pink kiss",
+                                                                             "cosmeticNameMini" : "220#pink kiss",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1",
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红"
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_esteelauder.png",
+                "brandName" : "EsteeLauder",
+                "brandNameMini" : "esteelauder"
+                },
+                {
+                "brandDesc" : "圣罗兰",
+                "brandList" :             [
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "52#珊瑚色",
+                                                                             "cosmeticId" : "4bdc78915de24c62afb51eda444b767e",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/52#shanhuse@3x.png",
+                                                                             "cosmeticName" : "52#珊瑚色",
+                                                                             "cosmeticNameMini" : "52#珊瑚色",
+                                                                             "rgbColor" : "253,120,141,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "02#棕褐色",
+                                                                             "cosmeticId" : "de9990583a434da584ee86223125f150",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/02#zonghese@3x.png",
+                                                                             "cosmeticName" : "02#棕褐色",
+                                                                             "cosmeticNameMini" : "02#棕褐色",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "YSL丰盈睫毛",
+                                                                             "cosmeticId" : "35ad56c6989c45cbab718ed8db95938a",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yslfengyingjiemao@3x.png",
+                                                                             "cosmeticName" : "YSL丰盈睫毛",
+                                                                             "cosmeticNameMini" : "YSL丰盈睫毛",
+                                                                             "materialDesc" : "夸张睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/kuazhangjiemao.png",
+                                                                             "materialName" : "夸张睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "1#黑色眼线笔",
+                                                                             "cosmeticId" : "0a55868e8b994248a34ec42c35049f75",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/1#black@3x.png",
+                                                                             "cosmeticName" : "1#黑色眼线笔",
+                                                                             "cosmeticNameMini" : "1#黑色眼线笔",
+                                                                             "materialDesc" : "上眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/shangyanxian(2).png",
+                                                                             "materialName" : "上眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "5色烟熏眼影",
+                                                                             "cosmeticId" : "4e4755b022ff42cabcc4e14ee184e9c4",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/ysl5seyanying@3x.png",
+                                                                             "cosmeticName" : "5色烟熏眼影",
+                                                                             "cosmeticNameMini" : "5色烟熏眼影",
+                                                                             "materialDesc" : "烟熏眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yanxunyanying(3).png",
+                                                                             "materialName" : "烟熏眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "08#腮红",
+                                                                             "cosmeticId" : "bb67a1e5d591470c899e7233ce211643",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/08#saihong@3x.png",
+                                                                             "cosmeticName" : "08#腮红",
+                                                                             "cosmeticNameMini" : "08#腮红",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红"
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/ysl@3x.png",
+                "brandName" : "YSL",
+                "brandNameMini" : "YSL"
+                },
+                {
+                "brandDesc" : "兰蔻",
+                "brandList" :             [
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "珊瑚色",
+                                                                             "cosmeticId" : "8ce4b310ae61408c9df5f5b7e308ed69",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lankouchungao@3x.png",
+                                                                             "cosmeticName" : "珊瑚色",
+                                                                             "cosmeticNameMini" : "珊瑚色",
+                                                                             "rgbColor" : "253,120,141,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "浅棕色",
+                                                                             "cosmeticId" : "353005a46e5248ceb58ef7290b3dd232",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lancomemeibi@3x.png",
+                                                                             "cosmeticName" : "浅棕色",
+                                                                             "cosmeticNameMini" : "浅棕色",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "芭比卷翘",
+                                                                             "cosmeticId" : "31d2d82b18cd4cb88e1a13825a716bbe",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lancomejiemao@3x.png",
+                                                                             "cosmeticName" : "芭比卷翘",
+                                                                             "cosmeticNameMini" : "芭比卷翘",
+                                                                             "materialDesc" : "芭比睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/babijiemao.png",
+                                                                             "materialName" : "芭比睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "无辜眼线",
+                                                                             "cosmeticId" : "8c9a9a8059874503b7bfe254d05ad7c9",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lancomeyanxian@3x.png",
+                                                                             "cosmeticName" : "无辜眼线",
+                                                                             "cosmeticNameMini" : "无辜眼线",
+                                                                             "materialDesc" : "无辜眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/wuguyanxain(1).png",
+                                                                             "materialName" : "无辜眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "烟熏眼影",
+                                                                             "cosmeticId" : "7f9447eef7f6401ba21f2bba5f567480",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lancomeyanying@3x.png",
+                                                                             "cosmeticName" : "烟熏眼影",
+                                                                             "cosmeticNameMini" : "烟熏眼影",
+                                                                             "materialDesc" : "烟熏眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/yanxunyanying(3).png",
+                                                                             "materialName" : "烟熏眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "珊瑚色",
+                                                                             "cosmeticId" : "04d968bc7cb74ae9a249a12f6da7b7e1",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/lancomesaihong@3x.png",
+                                                                             "cosmeticName" : "珊瑚色",
+                                                                             "cosmeticNameMini" : "珊瑚色",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红"
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_lancome.png",
+                "brandName" : "LANCOME",
+                "brandNameMini" : "LANCOME"
+                },
+                {
+                "brandDesc" : "美宝莲",
+                "brandList" :             [
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "第三方",
+                                                                             "cosmeticId" : "3f758e581ba14506b490e176f67fc13f",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/coversF002862667.jpg",
+                                                                             "cosmeticName" : "珊瑚色",
+                                                                             "cosmeticNameMini" : "第三方",
+                                                                             "rgbColor" : "253,120,141,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "嘴唇",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_lip.png",
+                                         "organName" : "嘴唇",
+                                         "organNameMini" : "嘴唇"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "02#灰色",
+                                                                             "cosmeticId" : "1557f6ac695a4c96995ed4b407964554",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/0_2hui@3x.png",
+                                                                             "cosmeticName" : "02#灰色",
+                                                                             "cosmeticNameMini" : "02#灰色",
+                                                                             "materialDesc" : "标准眉毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/biaozhunmei(2).png",
+                                                                             "materialName" : "标准眉毛",
+                                                                             "rgbColor" : "86,50,7,0.6"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眉毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_brow.png",
+                                         "organName" : "眉毛",
+                                         "organNameMini" : "眉毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "芭比卷翘睫毛",
+                                                                             "cosmeticId" : "d294b03f6eef41ae8a823d0cae060285",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/babi@3x.png",
+                                                                             "cosmeticName" : "芭比卷翘睫毛",
+                                                                             "cosmeticNameMini" : "芭比卷翘睫毛",
+                                                                             "materialDesc" : "芭比睫毛",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/babijiemao.png",
+                                                                             "materialName" : "芭比睫毛",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "睫毛",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyelash.png",
+                                         "organName" : "睫毛",
+                                         "organNameMini" : "睫毛"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "魅影眼线",
+                                                                             "cosmeticId" : "3f7e429cb6594fdf8cdbf92063551105",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/meiying@3x.png",
+                                                                             "cosmeticName" : "魅影眼线",
+                                                                             "cosmeticNameMini" : "魅影眼线",
+                                                                             "materialDesc" : "全包眼线",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/quanbaoyanxian(4).png",
+                                                                             "materialName" : "全包眼线",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼线",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeline.png",
+                                         "organName" : "眼线",
+                                         "organNameMini" : "眼线"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "粉棕2.4g",
+                                                                             "cosmeticId" : "24a1a8e8dfb5432f950da0c0c335cb5b",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/fenzong2_4g@3x.png",
+                                                                             "cosmeticName" : "粉棕2.4g",
+                                                                             "cosmeticNameMini" : "粉棕2.4g",
+                                                                             "materialDesc" : "全包眼影",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/quanbaoyanying(3).png",
+                                                                             "materialName" : "全包眼影",
+                                                                             "rgbColor" : "0,0,0,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "眼影",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/organ_eyeshadow.png",
+                                         "organName" : "眼影",
+                                         "organNameMini" : "眼影"
+                                         },
+                                         {
+                                         "cosmeticList" :                     [
+                                                                             {
+                                                                             "cosmeticDesc" : "亮彩腮红",
+                                                                             "cosmeticId" : "f491c5d514084ee5b14b6aefda8de01c",
+                                                                             "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/liangcai@3x.png",
+                                                                             "cosmeticName" : "亮彩腮红",
+                                                                             "cosmeticNameMini" : "亮彩腮红",
+                                                                             "materialDesc" : "腮红默认材质",
+                                                                             "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/saihong(7).png",
+                                                                             "materialName" : "腮红默认材质",
+                                                                             "rgbColor" : "234,142,164,1"
+                                                                             }
+                                                                             ],
+                                         "organDesc" : "腮红",
+                                         "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
+                                         "organName" : "腮红",
+                                         "organNameMini" : "腮红"
+                                         }
+                                         ],
+                "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_maybelliine.png",
+                "brandName" : "MAYBELLINE",
+                "brandNameMini" : "MAYBELLINE"
+                }
+                ],
+    "msg" : "查询成功",
+    "status" : "1",
+}
