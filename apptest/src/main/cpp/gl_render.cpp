@@ -63,12 +63,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
     jfieldID id_x = env->GetFieldID(objClass, "x", "F");
     jfieldID id_y = env->GetFieldID(objClass, "y", "F");
-//    for(int xx = 0; xx < objlen; ++xx){
-//        jobject pointObj = env->GetObjectArrayElement(stPoint, xx);
-//        float x = env->GetFloatField(pointObj, id_x);
-//        float y = env->GetFloatField(pointObj, id_y);
-//        env->GetFloatField(env->GetObjectArrayElement(stPoint, xx),id_x);
-//    }
 
     float squareVertices[200];
     float squareVertices2[400];
@@ -88,10 +82,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     pointDownList.push_back(192);
     //上段
     for(int i = 0; i<pointMouseList.size(); i++) {
-//        p0 = changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 =  changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -131,10 +121,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
 
     //中段
     for(int i  = 0; i<pointMouseList.size(); i++) {
-//        p0 =changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 = changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -159,10 +145,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glEnableVertexAttribArray(mGLAttribMouseColor);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
     for(int i = 0; i<pointMouseList.size(); i++) {
-//        p0 =changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 = changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -211,10 +193,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     }
     //上段
     for (int i = 0; i <pointMouseList.size(); i++){
-//        p0 = changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 =  changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -224,8 +202,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
         squareVertices[ i* 4 + 2] = (float) (p0 * 4.0 / 5.0 + p2 / 5.0);
         squareVertices[ i * 4 + 3] = (float) (p1 * 4.0 / 5.0 + p3 / 5.0);
     }
-    for (int i = 0; i <pointMouseList.size();
-         i++){
+    for (int i = 0; i <pointMouseList.size(); i++){
         squareVertices2[i * 8] = mousecolors[0];;
         squareVertices2[i * 8 + 1] = mousecolors[1];
         squareVertices2[i * 8 + 2] = mousecolors[2];
@@ -246,10 +223,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
 
     //中段
     for (int i = 0; i <pointMouseList.size(); i++){
-//        p0 = changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 =  changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -259,8 +232,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
         squareVertices[i * 4 + 2] = (float) (p0 / 5.0 + p2 * 4.0 / 5.0);
         squareVertices[i * 4 + 3] = (float) (p1 / 5.0 + p3 * 4.0 / 5.0);
     }
-    for (int i = 0; i <pointMouseList.size();
-         i++){
+    for (int i = 0; i <pointMouseList.size(); i++){
         squareVertices2[i * 8 + 3] = mousecolors[3];
         squareVertices2[i * 8 + 7] = mousecolors[3];
     }
@@ -272,10 +244,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glDrawArrays(GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
     //下段
     for (int i = 0; i <pointMouseList.size(); i++){
-//        p0 = changeToGLPointT(pointMouseList.get(i).getX());
-//        p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-//        p2 = changeToGLPointT(pointDownList.get(i).getX());
-//        p3 =  changeToGLPointR(pointDownList.get(i).getY());
         p0 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_x));
         p1 =  changeToGLPointR(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointMouseList[i]),id_y));
         p2 = changeToGLPointT(env->GetFloatField(env->GetObjectArrayElement(stPoint, pointDownList[i]),id_x));
@@ -285,8 +253,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
         squareVertices[i * 4 + 2] = (float) (p2 * 1.1 - p0 * 0.1);
         squareVertices[i * 4 + 3] = (float) (p3 * 1.1 - p1 * 0.1);
     }
-    for (int i = 0; i <pointMouseList.size();
-         i++){
+    for (int i = 0; i <pointMouseList.size(); i++){
         squareVertices2[i * 8 + 3] = mousecolors[3];
         squareVertices2[i * 8 + 7] = (float) (mousecolors[3] / 6.0);
     }
