@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff">
+                android:id="@+id/activity_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff">
 
     <FrameLayout
         android:id="@+id/id_preview_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:background="@color/white">
-
-
-
-        <android.opengl.GLSurfaceView
-            android:id="@+id/id_gl_sv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            />
-        <SurfaceView
-            android:id="@+id/surfaceViewOverlap"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            />
-        <com.effects.senseme.sensemesdk.view.CameraView
-            android:id="@+id/sensemeView"
+        android:background="#ffffff">
+        <com.facebeauty.com.beautysdk.view.CameraView
+            android:id="@+id/cameraView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -73,6 +58,11 @@
         android:visibility="gone"
         android:textColor="@android:color/white"
         android:textSize="15sp" />
+    <com.facedemo.com.facesdkbuild.view.HorizontalListView
+        android:id="@+id/horizontalList"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
 
-    <include layout="@layout/activity_interaction" />
+    </com.facedemo.com.facesdkbuild.view.HorizontalListView>
 </RelativeLayout>
