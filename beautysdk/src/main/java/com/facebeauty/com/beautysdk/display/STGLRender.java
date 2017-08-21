@@ -26,6 +26,10 @@ import static android.opengl.GLES20.GL_FLOAT;
 
 public class STGLRender {
 
+    static
+    {
+        System.loadLibrary("beautysdk");
+    }
     private final static String TAG = "STGLRender";
     private static final String CAMERA_INPUT_VERTEX_SHADER = "" +
             "attribute vec4 position;\n" +
@@ -91,32 +95,8 @@ public class STGLRender {
 //            "     gl_FragColor = vec4(texColor.r,texColor.g,texColor.b,texColor.a);\n" +
 //            "     gl_FragColor = vec4(texColor.rgb.textColor.a,texColor.a);\n" +
                     "}";
-    //texture2D(inputImageTexture, textureCoordinate)
-    private final String vertexShaderCode2 =
-            "uniform mat4 projection;\n" +
-                    "uniform mat4 modelView;\n" +
-                    "attribute vec4 vPosition;\n" +
-                    "attribute vec4 SourceColor; // color of vertex\n" +
-                    "varying vec4 DestinationColor; // will pass out to fragment shader\n" +
-                    "\n" +
-                    "void main(void)\n" +
-                    "{\n" +
-                    "    DestinationColor = SourceColor;\n" +
-                    "    gl_Position =  vPosition;\n" +
-                    "}\n";
-    private final String fragmentShaderCode2 =
-            "precision mediump float;\n" +
-                    "uniform highp float color_selector;\n" +
-                    "varying lowp vec4 DestinationColor;\n" +
-                    "\n" +
-                    "void main()\n" +
-                    "{\n" +
-//                    "          gl_FragColor = vec4(0.698,0.07, 0.01, 0.3 );\n" +
-                    "        gl_FragColor =  DestinationColor * DestinationColor.a;\n" +
-                    "    \n" +
-                    "}\n";
+
     private int mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;//贴图
-    private int mGLMouseId, mGLAttribMousePos,mGLUniformTexture2, mGLAttribMouseColor;//绘图
     private final static String PROGRAM_ID = "program";
     private final static String POSITION_COORDINATE = "position";
     private final static String TEXTURE_UNIFORM = "inputImageTexture";
@@ -172,6 +152,7 @@ public class STGLRender {
         InitPrograme();
         mViewPortWidth = width;
         mViewPortHeight = height;
+        nativeInitWH(width, height);
         initFrameBuffers(width, height);
         mIsInitialized = true;
     }
@@ -299,7 +280,7 @@ public class STGLRender {
 //            drawLeftMeiMao(stPoint240, texture_left_meimao);
 ////            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
 //
-//            drawUPMouSe(stPoint240,_upmousecolors);
+//            drawUPMouse(stPoint240,_upmousecolors);
 //            drawZuichun(stPoint240,_downmousecolors);
 //            drawRightJiemao(stPoint240,texture_jiemao);
 //            drawSaiHong(stPoint240,texture_saihong);
@@ -309,8 +290,8 @@ public class STGLRender {
             drawLeftMeiMao(stPoint240, texture_left_meimao);
             drawRightMeiMao(stPoint240,texture_right_meimao);
 //            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-            drawUPMouSe(stPoint240,_upmousecolors);
-            drawZuichun(stPoint240,_downmousecolors);
+            nativeDrawUPMouse(stPoint240, _downmousecolors);
+            nativeDrawZuichun(stPoint240, _downmousecolors);
             drawRightJiemao(stPoint240,texture_jiemao);
             drawRightJiemao(stPoint240,texture_yanxian);
             drawRightJiemao(stPoint240,texture_yanying);
@@ -476,11 +457,8 @@ public class STGLRender {
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
-        mGLMouseId =OpenGLUtils.loadProgram(vertexShaderCode2, fragmentShaderCode2);
-        mGLAttribMousePos = GLES20.glGetAttribLocation(mGLMouseId, "vPosition");
-        mGLAttribMouseColor = GLES20.glGetAttribLocation(mGLMouseId,"SourceColor");
+        nativeInitMousePrograme();
     }
-
 
     /**
      * 睫毛
@@ -600,213 +578,6 @@ public class STGLRender {
         float tempY = (y-mViewPortHeight/2) / (mViewPortHeight/2);
         return tempY;
     };
-
-    /**
-     * 下嘴唇
-     * @param points
-     */
-    public  void drawZuichun(STPoint[] points, float mousecolors[]){
-        //绘制下嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
-        float[] squareVertices = new float[200];
-        float[] squareVertices2 = new float[400];
-        List<STPoint> pointMouseList = new ArrayList<>();
-        List<STPoint> pointDownList = new ArrayList<>();
-//        float[] _mousecolors = new {};
-        STPoint fitPoint;
-        float p0,p1,p2,p3;
-        pointMouseList.add(points[176]);
-        for(int i =210;i<=224;i++) {
-            pointMouseList.add(points[i]);
-        }
-        pointMouseList.add(points[192]);
-        pointDownList.add(points[176]);
-        for(int i=225;i<=239;i++) {
-            pointDownList.add(points[i]);
-        }
-        pointDownList.add(points[192]);
-        //上段
-        for(int i = 0; i<pointMouseList.size(); i++) {
-            p0 = changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 =  changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[i*4]   = (float) (p0*1.1-p2*0.1);
-            squareVertices[i*4+1] = (float) (p1*1.1-p3*0.1);
-            squareVertices[i*4+2] = (float) (p0*4.0/5.0 + p2/5.0);
-            squareVertices[i*4+3] = (float) (p1*4.0/5.0 + p3/5.0);
-        }
-        double k0=1.0;
-        for(int i = 0; i<pointMouseList.size(); i++) {
-            squareVertices2[i*8]   = mousecolors[0];
-            squareVertices2[i*8+1] = mousecolors[1];
-            squareVertices2[i*8+2] = mousecolors[2];
-            squareVertices2[i*8+3] = mousecolors[3]/6.0f;
-            squareVertices2[i*8+4] = mousecolors[0];
-            squareVertices2[i*8+5] = mousecolors[1];
-            squareVertices2[i*8+6] = mousecolors[2];
-            if(i==0 || i == pointMouseList.size()-1)
-                k0=5.0;
-            else
-                k0=1.0;
-            squareVertices2[i*8+7] = (float) (mousecolors[3]/k0);
-        }
-        GLES20.glUseProgram(mGLMouseId);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        //中段
-        for(int i  = 0; i<pointMouseList.size(); i++) {
-            p0 =changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 = changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[i*4]   = (float) (p0*4.0/5.0 + p2/5.0);
-            squareVertices[i*4+1] = (float) (p1*4.0/5.0 + p3/5.0);
-            squareVertices[i*4+2] = (float) (p0/5.0 + p2*4.0/5.0);
-            squareVertices[i*4+3] = (float) (p1/5.0 + p3*4.0/5.0);
-        }
-        for(int i = 0; i<pointMouseList.size(); i++) {
-            if(i==0 || i == pointMouseList.size()-1)
-                k0=5.0;
-            else
-                k0=1.0;
-            squareVertices2[i*8+3] = (float)(mousecolors[3]/k0);
-            squareVertices2[i*8+7] = mousecolors[3];
-        }
-        //下段
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0,  Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        for(int i = 0; i<pointMouseList.size(); i++) {
-            p0 =changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 = changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[i*4]   = (float) (p0/5.0 + p2*4.0/5.0);
-            squareVertices[i*4+1] = (float) (p1/5.0 + p3*4.0/5.0);
-            squareVertices[i*4+2] = (float) (p2*1.1-p0*0.1);
-            squareVertices[i*4+3] = (float) (p3*1.1-p1*0.1);
-        }
-        for(int i = 0; i<pointMouseList.size(); i++) {
-            squareVertices2[i*8+7] = 0.01f;
-        }
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        GLES20.glDisableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glDisableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDisable( GLES20.GL_BLEND);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-    }
-
-    /**
-     * 上嘴唇
-     * @param points
-     */
-    public void drawUPMouSe(STPoint[] points, float mousecolors[]) {
-        //绘制上嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
-        float fitPoint;
-        float p0, p1, p2, p3;
-        //绘制下嘴唇 10个点 84,85,97,86,98,87,99,88,90,89
-        float[] squareVertices = new float[200];
-        float[] squareVertices2 = new float[400];
-        List<STPoint> pointMouseList = new ArrayList<>();
-        List<STPoint> pointDownList = new ArrayList<>();
-        for (int i = 176; i <= 192; i++) {
-            pointMouseList.add(points[i]);
-        }
-        for (int i = 193; i <= 209; i++) {
-            pointDownList.add(points[i]);
-        }
-        //上段
-        for (int i = 0; i <pointMouseList.size(); i++){
-            p0 = changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 =  changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[ i * 4] = (float) (p0 * 1.1 - p2 * 0.1);
-            squareVertices[ i * 4 + 1] = (float) (p1 * 1.1 - p3 * 0.1);
-            squareVertices[ i* 4 + 2] = (float) (p0 * 4.0 / 5.0 + p2 / 5.0);
-            squareVertices[ i * 4 + 3] = (float) (p1 * 4.0 / 5.0 + p3 / 5.0);
-        }
-        for (int i = 0; i <pointMouseList.size();
-             i++){
-            squareVertices2[i * 8] = mousecolors[0];;
-            squareVertices2[i * 8 + 1] = mousecolors[1];
-            squareVertices2[i * 8 + 2] = mousecolors[2];
-            squareVertices2[i * 8 + 3] = 0.01f;
-            squareVertices2[i * 8 + 4] = mousecolors[0];
-            squareVertices2[i * 8 + 5] = mousecolors[1];
-            squareVertices2[i * 8 + 6] = mousecolors[2];
-            squareVertices2[i * 8 + 7] = mousecolors[3];
-        }
-        GLES20.glUseProgram(mGLMouseId);
-//        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        //中段
-        for (int i = 0; i <pointMouseList.size(); i++){
-            p0 = changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 =  changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[i * 4] = (float) (p0 * 4.0 / 5.0 + p2 / 5.0);
-            squareVertices[i * 4 + 1] = (float) (p1 * 4.0 / 5.0 + p3 / 5.0);
-            squareVertices[i * 4 + 2] = (float) (p0 / 5.0 + p2 * 4.0 / 5.0);
-            squareVertices[i * 4 + 3] = (float) (p1 / 5.0 + p3 * 4.0 / 5.0);
-        }
-        for (int i = 0; i <pointMouseList.size();
-             i++){
-            squareVertices2[i * 8 + 3] = mousecolors[3];
-            squareVertices2[i * 8 + 7] = mousecolors[3];
-        }
-        //下段
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0,  Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        //下段
-        for (int i = 0; i <pointMouseList.size();
-             i++){
-            p0 = changeToGLPointT(pointMouseList.get(i).getX());
-            p1 =  changeToGLPointR(pointMouseList.get(i).getY());
-            p2 = changeToGLPointT(pointDownList.get(i).getX());
-            p3 =  changeToGLPointR(pointDownList.get(i).getY());
-            squareVertices[i * 4] = (float) (p0 / 5.0 + p2 * 4.0 / 5.0);
-            squareVertices[i * 4 + 1] = (float) (p1 / 5.0 + p3 * 4.0 / 5.0);
-            squareVertices[i * 4 + 2] = (float) (p2 * 1.1 - p0 * 0.1);
-            squareVertices[i * 4 + 3] = (float) (p3 * 1.1 - p1 * 0.1);
-        }
-        for (int i = 0; i <pointMouseList.size();
-             i++){
-            squareVertices2[i * 8 + 3] = mousecolors[3];
-            squareVertices2[i * 8 + 7] = (float) (mousecolors[3] / 6.0);
-        }
-        GLES20.glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribMouseColor);
-        GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, pointMouseList.size()*2);
-        GLES20.glDisableVertexAttribArray(mGLAttribMousePos);
-        GLES20.glDisableVertexAttribArray(mGLAttribMouseColor);
-        GLES20. glDisable( GLES20.GL_BLEND);
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-    }
 
     /**
      * 眉毛
@@ -1008,5 +779,10 @@ public class STGLRender {
     public int getFrameBufferId(){
         return  mFrameBuffers[0];
     };
+
+    public native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
+    public native void nativeDrawUPMouse(STPoint[] stPoint240, float downmousecolors[]);
+    public native void nativeInitMousePrograme();
+    public native void nativeInitWH(int w, int h);
 
 }

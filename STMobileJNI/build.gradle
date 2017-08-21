@@ -32,7 +32,7 @@ android {
     task ndkBuild(type: Exec) {
         def ndkDir = android.ndkDirectory
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            commandLine "$ndkDir/ndk-build", '-C', file('src/main').absolutePath
+            commandLine "$ndkDir/ndk-build.cmd", '-C', file('src/main').absolutePath
         } else {
             commandLine "$ndkDir/ndk-build", '-C', file('src/main').absolutePath
         }
