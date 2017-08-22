@@ -66,37 +66,8 @@ public class STGLRender {
             "     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);\n" +
             "}";
 
-    private final String vertexShaderCode =
-            "attribute vec4 position;\n" +
-                    "attribute vec4 inputTextureCoordinate;\n" +
-                    "varying vec2 textureCoordinate;\n" +
-                    "void main()\n" +
-                    "{\n" +
-                    "    gl_Position = position;\n" +
-                    "    textureCoordinate = inputTextureCoordinate.xy;\n" +
-                    "}";
-    private final String fragmentShaderCode =
-            "precision mediump float;\n" +
-                    "varying highp vec2 textureCoordinate;\n" +//
-                    " \n" +
-                    "uniform sampler2D inputImageTexture;\n" +
-                    " \n" +
-                    "void main()\n" +
-                    "{ \n" +
-                    "  vec4 texColor = texture2D(inputImageTexture, textureCoordinate);" +
-//            "   texColor.r = 1.0f;" +
-//            "   texColor.b = 1.0f;" +
-//            "   texColor.g = 1.0f;" +
-                    "if (texColor.a <0.01){" +
-                    "discard;" +
-                    "}" +
-//                    "     gl_FragColor = vec4(0.698,0.07, 0.01, 0.6 );\n" +
-                    "       gl_FragColor = texColor;\n" +
-//            "     gl_FragColor = vec4(texColor.r,texColor.g,texColor.b,texColor.a);\n" +
-//            "     gl_FragColor = vec4(texColor.rgb.textColor.a,texColor.a);\n" +
-                    "}";
 
-    private int mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;//贴图
+//    private int mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;//贴图
     private final static String PROGRAM_ID = "program";
     private final static String POSITION_COORDINATE = "position";
     private final static String TEXTURE_UNIFORM = "inputImageTexture";
@@ -276,26 +247,16 @@ public class STGLRender {
 
     public void drawMeizhuang(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong, float _upmousecolors[], float _downmousecolors[] )
     {
-//        if( stPoint240 != null) {
-//            drawLeftMeiMao(stPoint240, texture_left_meimao);
-////            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
-//
-//            drawUPMouse(stPoint240,_upmousecolors);
-//            drawZuichun(stPoint240,_downmousecolors);
-//            drawRightJiemao(stPoint240,texture_jiemao);
-//            drawSaiHong(stPoint240,texture_saihong);
-//            GlUtil.checkGlError("test");
-//        }
         if( stPoint240 != null) {
-            drawLeftMeiMao(stPoint240, texture_left_meimao);
-            drawRightMeiMao(stPoint240,texture_right_meimao);
+            nativeDrawLeftMeiMao(stPoint240, texture_left_meimao);
+            nativeDrawRightMeiMao(stPoint240,texture_right_meimao);
 //            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
             nativeDrawUPMouse(stPoint240, _downmousecolors);
             nativeDrawZuichun(stPoint240, _downmousecolors);
-            drawRightJiemao(stPoint240,texture_jiemao);
-            drawRightJiemao(stPoint240,texture_yanxian);
-            drawRightJiemao(stPoint240,texture_yanying);
-            drawSaiHong(stPoint240,texture_saihong);
+            nativeDrawRightJiemao(stPoint240,texture_jiemao);
+            nativeDrawRightJiemao(stPoint240,texture_yanxian);
+            nativeDrawRightJiemao(stPoint240,texture_yanying);
+            nativeDrawSaiHong(stPoint240,texture_saihong);
             GlUtil.checkGlError("test");
         }
 
@@ -453,326 +414,8 @@ public class STGLRender {
      */
     public void InitPrograme()
     {
-        mGLProgId = OpenGLUtils.loadProgram(vertexShaderCode, fragmentShaderCode);
-        mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
-        mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
-        mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
         nativeInitMousePrograme();
-    }
-
-    /**
-     * 睫毛
-     * @param points
-     * @param textureId
-     */
-    public void drawRightJiemao(STPoint[] points, int textureId){
-        float x0,y0,x,y,x1,y1,x2,y2,x3,y3,x4,y4,k,d,b;
-        double theta,theta0;
-        //右上
-        x = points[58].getX();
-        y = points[58].getY();
-        x0 = points[61].getX();
-        y0 = points[61].getY();
-        x1 = (float)(x - (x0 - x)*0.2);
-        y1 = (float)(y - (y0 - y)*0.2);
-        x2 = (float)(x0 + (x0 - x)*0.8);
-        y2 = (float)(y0 + (y0 - y)*0.8);
-        x0 = points[75].getX();
-        y0 = points[75].getY();
-        k = (y2-y1)/(x2-x1);
-        theta = Math.atan(k);
-        d = (float) (Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2.1);
-        x3 = (float) (x1 + d * Math.sin(theta));
-        y3 = (float) (y1 - d * Math.cos(theta));
-        x4 =(float) ( x2 + d * Math.sin(theta));
-        y4 = (float) (y2 - d * Math.cos(theta));
-        x1 = changeToGLPointT(x1);
-        y1 = changeToGLPointR(y1+30);
-        x2 = changeToGLPointT(x2);
-        y2 = changeToGLPointR(y2+30);
-        x3 = changeToGLPointT(x3);
-        y3 = changeToGLPointR(y3+30);
-        x4 = changeToGLPointT(x4);
-        y4 = changeToGLPointR(y4+30);
-        float squareVertices[] = {
-                x1,y1,
-                x2,y2,
-                x3,y3,
-                x4,y4,
-        };
-        float textureVertices1[] = {
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                0.0f,  0.332f,
-                1.0f,  0.332f,
-        };
-        GLES20.glUseProgram(mGLProgId);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-        GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
-        GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        //左上
-        x0 =points[52].getX();
-        y0 = points[52].getY();
-        x = points[55].getX();
-        y =  points[55].getY();
-        x1 = (float) (x0 - (x - x0)*0.8);
-        y1 = (float) (y0 - (y - y0)*0.8);
-        x2 = (float) (x + (x - x0)*0.2);
-        y2 = (float) (y + (y - y0)*0.2);
-        x0 = points[72].getX();
-        y0 = points[72].getY();
-        k = (y2-y1)/(x2-x1);
-        theta = Math.atan(k);
-        d = (float) (Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2.1);
-        x3 = (float) (x1 + d * Math.sin(theta));
-        y3 = (float) (y1 - d * Math.cos(theta));
-        x4 = (float) (x2 + d * Math.sin(theta));
-        y4 = (float) (y2 - d * Math.cos(theta));
-        x1 = changeToGLPointT(x1);
-        y1 = changeToGLPointR(y1+30);
-        x2 = changeToGLPointT(x2);
-        y2 = changeToGLPointR(y2+30);
-        x3 = changeToGLPointT(x3);
-        y3 = changeToGLPointR(y3+30);
-        x4 = changeToGLPointT(x4);
-        y4 = changeToGLPointR(y4+30);
-        squareVertices[0] = x1;
-        squareVertices[1] = y1;
-        squareVertices[2] = x2;
-        squareVertices[3] = y2;
-        squareVertices[4] = x3;
-        squareVertices[5] = y3;
-        squareVertices[6] = x4;
-        squareVertices[7] = y4;
-        float textureVertices3[] = {
-                1.0f, 1.0f,
-                0.0f, 1.0f,
-                1.0f,  0.332f,
-                0.0f,  0.332f,
-        };
-        GLES20.glUseProgram(mGLProgId);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-        GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices3));
-        GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20. glDisable( GLES20.GL_BLEND);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-    }
-
-    public float changeToGLPointT(float x){
-        float tempX = (x - mViewPortWidth/2) / (mViewPortWidth/2);
-        return tempX;
-    };
-    public float changeToGLPointR(float y){
-        float tempY = (y-mViewPortHeight/2) / (mViewPortHeight/2);
-        return tempY;
-    };
-
-    /**
-     * 眉毛
-     * @param points
-     * @param textureId
-     */
-    public void drawLeftMeiMao(STPoint[] points, int textureId){
-        float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4,k;
-        double d,theta;
-        x0 = points[150].getX();
-        y0 = points[150].getY();
-        x = points[162].getX();
-        y =  points[162].getY();
-        x1 = (float) (x0 - (x - x0)*0.2);
-        y1 = (float) (y0 - (y - y0)*0.2);
-        x2 = (float) (x + (x - x0)*0.124);
-        y2 = (float) (y + (y - y0)*0.124);
-        x0 = points[156].getX();
-        y0 =  points[156].getY();
-        k = (y2-y1)/(x2-x1);
-        theta = Math.atan(k);
-        d = Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2.232;
-        x3 = (float) (x1 + d * Math.sin(theta));
-        y3 = (float) (y1 - d * Math.cos(theta));
-        x4 = (float) (x2 + d * Math.sin(theta));
-        y4 = (float) (y2 - d * Math.cos(theta));
-        x1 = (float) (x1 - d * Math.sin(theta));
-        y1 = (float) (y1 + d * Math.cos(theta));
-        x2 = (float) (x2 - d * Math.sin(theta));
-        y2 = (float) (y2 + d * Math.cos(theta));
-        x1  = changeToGLPointT(x1);
-        y1  = changeToGLPointR(y1);
-        x2  = changeToGLPointT(x2);
-        y2  = changeToGLPointR(y2);
-        x3  = changeToGLPointT(x3);
-        y3  = changeToGLPointR(y3);
-        x4  = changeToGLPointT(x4);
-        y4  = changeToGLPointR(y4);
-        float squareVertices[] = {
-                x1,y1,
-                x2,y2,
-                x3,y3,
-                x4,y4,
-        };
-        float textureVertices2[] = {
-                1.0f, 1.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 0.0f,
-
-
-
-        };
-        GLES20.glUseProgram(mGLProgId);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_CONSTANT_COLOR,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-        GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20. glDisable( GLES20.GL_BLEND);
-
-    }
-    /**
-     * 眉毛
-     * @param points
-     * @param textureId
-     */
-    public void drawRightMeiMao(STPoint[] points, int textureId){
-        float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4,k;
-        double d,theta;
-        x0 = points[175].getX();
-        y0 = points[175].getY();
-        x = points[163].getX();
-        y =  points[163].getY();
-        x1 = (float) (x0 - (x - x0)*0.124);
-        y1 = (float) (y0 - (y - y0)*0.124);
-        x2 = (float) (x + (x - x0)*0.2);
-        y2 = (float) (y + (y - y0)*0.2);
-        x0 = points[169].getX();
-        y0 =  points[169].getY();
-        k = (y2-y1)/(x2-x1);
-        theta = Math.atan(k);
-        d = Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2.232;
-        x3 = (float) (x1 + d * Math.sin(theta));
-        y3 = (float) (y1 - d * Math.cos(theta));
-        x4 = (float) (x2 + d * Math.sin(theta));
-        y4 = (float) (y2 - d * Math.cos(theta));
-        x1 = (float) (x1 - d * Math.sin(theta));
-        y1 = (float) (y1 + d * Math.cos(theta));
-        x2 = (float) (x2 - d * Math.sin(theta));
-        y2 = (float) (y2 + d * Math.cos(theta));
-        x1  = changeToGLPointT(x1);
-        y1  = changeToGLPointR(y1);
-        x2  = changeToGLPointT(x2);
-        y2  = changeToGLPointR(y2);
-        x3  = changeToGLPointT(x3);
-        y3  = changeToGLPointR(y3);
-        x4  = changeToGLPointT(x4);
-        y4  = changeToGLPointR(y4);
-        float squareVertices[] = {
-                x1,y1,
-                x2,y2,
-                x3,y3,
-                x4,y4,
-        };
-        float textureVertices2[] = {
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-        };
-        GLES20.glUseProgram(mGLProgId);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_CONSTANT_COLOR,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-        GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices2));
-        GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20.glDisableVertexAttribArray(mGLAttribPosition);
-        GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20. glDisable( GLES20.GL_BLEND);
-
-    }
-    /**
-     * 腮红
-     * @param points
-     * @param textureId
-     */
-    public void drawSaiHong(STPoint[] points, int textureId){
-        float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4;
-        double theta,d,k;
-        //画腮红
-        x0 = points[82].getX();
-        y0 = points[82].getY();
-        x = points[83].getX();
-        y = points[83].getY();
-        x1 = (float) (x0 - (x - x0)*1.463);
-        y1 = (float) (y0 - (y - y0)*1.463);
-        x2 = (float) (x + (x - x0)*1.463);
-        y2 = (float) (y + (y - y0)*1.463);
-        x0 = points[45].getX();
-        y0 = points[45].getY();
-        k = (y2-y1)/(x2-x1);
-        theta = Math.atan(k);
-        d = Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*2;
-//    d = fabsf(k*x0-y0+y1-k*x1)/sqrtf(k*k+1)*1.5;
-        x3 =(float)(x1 + d * Math.sin(theta));
-        y3 =(float)(y1 - d * Math.cos(theta));
-        x4 = (float)(x2 + d * Math.sin(theta));
-        y4 = (float)(y2 - d * Math.cos(theta));
-        d = Math.abs(k*x0-y0+y1-k*x1)/Math.sqrt(k*k+1)*1.456;
-        x1 = (float)(x1 - d * Math.sin(theta));
-        y1 = (float)(y1 + d * Math.cos(theta));
-        x2 = (float)(x2 - d * Math.sin(theta));
-        y2 = (float)(y2 + d * Math.cos(theta));
-        x1 = changeToGLPointT(x1);
-        y1 = changeToGLPointR(y1);
-        x2 = changeToGLPointT(x2);
-        y2 = changeToGLPointR(y2);
-        x3  =  changeToGLPointT(x3);
-        y3 = changeToGLPointR(y3);
-        x4  = changeToGLPointT(x4);
-        y4 = changeToGLPointR(y4);
-        float squareVertices[] = {
-                x1,y1,
-                x2,y2,
-                x3,y3,
-                x4,y4,
-        };
-        float textureVertices1[] = {
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-        };
-        GLES20.glUseProgram(mGLProgId);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_ONE,GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(squareVertices));
-        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-        GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, Utils.getFloatBuffer(textureVertices1));
-        GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20. glDisable( GLES20.GL_BLEND);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GlUtil.checkGlError("test");
     }
 
 
@@ -780,6 +423,10 @@ public class STGLRender {
         return  mFrameBuffers[0];
     };
 
+    public native void nativeDrawRightJiemao(STPoint[] points, int textureId);
+    public native void nativeDrawLeftMeiMao(STPoint[] points, int textureId);
+    public native void nativeDrawRightMeiMao(STPoint[] points, int textureId);
+    public native void nativeDrawSaiHong(STPoint[] points, int textureId);
     public native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeDrawUPMouse(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeInitMousePrograme();
