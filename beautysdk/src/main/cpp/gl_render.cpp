@@ -49,7 +49,7 @@ const char* const fragmentShaderCode =SHADER_STRING(
         void main()
         {
             vec4 texColor = texture2D(inputImageTexture, textureCoordinate);
-            if(texColor.a <0.01f){
+            if(texColor.a <0.01){
                 discard;
             }
             gl_FragColor = texColor;
