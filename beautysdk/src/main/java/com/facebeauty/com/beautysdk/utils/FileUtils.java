@@ -129,15 +129,15 @@ public class FileUtils {
 //        return stickerList;
 //    }
 
-    public static File getOutputMediaFile() {
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+    public static File getOutputMediaFile(File file) {
+//        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_DCIM), "Camera");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
                 LogUtils.e("FileUtil", "failed to create directory");
                 return null;
             }
@@ -145,7 +145,7 @@ public class FileUtils {
 
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINESE).format(new Date());
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+        File mediaFile = new File(file.getPath() + File.separator +
                 "IMG_" + timeStamp + ".jpg");
 
         return mediaFile;

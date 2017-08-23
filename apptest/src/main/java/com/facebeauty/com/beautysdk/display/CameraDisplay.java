@@ -17,6 +17,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
+import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.glutils.GlUtil;
 import com.facebeauty.com.beautysdk.glutils.OpenGLUtils;
 import com.facebeauty.com.beautysdk.glutils.STUtils;
@@ -42,6 +43,7 @@ import com.sensetime.stmobile.model.STMobile106;
 import com.sensetime.stmobile.model.STPoint;
 import com.sensetime.stmobile.model.STRect;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -114,6 +116,7 @@ public class CameraDisplay implements Renderer {
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
     private STPoint[] stPoint240;
+    private File file;
 
 
     public static int[] beautyTypes = {
@@ -240,7 +243,8 @@ public class CameraDisplay implements Renderer {
         }
     }
 
-    public void setSaveImage() {
+    public void setSaveImage(File file) {
+        this.file =file;
         mNeedSave = true;
     }
 
@@ -686,7 +690,7 @@ public class CameraDisplay implements Renderer {
         stPoint240 = getAllPrint(frameBuffer);
 
         if(mNeedSave) {
-            savePicture(textureId);
+            savePicture(textureId,file);
             mNeedSave = false;
         }
         long dt = System.currentTimeMillis() - mStartTime;
@@ -701,14 +705,17 @@ public class CameraDisplay implements Renderer {
         stPoint240 = null;
     }
 
-    private void savePicture(int textureId) {
+    private void savePicture(int textureId, File file) {
+
+        FileSave fileSave = new FileSave();
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
-
         mTmpBuffer.position(0);
         Message msg = Message.obtain(mHandler);
         msg.what = CameraView.MSG_SAVING_IMG;
-        msg.obj = mTmpBuffer;
+        fileSave.setBitmap(mTmpBuffer);
+        fileSave.setFile(file);
+        msg.obj = fileSave;
         Bundle bundle = new Bundle();
         bundle.putInt("imageWidth", mImageWidth);
         bundle.putInt("imageHeight", mImageHeight);
