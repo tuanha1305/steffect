@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
+import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 
@@ -45,11 +46,11 @@ public class CameraView extends RelativeLayout {
 
             switch (msg.what) {
                 case MSG_SAVING_IMG:
-                    ByteBuffer data = (ByteBuffer) msg.obj;
+                    FileSave data = (FileSave) msg.obj;
                     Bundle bundle = msg.getData();
                     int imageWidth = bundle.getInt("imageWidth");
                     int imageHeight = bundle.getInt("imageHeight");
-                    onPictureTaken(data, FileUtils.getOutputMediaFile(), imageWidth, imageHeight);
+                    onPictureTaken(data.getBitmap(),data.getFile(), imageWidth, imageHeight);
                     break;
             }
         }
@@ -221,9 +222,9 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.onDestroy();
     }
 
-    public void saveImage() {
+    public void saveImage(File file) {
         mCameraDisplay.setHandler(mHandler);
-        mCameraDisplay.setSaveImage();
+        mCameraDisplay.setSaveImage(file);
     }
 
 

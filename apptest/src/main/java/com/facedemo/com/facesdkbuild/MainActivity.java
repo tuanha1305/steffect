@@ -1,10 +1,10 @@
 package com.facedemo.com.facesdkbuild;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,9 +18,9 @@ import com.facebeauty.com.beautysdk.view.CameraView;
 import com.facedemo.com.facesdkbuild.adapter.DemoAdapter;
 import com.facedemo.com.facesdkbuild.view.HorizontalListView;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
-
 public class MainActivity extends Activity {
     public static final String TAG="MainActivity";
     private static final int PERMISSION_REQUEST_CAMERA = 0;
@@ -28,21 +28,24 @@ public class MainActivity extends Activity {
     private HorizontalListView horizontalList;
     CameraView cameraView;
     private String path = "http://api.7fineday.com/front/api/face/authkey";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= 23) {
- checkPremission();
+            checkPremission();
         }
         STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: 授权成功");
-
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/test.jpg";
+                File file = new File(path);
                 cameraView = (CameraView) findViewById(R.id.cameraView);
                 cameraView.init(MainActivity.this);
+                cameraView.saveImage(file);
+                String pathTiezhi = getFilesDir()+"/bunny.zip";
+                cameraView.setTiezhi(3,pathTiezhi);
                 horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
                 String data = openAssetsFile("makeuplist.json");
                 JSONObject jsonObject = JSON.parseObject(data);
@@ -52,23 +55,17 @@ public class MainActivity extends Activity {
                 DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
                 horizontalList.setAdapter(adapter);
             }
-
             @Override
             public void onFail() {
                 Log.d(TAG, "onSuccess: 授权失败");
-
             }
         });
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         cameraView.onResume();
     }
-
-
     private String openAssetsFile(String filename) {
         try {
             InputStreamReader inputReader = new InputStreamReader(getResources().getAssets().open(filename));
@@ -83,20 +80,16 @@ public class MainActivity extends Activity {
         }
         return null;
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-     cameraView.onDestory();
+        cameraView.onDestory();
     }
-
     @Override
     protected void onPause() {
         super.onPause();
-    cameraView.onPause();
+        cameraView.onPause();
     }
-
-
     private void checkPremission() {
         final String permission = Manifest.permission.CAMERA;  //相机权限
         final String permission1 = Manifest.permission.WRITE_EXTERNAL_STORAGE; //写入数据权限
@@ -124,5 +117,4 @@ public class MainActivity extends Activity {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

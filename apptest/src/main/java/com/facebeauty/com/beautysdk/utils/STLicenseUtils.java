@@ -25,83 +25,7 @@ public class STLicenseUtils {
     private final static String PREF_ACTIVATE_CODE_FILE = "activate_code_file";
     private final static String PREF_ACTIVATE_CODE = "activate_code";
     private static final String LICENSE_NAME = "SenseME.lic";
-//    public static boolean getCheckLicense(Context context) {
-//        return checkLicense(context);
-//    }
-    /**
-     * 检查activeCode合法性
-     *
-     * @return true, 成功 false,失败
-     */
-//    private static boolean checkLicense(Context context) {
-//        StringBuilder sb = new StringBuilder();
-//        InputStreamReader isr = null;
-//        BufferedReader br = null;
-//        // 读取license文件内容
-//        try {
-//            isr = new InputStreamReader(context.getResources().getAssets().open(LICENSE_NAME));
-//            br = new BufferedReader(isr);
-//            String line = null;
-//            while ((line = br.readLine()) != null) {
-//                sb.append(line).append("\n");
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (isr != null) {
-//                try {
-//                    isr.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//
-//        }
-//
-//        // license文件为空,则直接返回
-//        if (sb.toString().length() == 0) {
-//            LogUtils.e(TAG, "read license data error");
-//            return false;
-//        }
-//
-//        String licenseBuffer = sb.toString();
-//        /**
-//         * 以下逻辑为：
-//         * 1. 获取本地保存的激活码
-//         * 2. 如果没有则生成一个激活码
-//         * 3. 如果有, 则直接调用checkActiveCode*检查激活码
-//         * 4. 如果检查失败，则重新生成一个activeCode
-//         * 5. 如果生成失败，则返回失败，成功则保存新的activeCode，并返回成功
-//         */
-//        SharedPreferences sp = context.getApplicationContext().getSharedPreferences(PREF_ACTIVATE_CODE_FILE, Context.MODE_PRIVATE);
-//        String activateCode = sp.getString(PREF_ACTIVATE_CODE, null);
-//        Integer error = new Integer(-1);
-//        if (activateCode == null || (STMobileAuthentificationNative.checkActiveCodeFromBuffer(context, licenseBuffer, licenseBuffer.length(), activateCode, activateCode.length()) != 0)) {
-//            LogUtils.e(TAG, "activeCode: " + (activateCode == null));
-//            activateCode = STMobileAuthentificationNative.generateActiveCodeFromBuffer(context, licenseBuffer, licenseBuffer.length());
-//            if (activateCode != null && activateCode.length() > 0) {
-//                SharedPreferences.Editor editor = sp.edit();
-//                editor.putString(PREF_ACTIVATE_CODE, activateCode);
-//                editor.commit();
-//                return true;
-//            }
-//            LogUtils.e(TAG, "generate license error: " + error);
-//            return false;
-//        }
-//
-//        LogUtils.e(TAG, "activeCode: " + activateCode);
-//
-//        return true;
-//    }
+
     /**
      * 检查activeCode合法性
      *
@@ -238,6 +162,68 @@ public class STLicenseUtils {
             }
         }.execute();
     }
+
+
+    public static void getTokenLicense(final Context context) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+
+                String json = "{" +
+                        "\"head\": {" +
+                        "\"uid\": \"\"," +
+                        "\"sid\": \"\"," +
+                        "\"plat\": \"android\"," +
+                        "\"st\": \"\"," +
+                        "\"ver\": \"\"," +
+                        "\"imei\": \"\"," +
+                        "\"oc\": \"\"" +
+                        "}," +
+                        "\"body\": {" +
+                        "\"token\": \"ss\"," +
+                        "\"package_name\": \"com.facedemo.com.facesdkbuild\"," +
+                        "\"type\": \"2\"" +
+                        "}" +
+                        "}";
+                String path = "http://api.7fineday.com/front/api/face/auth";
+                String licenseJsonStr = HttpUtils.getLicense(path, json.trim());
+                if (TextUtils.isEmpty(licenseJsonStr))
+                    return false;
+                try {
+                    JSONObject jsonObject = new JSONObject(licenseJsonStr);
+                    if (jsonObject.getString("status").equals("1")) {
+                        String licenseUrl = jsonObject.getString("data");
+                        if (TextUtils.isEmpty(licenseUrl))
+                            return false;
+                        boolean result = downloadLicense(context, licenseUrl);
+                        return result;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                //TODO
+                if (result) {
+                    if (onCheckLicenseListener != null) {
+                        onCheckLicenseListener.onSuccess();
+                    }
+                } else {
+                    if (onCheckLicenseListener != null) {
+                        onCheckLicenseListener.onFail();
+                    }
+                }
+            }
+        }.execute();
+    }
+
     private static boolean downloadLicense(Context context, String licenseUrl) throws Exception {
         URL url = new URL(licenseUrl);
         Log.i("TAG", url.toString());
