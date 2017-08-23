@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/activity_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff">
+
+    <FrameLayout
+        android:id="@+id/id_preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="#ffffff">
+        <com.facebeauty.com.beautysdk.view.CameraView
+            android:id="@+id/cameraView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/id_tv_changesticker"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="#FF000000"
+        android:gravity="center"
+        android:text="Change"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/id_tv_changecamera"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/id_tv_changesticker"
+        android:background="#FF000000"
+        android:gravity="center"
+        android:text="Switch"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/id_tv_changepreviewsize"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@id/id_tv_changecamera"
+        android:background="#FF000000"
+        android:gravity="center"
+        android:text="PreviewSize"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+    <com.facedemo.com.facesdkbuild.view.HorizontalListView
+        android:id="@+id/horizontalList"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+    </com.facedemo.com.facesdkbuild.view.HorizontalListView>
+</RelativeLayout>
