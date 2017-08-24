@@ -32,34 +32,49 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (Build.VERSION.SDK_INT >= 23) {
-            checkPremission();
-        }
         STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: 授权成功");
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/test.jpg";
-                File file = new File(path);
-                cameraView = (CameraView) findViewById(R.id.cameraView);
-                cameraView.init(MainActivity.this);
-                cameraView.saveImage(file);
-                String pathTiezhi = getFilesDir()+"/bunny.zip";
-                cameraView.setTiezhi(3,pathTiezhi);
-                horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
-                String data = openAssetsFile("makeuplist.json");
-                JSONObject jsonObject = JSON.parseObject(data);
-                String dataStr = jsonObject.getString("data");
-//       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
-                List<Brand> brandList = JSON.parseArray(dataStr, Brand.class);
-                DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
-                horizontalList.setAdapter(adapter);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Permission has not been granted and must be requested.
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                            // Provide an additional rationale to the user if the permission was not granted
+                            // and the user would benefit from additional context for the use of the permission.
+                        }
+                        // Request the permission. The result will be received in onRequestPermissionResult()
+                        requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                PERMISSION_REQUEST_CAMERA);
+                    }
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    }
+                }
+
             }
+
             @Override
             public void onFail() {
                 Log.d(TAG, "onSuccess: 授权失败");
+
             }
         });
+        cameraView = (CameraView) findViewById(R.id.cameraView);
+        cameraView.init(MainActivity.this);
+
+//                cameraView.setTiezhi(3,);
+        horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
+        String data = openAssetsFile("makeuplist.json");
+        JSONObject jsonObject = JSON.parseObject(data);
+        String dataStr = jsonObject.getString("data");
+//       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
+        List<Brand> brandList = JSON.parseArray(dataStr, Brand.class);
+        DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
+        horizontalList.setAdapter(adapter);
     }
     @Override
     protected void onResume() {

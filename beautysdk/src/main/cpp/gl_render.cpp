@@ -304,7 +304,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     return;
 }
 
-JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawRightJiemao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId )
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawRightJiemao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId ,jfloatArray bgcolors)
 {
     int objlen = env->GetArrayLength(stPoint);
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
@@ -365,12 +365,11 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
             0.0f, 0.668f,
             1.0f, 0.668f,
     };
-
     glUseProgram(mGLProgId);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendColor(1.0f, 0.0f,0.0f, 1.0f);
-    glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribPosition);
     glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GL_FLOAT, false, 0, textureVertices1);
@@ -583,13 +582,10 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glDisable( GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-
-
-
     return;
 }
 
-JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawLeftMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId )
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawLeftMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId,jfloatArray bgcolors )
 {
     int objlen = env->GetArrayLength(stPoint);
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
@@ -658,7 +654,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     return;
 }
 
-JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawRightMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId )
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawRightMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId ,jfloatArray bgcolors)
 {
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
     jfieldID id_x = env->GetFieldID(objClass, "x", "F");
@@ -725,7 +721,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
      glDisable( GL_BLEND);
 }
 
-JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawSaiHong(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId )
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawSaiHong(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId,jfloatArray bgcolors )
 {
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
     jfieldID id_x = env->GetFieldID(objClass, "x", "F");
@@ -792,6 +788,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-     glDisable( GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
+    glDisable( GL_BLEND);
+    return;
 }

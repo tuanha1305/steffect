@@ -32,6 +32,7 @@ public class DemoAdapter extends BaseAdapter {
     List<Brand> brandList;
     Context context;
     LayoutInflater layoutInflater;
+    float[] color = {0.0f,0.0f,0.0f,0.0f};
 
     int level;  //0,1,2
     int index1;//保存选择的品牌
@@ -170,27 +171,27 @@ public class DemoAdapter extends BaseAdapter {
                                     //眉毛
 //                                    cameraView.setLeftMeiMao(bitmap);
 //                                    cameraView.setRightMeiMao(bitmap);
-                                    cameraView.setEyebrow(bitmap);
+                                    cameraView.setEyebrow(bitmap,color);
                                     Log.i("info","眉毛");
                                 }else if(organ.getOrganName().trim().equals("睫毛")){
                                     //睫毛
 //                                    cameraView.setYanJieMao(bitmap);
-                                    cameraView.setEyelash(bitmap);
+                                    cameraView.setEyelash(bitmap,color);
                                     Log.i("info","睫毛");
                                 }else if(organ.getOrganName().trim().equals("眼线")){
                                     //眼线
 //                                    cameraView.setYanXian(bitmap);
-                                    cameraView.setEyeliner(bitmap);
+                                    cameraView.setEyeliner(bitmap,color);
                                     Log.i("info","眼线");
                                 }else if(organ.getOrganName().trim().equals("眼影")){
                                     //眼影
 //                                    cameraView.setYanYing(bitmap);
-                                    cameraView.setyEyeShadow(bitmap);
+                                    cameraView.setEyeShadow(bitmap,color);
                                     Log.i("info","眼影");
                                 }else if(organ.getOrganName().trim().equals("腮红")){
                                     //腮红
 //                                    cameraView.setSaihong(bitmap);
-                                    cameraView.setBlush(bitmap);
+                                    cameraView.setBlush(bitmap,color);
                                     Log.i("info","腮红");
                                 }
                             }
