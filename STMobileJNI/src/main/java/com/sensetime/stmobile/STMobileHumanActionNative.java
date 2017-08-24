@@ -31,7 +31,7 @@ public class STMobileHumanActionNative {
 
     //human action默认配置,
     //全部检测,不建议使用,耗时、cpu占用率会变高,建议根据需求检测相关动作
-    public final static int ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_DETECT = ST_MOBILE_FACE_DETECT ;  ///< 全部检测
+    public final static int ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_DETECT = ST_MOBILE_FACE_DETECT|ST_MOBILE_FACE_240_DETECT;  ///< 全部检测
 
     //创建时默认的配置参数
     // 使用多线程，可最大限度的提高速度，并减少卡顿,根据可根据具体需求修改默认配置

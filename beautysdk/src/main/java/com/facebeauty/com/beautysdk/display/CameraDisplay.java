@@ -109,7 +109,7 @@ public class CameraDisplay implements Renderer {
     private boolean mNeedBeautify = true;
     private boolean mNeedFaceAttribute = false;
     private boolean mNeedUpdateFaceAttribute = true;
-    private boolean mNeedSticker = false;
+    private boolean mNeedSticker = true;
     private boolean mNeedFilter = false;
     private boolean mNeedSave = false;
     private boolean mNeedObject = false;
@@ -1061,9 +1061,10 @@ public class CameraDisplay implements Renderer {
                         STPoint[] pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
                         STPoint[] pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
                         STPoint[] pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
+
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
-                            stPoint240[j] = stPoints[j];
+                            stPoint240[j] = getSTPoint(stPoints[j]);
                         }
                         //左眼
                         for (int j = 0; j < 22; j++) {
@@ -1160,6 +1161,11 @@ public class CameraDisplay implements Renderer {
         this.downMouseColors=downMouseColors;
     }
 
-
-
+public STPoint getSTPoint(STPoint stPoint){
+   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
+   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
+    stPoint.setX(_scale*stPoint.getX()-_margin);
+     stPoint.setY(_scale*stPoint.getY());
+     return stPoint;
+  }
 }
