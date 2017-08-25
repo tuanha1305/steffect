@@ -465,9 +465,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
             0.0f, 1.0f,
             1.0f, 0.0f,
             0.0f, 0.0f,
-
-
-
     };
     glUseProgram(mGLProgId);
     glEnable(GL_BLEND);

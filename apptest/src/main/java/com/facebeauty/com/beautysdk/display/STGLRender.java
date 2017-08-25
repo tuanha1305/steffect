@@ -254,8 +254,8 @@ public class STGLRender {
             nativeDrawUPMouse(stPoint240, _downmousecolors);
             nativeDrawZuichun(stPoint240, _downmousecolors);
             nativeDrawRightJiemao(stPoint240,texture_jiemao);
-            nativeDrawRightJiemao(stPoint240,texture_yanxian);
-            nativeDrawRightJiemao(stPoint240,texture_yanying);
+//            nativeDrawRightJiemao(stPoint240,texture_yanxian);
+//            nativeDrawRightJiemao(stPoint240,texture_yanying);
             nativeDrawSaiHong(stPoint240,texture_saihong);
             GlUtil.checkGlError("test");
         }
