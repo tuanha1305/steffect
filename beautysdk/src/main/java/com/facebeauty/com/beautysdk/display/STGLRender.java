@@ -245,18 +245,18 @@ public class STGLRender {
         }
     }
 
-    public void drawMeizhuang(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong, float _upmousecolors[], float _downmousecolors[] )
+    public void makeup(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong, float _upmousecolors[], float _downmousecolors[],float jiemaobgcolors[],float meimaobgcolors[],float saihongbgcolors[],float yanyingbgcolors[],float yanxianbgcolors[])
     {
         if( stPoint240 != null) {
-            nativeDrawLeftMeiMao(stPoint240, texture_left_meimao);
-            nativeDrawRightMeiMao(stPoint240,texture_right_meimao);
+            nativeDrawLeftMeiMao(stPoint240, texture_left_meimao,meimaobgcolors);
+            nativeDrawRightMeiMao(stPoint240,texture_right_meimao,meimaobgcolors);
 //            float _mousecolors[] = {178/255f,18/255f,32/255f,0.6f};
             nativeDrawUPMouse(stPoint240, _downmousecolors);
             nativeDrawZuichun(stPoint240, _downmousecolors);
-            nativeDrawRightJiemao(stPoint240,texture_jiemao);
-            nativeDrawRightJiemao(stPoint240,texture_yanxian);
-            nativeDrawRightJiemao(stPoint240,texture_yanying);
-            nativeDrawSaiHong(stPoint240,texture_saihong);
+            nativeDrawRightJiemao(stPoint240,texture_jiemao,jiemaobgcolors);
+            nativeDrawRightJiemao(stPoint240,texture_yanxian,yanxianbgcolors);
+            nativeDrawRightJiemao(stPoint240,texture_yanying,yanyingbgcolors);
+            nativeDrawSaiHong(stPoint240,texture_saihong,saihongbgcolors);
             GlUtil.checkGlError("test");
         }
 
@@ -423,10 +423,10 @@ public class STGLRender {
         return  mFrameBuffers[0];
     };
 
-    public native void nativeDrawRightJiemao(STPoint[] points, int textureId);
-    public native void nativeDrawLeftMeiMao(STPoint[] points, int textureId);
-    public native void nativeDrawRightMeiMao(STPoint[] points, int textureId);
-    public native void nativeDrawSaiHong(STPoint[] points, int textureId);
+    public native void nativeDrawRightJiemao(STPoint[] points, int textureId, float bgcolors[]);
+    public native void nativeDrawLeftMeiMao(STPoint[] points, int textureId, float bgcolors[]);
+    public native void nativeDrawRightMeiMao(STPoint[] points, int textureId, float bgcolors[]);
+    public native void nativeDrawSaiHong(STPoint[] points, int textureId, float bgcolors[]);
     public native void nativeDrawZuichun(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeDrawUPMouse(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeInitMousePrograme();

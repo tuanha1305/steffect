@@ -107,9 +107,9 @@ public class CameraDisplay implements Renderer {
     private long mStartTime;
     private boolean mShowOriginal = false;
     private boolean mNeedBeautify = true;
-    private boolean mNeedFaceAttribute = false;
+    private boolean mNeedFaceAttribute = true;
     private boolean mNeedUpdateFaceAttribute = true;
-    private boolean mNeedSticker = false;
+    private boolean mNeedSticker = true;
     private boolean mNeedFilter = false;
     private boolean mNeedSave = false;
     private boolean mNeedObject = false;
@@ -276,7 +276,7 @@ public class CameraDisplay implements Renderer {
         initBeauty();
         initSticker();
         initFilter();
-        initMeizhuang();
+        initMakeup();
     }
 
     private void initFaceAttribute() {
@@ -307,7 +307,7 @@ public class CameraDisplay implements Renderer {
         LogUtils.i(TAG, "the result for createInstance for human_action is %d", result);
     }
 
-    private void initMeizhuang(){
+    private void initMakeup(){
         if (bSaihongDirty && saihongBitmap != null) {
             textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
         } else {
@@ -698,9 +698,6 @@ public class CameraDisplay implements Renderer {
             mFpsListener.onFpsChanged((int) dt);
         }
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        int textureMId = OpenGLUtils.NO_TEXTURE;
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.bunny);
-        int id = OpenGLUtils.loadTexture(bitmap,textureMId,true);
         mGLRender.onDrawFrame(textureId);
         stPoint240 = null;
     }
@@ -1061,9 +1058,10 @@ public class CameraDisplay implements Renderer {
                         STPoint[] pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
                         STPoint[] pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
                         STPoint[] pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
+
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
-                            stPoint240[j] = stPoints[j];
+                            stPoint240[j] = getSTPoint(stPoints[j]);
                         }
                         //左眼
                         for (int j = 0; j < 22; j++) {
@@ -1087,9 +1085,11 @@ public class CameraDisplay implements Renderer {
                         }
 //                        mGLRender.drawMeizhuang(stPoint240,texture_left,texture_right,textSiaHongId,downMouseColors);
                         if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
-                         initMeizhuang();
+                         initMakeup();
                         }
-                        mGLRender.drawMeizhuang(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors);
+                        mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
+                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
+                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
@@ -1106,8 +1106,14 @@ public class CameraDisplay implements Renderer {
     int textJieMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanYingId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
+    float[] jiemaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] meimaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] saihongbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] yanyingbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] yanxianbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] upMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] downMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+
     boolean bLeftMeiDirty = false;
     Bitmap leftMeiBitmap;
     boolean bRightMeiDirty = false;
@@ -1121,35 +1127,40 @@ public class CameraDisplay implements Renderer {
     boolean bSaihongDirty = false;
     Bitmap saihongBitmap;
 
-    public void setLeftMeiMao(Bitmap bitmap) {
+    public void setLeftMeiMao(Bitmap bitmap,float[] meimaobgcolors) {
         bLeftMeiDirty =true;
         leftMeiBitmap = bitmap;
+        this.meimaobgcolors = meimaobgcolors;
     }
 
-    public void setRightMeiMao(Bitmap bitmap) {
+    public void setRightMeiMao(Bitmap bitmap,float[] meimaobgcolors) {
         bRightMeiDirty =true;
         rightMeiBitmap = bitmap;
+        this.meimaobgcolors = meimaobgcolors;
     }
 
-    public void setYanXian(Bitmap bitmap) {
+    public void setYanXian(Bitmap bitmap,float[] yanxianbgcolors) {
         bYanXianDirty = true;
         yanXianBitmap =bitmap;
-
+        this.yanxianbgcolors = yanxianbgcolors;
     }
 
-    public void setYanJieMao(Bitmap bitmap) {
+    public void setYanJieMao(Bitmap bitmap,float[] jiemaobgcolors) {
         bJieMaoDirty = true;
         jieMaoBitmap = bitmap;
+        this.jiemaobgcolors = jiemaobgcolors;
 
     }
-    public void setYanYing(Bitmap bitmap) {
+    public void setYanYing(Bitmap bitmap,float[] yanyingbgcolors) {
         bYanYingDirty =true;
         yanYingBitmap = bitmap;
+        this.yanyingbgcolors = yanyingbgcolors;
 
     }
-    public void setSaihong(Bitmap bitmap) {
+    public void setSaihong(Bitmap bitmap,float[] saihongbgcolors) {
         bSaihongDirty = true;
         saihongBitmap = bitmap;
+        this.saihongbgcolors = saihongbgcolors;
     }
 
     public void setUpMouseColors(float[] upMouseColors) {
@@ -1160,6 +1171,11 @@ public class CameraDisplay implements Renderer {
         this.downMouseColors=downMouseColors;
     }
 
-
-
+public STPoint getSTPoint(STPoint stPoint){
+   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
+   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
+    stPoint.setX(_scale*stPoint.getX()-_margin);
+     stPoint.setY(_scale*stPoint.getY());
+     return stPoint;
+  }
 }

@@ -141,9 +141,9 @@ public class CameraView extends RelativeLayout {
     /**
      * 眉毛
      */
-    public void setEyebrow(Bitmap bitmap){
-        mCameraDisplay.setRightMeiMao(bitmap);
-        mCameraDisplay.setLeftMeiMao(bitmap);
+    public void setEyebrow(Bitmap bitmap,float[] eyeBrowColor){
+        mCameraDisplay.setRightMeiMao(bitmap,eyeBrowColor);
+        mCameraDisplay.setLeftMeiMao(bitmap,eyeBrowColor);
     }
 
     /**
@@ -151,8 +151,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyelash(Bitmap bitmap) {
-        mCameraDisplay.setYanJieMao(bitmap);
+    public void setEyelash(Bitmap bitmap,float[] eyelashColor) {
+        mCameraDisplay.setYanJieMao(bitmap,eyelashColor);
     }
 
     /**
@@ -160,8 +160,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyeliner(Bitmap bitmap) {
-        mCameraDisplay.setYanXian(bitmap);
+    public void setEyeliner(Bitmap bitmap,float[] eyeLinerColor) {
+        mCameraDisplay.setYanXian(bitmap,eyeLinerColor);
     }
 
     /**
@@ -169,8 +169,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setyEyeShadow(Bitmap bitmap) {
-        mCameraDisplay.setYanYing(bitmap);
+    public void setEyeShadow(Bitmap bitmap,float[] eyeShadowColor) {
+        mCameraDisplay.setYanYing(bitmap,eyeShadowColor);
     }
 
     /**
@@ -178,8 +178,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setBlush(Bitmap bitmap) {
-        mCameraDisplay.setSaihong(bitmap);
+    public void setBlush(Bitmap bitmap,float[] blushColor) {
+        mCameraDisplay.setSaihong(bitmap,blushColor);
     }
 
     /**
@@ -283,7 +283,7 @@ public class CameraView extends RelativeLayout {
         } else if (position == 1) {
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(null);
-        } else {
+        } else if(position==2){
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(path);
         }
