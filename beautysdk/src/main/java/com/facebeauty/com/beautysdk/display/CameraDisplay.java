@@ -69,7 +69,7 @@ public class CameraDisplay implements Renderer {
      * SurfaceTexure texture id
      */
     protected int mTextureId = OpenGLUtils.NO_TEXTURE;
-
+    private STHumanAction humanAction;
     private int mImageWidth;
     private int mImageHeight;
     private GLSurfaceView mGlSurfaceView;
@@ -1033,6 +1033,7 @@ public class CameraDisplay implements Renderer {
         int res = action & flag;
         return res == 0 ? 0 : 1;
     }
+
 
     /**
      * 获取所有的点
