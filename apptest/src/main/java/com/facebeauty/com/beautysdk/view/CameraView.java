@@ -141,9 +141,9 @@ public class CameraView extends RelativeLayout {
     /**
      * 眉毛
      */
-    public void setEyebrow(Bitmap bitmap,float[] eyeBrowColor){
-        mCameraDisplay.setRightMeiMao(bitmap,eyeBrowColor);
-        mCameraDisplay.setLeftMeiMao(bitmap,eyeBrowColor);
+    public void setEyebrow(Bitmap bitmap,float[] bocolor){
+        mCameraDisplay.setRightMeiMao(bitmap,bocolor);
+        mCameraDisplay.setLeftMeiMao(bitmap,bocolor);
     }
 
     /**
@@ -151,8 +151,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyelash(Bitmap bitmap,float[] eyelashColor) {
-        mCameraDisplay.setYanJieMao(bitmap,eyelashColor);
+    public void setEyelash(Bitmap bitmap,float[] bocolor) {
+        mCameraDisplay.setYanJieMao(bitmap,bocolor);
     }
 
     /**
@@ -283,7 +283,7 @@ public class CameraView extends RelativeLayout {
         } else if (position == 1) {
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(null);
-        } else if(position==2){
+        } else {
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(path);
         }
