@@ -23,8 +23,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 public class MainActivity extends Activity {
     public static final String TAG="MainActivity";
-    private static final int PERMISSION_REQUEST_CAMERA = 0;
-    private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+
     private HorizontalListView horizontalList;
     CameraView cameraView;
     private String path = "http://api.7fineday.com/front/api/face/authkey";
@@ -36,31 +35,12 @@ public class MainActivity extends Activity {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: 授权成功");
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (checkSelfPermission(Manifest.permission.CAMERA)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        // Permission has not been granted and must be requested.
-                        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                            // Provide an additional rationale to the user if the permission was not granted
-                            // and the user would benefit from additional context for the use of the permission.
-                        }
-                        // Request the permission. The result will be received in onRequestPermissionResult()
-                        requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                PERMISSION_REQUEST_CAMERA);
-                    }
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
-                    }
-                }
 
             }
 
             @Override
             public void onFail() {
                 Log.d(TAG, "onSuccess: 授权失败");
-
             }
         });
         cameraView = (CameraView) findViewById(R.id.cameraView);
@@ -105,31 +85,5 @@ public class MainActivity extends Activity {
         super.onPause();
         cameraView.onPause();
     }
-    private void checkPremission() {
-        final String permission = Manifest.permission.CAMERA;  //相机权限
-        final String permission1 = Manifest.permission.WRITE_EXTERNAL_STORAGE; //写入数据权限
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, permission1) != PackageManager.PERMISSION_GRANTED) {  //先判断是否被赋予权限，没有则申请权限
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {  //给出权限申请说明
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-            } else { //直接申请权限
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 100); //申请权限，可同时申请多个权限，并根据用户是否赋予权限进行判断
-            }
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {  //申请权限的返回值
-            case 100:
-                int length = grantResults.length;
-                final boolean isGranted = length >= 1 && PackageManager.PERMISSION_GRANTED == grantResults[length - 1];
-                if (isGranted) {  //如果用户赋予权限，则调用相机
-                }else{ //未赋予权限，则做出对应提示
 
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 }
