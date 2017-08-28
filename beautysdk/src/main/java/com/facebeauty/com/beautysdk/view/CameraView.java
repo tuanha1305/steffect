@@ -20,6 +20,7 @@ import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
+import com.sensetime.stmobile.model.STPoint;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -287,9 +288,5 @@ public class CameraView extends RelativeLayout {
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(path);
         }
-    }
-
-    public void addTest(){
-
     }
 }

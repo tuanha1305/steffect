@@ -444,7 +444,7 @@ public class CameraDisplay implements Renderer {
         mSurfaceHeight = height;
         mSurfaceWidth = width;
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
+        mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 720, 1280);
     }
 
 
@@ -796,13 +796,6 @@ public class CameraDisplay implements Renderer {
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
             }
         }
-//        DisplayMetrics dm = new DisplayMetrics();
-//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-//        wm.getDefaultDisplay().getMetrics(dm);//2392=====1440
-////        mImageWidth = dm.widthPixels;
-////        mImageHeight = dm.heightPixels;
-//
-//        Log.d("liupan",dm.heightPixels+"====="+ dm.widthPixels);
 
         List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
         for(Camera.Size size:sizes){
@@ -954,7 +947,7 @@ public class CameraDisplay implements Renderer {
                     resetIndexRect();
                 }
 
-                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
+                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 480, 640);
                 if (mListener != null) {
                     mListener.onChangePreviewSize(mImageHeight, mImageWidth);
                 }
