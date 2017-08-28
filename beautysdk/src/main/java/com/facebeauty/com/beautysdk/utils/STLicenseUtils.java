@@ -129,7 +129,7 @@ public class STLicenseUtils {
             protected Boolean doInBackground(Void... voids) {
                 String json = "{ \"head\": { \"uid\" : \"\" , \"sid\" : \"\" , \"plat\" : \"\" , \"st\" : \"\", \"ver\" : \"\" , \"imei\" : \"\" , \"oc\" : \"\" }}";
                 String path = "http://api.7fineday.com/front/api/face/authkey";
-                String licenseJsonStr = HttpUtils.getLicense(path, json);
+                String licenseJsonStr = HttpUtils.getLicense(path, json,"POST");
                 if (TextUtils.isEmpty(licenseJsonStr))
                     return false;
                 try {
@@ -190,7 +190,7 @@ public class STLicenseUtils {
                         "}" +
                         "}";
                 String path = "http://api.7fineday.com/front/api/face/auth";
-                String licenseJsonStr = HttpUtils.getLicense(path, json.trim());
+                String licenseJsonStr = HttpUtils.getLicense(path, json.trim(),"GET");
                 if (TextUtils.isEmpty(licenseJsonStr))
                     return false;
                 try {

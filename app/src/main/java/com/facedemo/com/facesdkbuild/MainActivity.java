@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -27,10 +29,12 @@ public class MainActivity extends Activity {
     private HorizontalListView horizontalList;
     CameraView cameraView;
     private String path = "http://api.7fineday.com/front/api/face/authkey";
+    private Button btnStart,btnEnd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        STLicenseUtils.getTokenLicense(this);
         STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
             @Override
             public void onSuccess() {
@@ -45,7 +49,8 @@ public class MainActivity extends Activity {
         });
         cameraView = (CameraView) findViewById(R.id.cameraView);
         cameraView.init(MainActivity.this);
-
+        btnStart = (Button)findViewById(R.id.start);
+        btnEnd = (Button)findViewById(R.id.stop);
 //                cameraView.setTiezhi(3,);
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
@@ -55,6 +60,19 @@ public class MainActivity extends Activity {
         List<Brand> brandList = JSON.parseArray(dataStr, Brand.class);
         DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
         horizontalList.setAdapter(adapter);
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        btnEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
     @Override
     protected void onResume() {

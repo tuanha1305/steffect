@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
@@ -288,5 +289,9 @@ public class CameraView extends RelativeLayout {
             mCameraDisplay.enableSticker(true);
             mCameraDisplay.setShowSticker(path);
         }
+    }
+
+    public Surface getSurfaceView(){
+        return mSurfaceViewOverlap.getHolder().getSurface();
     }
 }

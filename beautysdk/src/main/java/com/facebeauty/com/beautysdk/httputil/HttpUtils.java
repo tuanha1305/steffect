@@ -30,7 +30,7 @@ public class HttpUtils {
     private static final String LICENSE_NAME = "SenseME.lic";
     public static String pathAbs = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-    public static String getLicense(String path, String json) {
+    public static String getLicense(String path, String json,String request) {
 //        ByteArrayOutputStream byteArrayOutputStream;
         BufferedReader bufferedReader = null;
         byte[] data = new byte[1024];
@@ -42,13 +42,13 @@ public class HttpUtils {
             urlConnection = (HttpURLConnection) url.openConnection();
         /* optional request header */
 //            urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+            urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         /* optional request header */
             urlConnection.setRequestProperty("Accept", "application/json");
 //            dto.setCreator(java.net.URLEncoder.encode(dto.getCreator(), "utf-8"));
             // read response
         /* for Get request */
-            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestMethod(request);
             urlConnection.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
             wr.writeBytes(json);
