@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.glutils.GlUtil;
@@ -27,6 +26,7 @@ import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.facebeauty.com.beautysdk.utils.LogUtils;
 import com.facebeauty.com.beautysdk.view.CameraView;
+import com.facedemo.com.facesdkbuild.R;
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -813,8 +813,10 @@ public class CameraDisplay implements Renderer {
         mImageWidth = sizes.get(sizes.size()-1).height;
         mImageHeight = sizes.get(sizes.size()-1).width;
 
-        mImageWidth =1080;
-        mImageHeight = 1920;
+//        mImageWidth =1080;
+//        mImageHeight = 1920;
+        mImageHeight = 640;
+        mImageWidth = 480;
 
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
