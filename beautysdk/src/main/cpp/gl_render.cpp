@@ -728,6 +728,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     jfieldID id_y = env->GetFieldID(objClass, "y", "F");
     float x,y,x0,y0,x1,y1,x2,y2,x3,y3,x4,y4;
     double theta,d,k;
+    float r,g,b,a;
     //画腮红
     jobject jobj = env->GetObjectArrayElement(stPoint, 82);
     x0 = env->GetFloatField(jobj,id_x);
