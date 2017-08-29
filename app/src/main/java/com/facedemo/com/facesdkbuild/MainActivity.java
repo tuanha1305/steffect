@@ -51,7 +51,9 @@ public class MainActivity extends Activity {
         cameraView.init(MainActivity.this);
         btnStart = (Button)findViewById(R.id.start);
         btnEnd = (Button)findViewById(R.id.stop);
-//                cameraView.setTiezhi(3,);
+
+        String pathTiezhi = "/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip";
+        cameraView.setTiezhi(3,pathTiezhi);
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
         JSONObject jsonObject = JSON.parseObject(data);

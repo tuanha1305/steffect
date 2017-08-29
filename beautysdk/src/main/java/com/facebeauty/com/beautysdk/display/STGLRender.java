@@ -352,7 +352,6 @@ public class STGLRender {
 
             GLES20.glGenFramebuffers(3, mFrameBuffers, 0);
             GLES20.glGenTextures(3, mFrameBufferTextures, 0);
-
             bindFrameBuffer(mFrameBufferTextures[0], mFrameBuffers[0], width, height);
             bindFrameBuffer(mFrameBufferTextures[1], mFrameBuffers[1], width, height);
             bindFrameBuffer(mFrameBufferTextures[2], mFrameBuffers[2], width, height);

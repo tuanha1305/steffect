@@ -354,7 +354,7 @@ public class CameraDisplay implements Renderer {
         // 初始化beautify,preview的宽高
         int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         if (result == 0) {
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.45f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.2f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.02f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0f);
@@ -797,30 +797,26 @@ public class CameraDisplay implements Renderer {
             }
         }
 
-        List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
-        for(Camera.Size size:sizes){
-            Log.d("liupan",size.height+"++++++"+size.width);
-        }
+//        List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
+//        for(Camera.Size size:sizes){
+//            Log.d("liupan",size.height+"++++++"+size.width);
+//        }
 //       Camera.Size size =  mCameraProxy.getCamera().getParameters().getPreviewSize();
 //        Log.d("liupan",size.height+"!!!!!!!"+size.width);
-        mImageWidth = sizes.get(sizes.size()-1).height;
-        mImageHeight = sizes.get(sizes.size()-1).width;
+//        mImageWidth = sizes.get(sizes.size()-1).height;
+//        mImageHeight = sizes.get(sizes.size()-1).width;
 
-        mImageWidth =1080;
-        mImageHeight = 1920;
+        mImageWidth =720;
+        mImageHeight = 1280;
 
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
     }
 
     public void onPause() {
-        LogUtils.i(TAG, "onPause");
         mCurrentSticker = null;
         mIsPaused = true;
         mCameraProxy.releaseCamera();
-        LogUtils.d(TAG, "Release camera");
-
-
         mGlSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
@@ -947,7 +943,7 @@ public class CameraDisplay implements Renderer {
                     resetIndexRect();
                 }
 
-                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 480, 640);
+                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 720, 1280);
                 if (mListener != null) {
                     mListener.onChangePreviewSize(mImageHeight, mImageWidth);
                 }
@@ -1055,8 +1051,11 @@ public class CameraDisplay implements Renderer {
 
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
-                            stPoint240[j] = getSTPoint(stPoints[j]);
+//                            stPoint240[j] = getSTPoint(stPoints[j]);
+                            stPoint240[j] = stPoints[j];
+
                         }
+
                         //左眼
                         for (int j = 0; j < 22; j++) {
                             stPoint240[106 + j] = pointsEyeLeft[j];
@@ -1165,11 +1164,11 @@ public class CameraDisplay implements Renderer {
         this.downMouseColors=downMouseColors;
     }
 
-public STPoint getSTPoint(STPoint stPoint){
-   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
-   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
-    stPoint.setX(_scale*stPoint.getX()-_margin);
-     stPoint.setY(_scale*stPoint.getY());
-     return stPoint;
-  }
+//public STPoint getSTPoint(STPoint stPoint){
+//   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
+//   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
+//    stPoint.setX(_scale*stPoint.getX()-_margin);
+//     stPoint.setY(_scale*stPoint.getY());
+//     return stPoint;
+//  }
 }

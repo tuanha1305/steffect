@@ -92,7 +92,7 @@ public class CameraView extends RelativeLayout {
     private void initEvent() {
         mSurfaceViewOverlap.setZOrderOnTop(true);
         mSurfaceViewOverlap.setZOrderMediaOverlay(true);
-        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 //
 //        mPaint = new Paint();
 //        mPaint.setColor(Color.rgb(240, 100, 100));
