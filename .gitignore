@@ -1,11 +1,10 @@
 *.iml
-
 .idea
 .gradle
 .DS_Store
-
 captures
 build
+.externalNativeBuild
 gradle
 gradlew
 gradlew.bat
@@ -17,5 +16,4 @@ app/src/main/obj/
 app/src/main/libs/
 STMobileJNI/src/main/libs/
 STMobileJNI/src/main/obj/
-STMobileJNI1/src/main/libs/
-STMobileJNI1/src/main/obj/
+
