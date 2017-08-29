@@ -705,6 +705,7 @@ public class CameraDisplay implements Renderer {
 
 
                 //调用贴纸API绘制贴纸
+//                mNeedSticker = false;
                 if(mNeedSticker){
                     boolean needOutputBuffer = false; //如果需要输出buffer推流或其他，设置该开关为true
                     long stickerStartTime = System.currentTimeMillis();

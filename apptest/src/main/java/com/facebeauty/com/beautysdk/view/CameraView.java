@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
@@ -20,6 +21,7 @@ import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
+import com.sensetime.stmobile.model.STPoint;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -289,7 +291,7 @@ public class CameraView extends RelativeLayout {
         }
     }
 
-    public void addTest(){
-
+    public Surface getSurfaceView(){
+        return mSurfaceViewOverlap.getHolder().getSurface();
     }
 }

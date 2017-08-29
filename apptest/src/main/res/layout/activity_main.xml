@@ -18,6 +18,17 @@
 
     </FrameLayout>
 
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始录制"/>
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:text="停止录制"/>
     <TextView
         android:id="@+id/id_tv_changesticker"
         android:layout_width="100dp"

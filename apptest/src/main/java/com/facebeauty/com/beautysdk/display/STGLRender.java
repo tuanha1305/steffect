@@ -161,7 +161,7 @@ public class STGLRender {
 
         float ratio1 = (float) outputWidth / imageW;
         float ratio2 = (float) outputHeight / imageH;
-        float ratioMax = Math.min(ratio1, ratio2);
+        float ratioMax = Math.max(ratio1, ratio2);
         int imageWidthNew = Math.round(imageW * ratioMax);
         int imageHeightNew = Math.round(imageH * ratioMax);
 
