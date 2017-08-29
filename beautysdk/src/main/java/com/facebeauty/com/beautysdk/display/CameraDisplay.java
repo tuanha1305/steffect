@@ -564,7 +564,7 @@ public class CameraDisplay implements Renderer {
                 STMobile106[] arrayFaces = null, arrayOutFaces = null;
                 int orientation = getCurrentOrientation();
                 long humanActionCostTime = System.currentTimeMillis();
-                STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
+                humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
                         mDetectConfig, orientation, mImageWidth, mImageHeight);
                 if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
                     if(humanAction.faceExtraInfo != null && humanAction.faceExtraInfo.eyebrowCount == 0 &&
@@ -1036,8 +1036,8 @@ public class CameraDisplay implements Renderer {
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
-        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
-                mDetectConfig, orientation, mImageWidth, mImageHeight);
+//        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
+//                mDetectConfig, orientation, mImageWidth, mImageHeight);
         if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
             if(humanAction.faceExtraInfo != null){
                 arrayFaces = humanAction.getMobileFaces();
