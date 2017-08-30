@@ -10,7 +10,8 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := stmobile_jni
-LOCAL_SRC_FILES := stmobile_beautify_jni.cpp\
+LOCAL_SRC_FILES := stmobile_common_jni.cpp\
+                   stmobile_beautify_jni.cpp\
                    stmobile_sticker_jni.cpp \
                    stmobile_humanaction_jni.cpp \
                    utils.cpp \

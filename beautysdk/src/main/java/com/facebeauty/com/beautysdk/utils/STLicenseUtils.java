@@ -1,22 +1,34 @@
 package com.facebeauty.com.beautysdk.utils;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.facebeauty.com.beautysdk.httputil.HttpUtils;
 import com.sensetime.stmobile.STMobileAuthentificationNative;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by leiwang on 2016/12/2.
  */
@@ -93,15 +105,14 @@ public class STLicenseUtils {
         LogUtils.e(TAG, "activeCode: " + activateCode);
         return true;
     }
-    public static void checkLicense(final Context context, OnCheckLicenseListener licenseListener) {
-        onCheckLicenseListener = licenseListener;
+
+    private static void checkLicense(final Context context) {
         String path = context.getFilesDir() + "/key.lic";
         File file = new File(path);
         if (file.exists()) {
             try {
                 FileInputStream in = new FileInputStream(file);
                 if (checkLicense(context, in)) {
-//                    return true;
                     if (onCheckLicenseListener != null) {
                         onCheckLicenseListener.onSuccess();
                     }
@@ -117,19 +128,26 @@ public class STLicenseUtils {
         } else {
             getLicense(context);
         }
-//        return false;
     }
-    public static void getLicense(final Context context) {
+
+    public static void checkLicense(final Context context, OnCheckLicenseListener licenseListener) {
+        onCheckLicenseListener = licenseListener;
+        checkTokenLicense(context);
+
+    }
+
+    private static void getLicense(final Context context) {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
             }
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 String json = "{ \"head\": { \"uid\" : \"\" , \"sid\" : \"\" , \"plat\" : \"\" , \"st\" : \"\", \"ver\" : \"\" , \"imei\" : \"\" , \"oc\" : \"\" }}";
                 String path = "http://api.7fineday.com/front/api/face/authkey";
-                String licenseJsonStr = HttpUtils.getLicense(path, json,"POST");
+                String licenseJsonStr = HttpUtils.getLicense(path, json, "POST");
                 if (TextUtils.isEmpty(licenseJsonStr))
                     return false;
                 try {
@@ -146,10 +164,10 @@ public class STLicenseUtils {
                 }
                 return false;
             }
+
             @Override
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
-                //TODO
                 if (result) {
                     if (onCheckLicenseListener != null) {
                         onCheckLicenseListener.onSuccess();
@@ -163,13 +181,87 @@ public class STLicenseUtils {
         }.execute();
     }
 
+    /**
+     * 检查token合法性
+     *
+     * @return true, 成功 false,失败
+     */
+    private static boolean checkTokenLicense(Context context, InputStream stream) {
+        String tokenLicenseBuffer = null;
+        String path = context.getFilesDir() + "/token.lic";
+        File file = new File(path);
+        if (file.exists() && file.length() > 0) {
+            try {
+                ObjectInputStream is = new ObjectInputStream(
+                        new FileInputStream(file));
+                tokenLicenseBuffer = (String) is.readObject();
+                is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // license文件为空,则直接返回
+        if (TextUtils.isEmpty(tokenLicenseBuffer)) {
+            LogUtils.e(TAG, "read token license data error");
+            return false;
+        }
 
-    public static void getTokenLicense(final Context context) {
+        try {
+            JSONObject tokenJsonObject = new JSONObject(tokenLicenseBuffer);
+            String tokenStr = tokenJsonObject.getString("token");
+            //validDate":"2017-09-04 23:17:29"
+            String validDateStr = tokenJsonObject.getString("validDate");
+            if (TextUtils.isEmpty(tokenStr)) {
+                return false;
+            }
+            if (TextUtils.isEmpty(validDateStr)) {
+                return false;
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date cacheDate = simpleDateFormat.parse(validDateStr);
+            Date nowDate = new Date();
+            if (nowDate.before(cacheDate)) {
+                return true;
+            }
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static void checkTokenLicense(Context context) {
+        String path = context.getFilesDir() + "/token.lic";
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                FileInputStream in = new FileInputStream(file);
+                if (checkTokenLicense(context, in)) {
+                    checkLicense(context);
+                } else {
+                    getTokenLicense(context);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (onCheckLicenseListener != null) {
+                    onCheckLicenseListener.onFail();
+                }
+            }
+        } else {
+            getTokenLicense(context);
+        }
+    }
+
+    private static void getTokenLicense(final Context context) {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
             }
+
             @Override
             protected Boolean doInBackground(Void... voids) {
 
@@ -190,31 +282,39 @@ public class STLicenseUtils {
                         "}" +
                         "}";
                 String path = "http://api.7fineday.com/front/api/face/auth";
-                String licenseJsonStr = HttpUtils.getLicense(path, json.trim(),"GET");
+                String licenseJsonStr = HttpUtils.getLicense(path, json.trim(), "GET");
                 if (TextUtils.isEmpty(licenseJsonStr))
                     return false;
                 try {
                     JSONObject jsonObject = new JSONObject(licenseJsonStr);
                     if (jsonObject.getString("status").equals("1")) {
-                        String licenseUrl = jsonObject.getString("data");
-                        if (TextUtils.isEmpty(licenseUrl))
+//                        {"status":1,"data":{"token":"5MHolRK2CL+gHkEt+SQW5GPu0hCsRqT7TskJaQHkr7w=","validDate":"2017-09-04 23:17:29"},"msg":"返回数据"}
+                        String tokenLicenseUrl = jsonObject.getString("data");
+                        JSONObject tokenJsonObject = jsonObject.getJSONObject("data");
+                        String tokenStr = tokenJsonObject.getString("token");
+                        String validDateStr = tokenJsonObject.getString("validDate");
+
+                        if (TextUtils.isEmpty(tokenStr))
                             return false;
-                        boolean result = downloadLicense(context, licenseUrl);
-                        return result;
+
+                        if (TextUtils.isEmpty(validDateStr)) {
+                            return false;
+                        }
+                        writeTokenLicenseToFile(context, tokenJsonObject.toString());
+//                        将获取到的写到文件中
+                        return true;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return false;
             }
+
             @Override
             protected void onPostExecute(Boolean result) {
                 super.onPostExecute(result);
-                //TODO
                 if (result) {
-                    if (onCheckLicenseListener != null) {
-                        onCheckLicenseListener.onSuccess();
-                    }
+                    checkLicense(context);
                 } else {
                     if (onCheckLicenseListener != null) {
                         onCheckLicenseListener.onFail();
@@ -257,9 +357,34 @@ public class STLicenseUtils {
         in.close();
         return result;
     }
+
+    public static void writeTokenLicenseToFile(Context context, String data) throws IOException {
+        String fileDir = context.getFilesDir() + "/token.lic";
+        File file = new File(fileDir);
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                if (file.getParentFile().mkdirs()) {
+                    file.createNewFile();
+                }
+            }
+        }
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+            out.writeObject(data);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public interface OnCheckLicenseListener {
         void onSuccess();
+
         void onFail();
     }
+
     private static OnCheckLicenseListener onCheckLicenseListener;
 }

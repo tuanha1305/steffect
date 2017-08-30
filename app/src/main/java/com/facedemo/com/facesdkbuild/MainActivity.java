@@ -28,20 +28,18 @@ public class MainActivity extends Activity {
 
     private HorizontalListView horizontalList;
     CameraView cameraView;
-    private String path = "http://api.7fineday.com/front/api/face/authkey";
-    private Button btnStart,btnEnd;
+    private Button btnStart,btnEnd,btnTest,btnChoice;
+    private int mCurrent = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        STLicenseUtils.getTokenLicense(this);
+//        STLicenseUtils.getTokenLicense(this);
         STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: 授权成功");
-
             }
-
             @Override
             public void onFail() {
                 Log.d(TAG, "onSuccess: 授权失败");
@@ -51,26 +49,44 @@ public class MainActivity extends Activity {
         cameraView.init(MainActivity.this);
         btnStart = (Button)findViewById(R.id.start);
         btnEnd = (Button)findViewById(R.id.stop);
-//                cameraView.setTiezhi(3,);
+        btnTest = (Button)findViewById(R.id.test);
+        btnChoice = (Button)findViewById(R.id.choice);
+
+//        String pathTiezhi = "/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip";
+//        cameraView.setTiezhi(3,pathTiezhi);
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
         JSONObject jsonObject = JSON.parseObject(data);
         String dataStr = jsonObject.getString("data");
-//       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
         List<Brand> brandList = JSON.parseArray(dataStr, Brand.class);
         DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
         horizontalList.setAdapter(adapter);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
 
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+            }
+        });
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCurrent==0){
+                    mCurrent =1;
+                }else {
+                    mCurrent = 0;
+                }
+                cameraView.changePreviewSize(mCurrent);
+            }
+        });
+        btnChoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cameraView.changeChoice();
             }
         });
     }

@@ -4,6 +4,12 @@ package com.sensetime.stmobile;
  * 定义美颜支持的图片格式
  */
 public class STCommon {
+
+    static {
+        System.loadLibrary("st_mobile");
+        System.loadLibrary("stmobile_jni");
+    }
+
     //支持的图片格式
     public final static int ST_PIX_FMT_GRAY8 = 0;   // Y    1        8bpp ( 单通道8bit灰度像素 )
     public final static int ST_PIX_FMT_YUV420P = 1; // YUV  4:2:0   12bpp ( 3通道, 一个亮度通道, 另两个为U分量和V分量通道, 所有通道都是连续的 )
@@ -70,4 +76,29 @@ public class STCommon {
             return resultCode;
         }
     }
+
+    /**
+     * 进行颜色格式转换, 不建议使用关于YUV420P的转换,速度较慢
+     *
+     * @param inputImage   用于待转换的图像数据
+     * @param outputImage  转换后的图像数据
+     * @param width        用于转换的图像的宽度(以像素为单位)
+     * @param height       用于转换的图像的高度(以像素为单位)
+     * @param type         需要转换的颜色格式,参考st_mobile_common.h中的st_color_convert_type
+     * @return 成功返回0，错误返回其他，参考STUtils.ResultCode
+     */
+    public static native int stColorConvert(byte[] inputImage, byte[] outputImage, int width, int height, int type);
+
+    /**
+     * 进行图片旋转
+     *
+     * @param inputImage   待旋转的图像数据
+     * @param outputImage  旋转后的图像数据
+     * @param width        用于旋转的图像的宽度(以像素为单位)
+     * @param height       用于旋转的图像的高度(以像素为单位)
+     * @param format       用于旋转的图像的类型
+     * @param rotation     需要旋转的角度，当旋转角度为90度或270度时，交换width和height后，按照新的宽高读取outputImage数据
+     * @return 成功返回0，错误返回其他，参考STUtils.ResultCode
+     */
+    public static native int stImageRotate(byte[] inputImage, byte[] outputImage, int width, int height, int format, int rotation);
 }

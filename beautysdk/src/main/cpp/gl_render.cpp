@@ -368,7 +368,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glUseProgram(mGLProgId);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendColor(1.0f, 0.0f,0.0f, 1.0f);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribPosition);
@@ -435,7 +434,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glUseProgram(mGLProgId);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendColor(1.0f, 0.0f,0.0f, 1.0f);
     glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribPosition);

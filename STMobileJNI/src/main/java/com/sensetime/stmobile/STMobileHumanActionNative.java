@@ -16,7 +16,7 @@ public class STMobileHumanActionNative {
     public final static int ST_MOBILE_HEAD_PITCH = 0x00000010;    ///<  点头
     public final static int ST_MOBILE_BROW_JUMP = 0x00000020;    ///<  眉毛挑动
 
-//    //手势动作
+    //手势动作
     public final static int ST_MOBILE_HAND_GOOD = 0x00000800;    ///<  大拇哥 2048
     public final static int ST_MOBILE_HAND_PALM = 0x00001000;    ///<  手掌 4096
     public final static int ST_MOBILE_HAND_LOVE = 0x00004000;    ///<  爱心 16384
@@ -31,7 +31,13 @@ public class STMobileHumanActionNative {
 
     //human action默认配置,
     //全部检测,不建议使用,耗时、cpu占用率会变高,建议根据需求检测相关动作
-    public final static int ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_DETECT = ST_MOBILE_FACE_DETECT|ST_MOBILE_FACE_240_DETECT;  ///< 全部检测
+    public final static int ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_DETECT = ST_MOBILE_FACE_DETECT | ST_MOBILE_EYE_BLINK |
+            ST_MOBILE_MOUTH_AH | ST_MOBILE_HEAD_YAW |
+            ST_MOBILE_HEAD_PITCH | ST_MOBILE_BROW_JUMP |
+            ST_MOBILE_HAND_GOOD | ST_MOBILE_HAND_PALM |
+            ST_MOBILE_HAND_LOVE | ST_MOBILE_HAND_HOLDUP |
+            ST_MOBILE_HAND_CONGRATULATE | ST_MOBILE_HAND_FINGER_HEART |
+            ST_MOBILE_SEG_BACKGROUND;  ///< 全部检测
 
     //创建时默认的配置参数
     // 使用多线程，可最大限度的提高速度，并减少卡顿,根据可根据具体需求修改默认配置
@@ -94,4 +100,13 @@ public class STMobileHumanActionNative {
      * 释放instance
      */
     public native void destroyInstance();
+
+    /**
+     * 镜像human_action检测结果
+     *
+     * @param width        用于转换的图像的宽度(以像素为单位)
+     * @param humanAction  需要镜像的STHumanAction对象
+     * @return 成功返回0，错误返回其他，参考STUtils.ResultCode
+     */
+    public native STHumanAction humanActionMirror(int width, STHumanAction humanAction);
 }

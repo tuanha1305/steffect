@@ -7,14 +7,14 @@
 #include "st_mobile_sticker.h"
 #include "st_mobile_face_attribute.h"
 
-
-#include <jni.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <android/log.h>
 
 #define LOGGABLE 0
 
 #define LOGI(...) if(LOGGABLE) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define LOGE(...) if(LOGGABLE) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 #ifndef MIN
 #define MIN(x,y) ((x)<(y)?(x):(y))

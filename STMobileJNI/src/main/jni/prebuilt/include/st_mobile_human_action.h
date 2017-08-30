@@ -214,4 +214,13 @@ st_mobile_human_action_setparam(
 	float value
 );
 
+/// @brief 镜像human_action检测结果
+/// @param[in] image_width 检测human_action的图像的宽度(以像素为单位)
+/// @param[in | out] p_human_action 需要镜像的human_action检测结果
+ST_SDK_API void
+st_mobile_human_action_mirror(
+	int image_width,
+	st_mobile_human_action_t *p_human_action
+);
+
 #endif  // INCLUDE_STMOBILE_ST_MOBILE_HUMAN_ACTION_H_
