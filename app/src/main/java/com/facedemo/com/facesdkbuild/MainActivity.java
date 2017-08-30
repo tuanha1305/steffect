@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
 
     private HorizontalListView horizontalList;
     CameraView cameraView;
-    private String path = "http://api.7fineday.com/front/api/face/authkey";
     private Button btnStart,btnEnd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +57,12 @@ public class MainActivity extends Activity {
         String data = openAssetsFile("makeuplist.json");
         JSONObject jsonObject = JSON.parseObject(data);
         String dataStr = jsonObject.getString("data");
-//       JSONObject dataJsonObject=  jsonObject.getJSONObject("data");
         List<Brand> brandList = JSON.parseArray(dataStr, Brand.class);
         DemoAdapter adapter = new DemoAdapter(MainActivity.this, brandList, cameraView);
         horizontalList.setAdapter(adapter);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
 

@@ -1,1 +1,1 @@
-include ':app', ':STMobileJNI', ':beautysdk'
+include ':app', ':beautysdk', ':STMobileJNI1'

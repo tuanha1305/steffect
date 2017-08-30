@@ -159,7 +159,6 @@ public class CameraDisplay implements Renderer {
     public interface ChangePreviewSizeListener {
         void onChangePreviewSize(int previewW, int previewH);
     }
-
     public CameraDisplay(Context context, ChangePreviewSizeListener listener, GLSurfaceView glSurfaceView) {
         mCameraProxy = new CameraProxy(context);
         mGlSurfaceView = glSurfaceView;
