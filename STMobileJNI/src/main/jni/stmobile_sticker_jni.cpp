@@ -26,6 +26,7 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_changeS
 JNIEXPORT void JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_destroyInstance(JNIEnv * env, jobject obj);
 JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_getTriggerAction(JNIEnv * env, jobject obj);
 JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_setWaitingMaterialLoaded(JNIEnv * env, jobject obj, jboolean needWait);
+JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_setMaxMemory(JNIEnv * env, jobject obj, jint value);
 };
 
 jfieldID    sticker_handle;
@@ -165,8 +166,23 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_process
     }
 
     st_mobile_human_action_t human_action = {0};
+    st_mobile_face_extra_info_t face_extra_info = {0};
+
+    jclass humanActionCls = env->GetObjectClass(humanAction);
+    jfieldID fieldFaceExtraInfo = env->GetFieldID(humanActionCls, "faceExtraInfo", "Lcom/sensetime/stmobile/model/STFaceExtraInfo;");
+    jobject faceExtraInfoObj = env->GetObjectField(humanAction, fieldFaceExtraInfo);
+
+    if(faceExtraInfoObj != NULL){
+        env->DeleteLocalRef(faceExtraInfoObj);
+        human_action.p_face_extra_info = &face_extra_info;
+    }
+
     if (!convert2human_action(env, humanAction, human_action)) {
         memset(&human_action, 0, sizeof(st_mobile_human_action_t));
+    }
+
+    if (humanActionCls != NULL) {
+        env->DeleteLocalRef(humanActionCls);
     }
 
     long startTime = getCurrentTime();
@@ -208,8 +224,22 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_process
          }
 
         st_mobile_human_action_t human_action = {0};
+        st_mobile_face_extra_info_t face_extra_info = {0};
+
+        jclass humanActionCls = env->GetObjectClass(humanAction);
+        jfieldID fieldFaceExtraInfo = env->GetFieldID(humanActionCls, "faceExtraInfo", "Lcom/sensetime/stmobile/model/STFaceExtraInfo;");
+        jobject faceExtraInfoObj = env->GetObjectField(humanAction, fieldFaceExtraInfo);
+
+        if(faceExtraInfoObj != NULL){
+            env->DeleteLocalRef(faceExtraInfoObj);
+            human_action.p_face_extra_info = &face_extra_info;
+        }
         if (!convert2human_action(env, humanAction, human_action)) {
             memset(&human_action, 0, sizeof(st_mobile_human_action_t));
+        }
+
+        if (humanActionCls != NULL) {
+            env->DeleteLocalRef(humanActionCls);
         }
 
         long startTime = getCurrentTime();
@@ -284,10 +314,20 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_setWait
     int result = -1;
 
     st_handle_t stickerhandle = getStickerHandle(env, obj);
-    if(stickerhandle != NULL)
-    {
-        LOGI(" sticker handle destory ");
+    if(stickerhandle != NULL){
         result = st_mobile_sticker_set_waiting_material_loaded(stickerhandle, need_wait);
+    }
+
+    return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileStickerNative_setMaxMemory(JNIEnv * env, jobject obj, jint value)
+{
+    int result = -1;
+
+    st_handle_t stickerhandle = getStickerHandle(env, obj);
+    if(stickerhandle != NULL){
+        result = st_mobile_sticker_set_max_imgmem(stickerhandle, value);
     }
 
     return result;

@@ -8,8 +8,6 @@
 
 extern "C" {
     JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_createInstance(JNIEnv * env, jobject obj,jint width, jint height);
-    JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_stColorConvert(JNIEnv * env, jobject obj, jbyteArray imagesrc,
-                                            jbyteArray imagedst, jint imageWidth, jint imageHeight, jint type);
     JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_setParam(JNIEnv * env, jobject obj, jint type, jfloat value);
     JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_processBufferNotInGLContext(JNIEnv * env, jobject obj, jbyteArray pInputImage, jint informat,
                                     jint outputWidth, jint outputHeight, jobjectArray facesArrayIn, jbyteArray pOutputImage, jint outformat, jobjectArray facesArrayOut);
@@ -34,18 +32,6 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_createInstan
     }
     setHandle(env, obj, handle);
     LOGE("createInstance Exit");
-    return result;
-}
-
-JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STBeautifyNative_stColorConvert(JNIEnv * env, jobject obj, jbyteArray imagesrc, jbyteArray imagedst, jint imageWidth, jint imageHeight, jint type)
-{
-    jbyte *srcdata = (jbyte*) (env->GetPrimitiveArrayCritical(imagesrc, 0));
-    jbyte *dstdata = (jbyte*) env->GetPrimitiveArrayCritical(imagedst, 0);
-
-    int result = (int)st_mobile_color_convert((unsigned char *)srcdata,(unsigned char *)dstdata,imageWidth,imageHeight,(st_color_convert_type)type);
-
-    env->ReleasePrimitiveArrayCritical(imagesrc, srcdata, 0);
-    env->ReleasePrimitiveArrayCritical(imagedst, dstdata, 0);
     return result;
 }
 

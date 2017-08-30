@@ -140,6 +140,12 @@ public class STMobileStickerNative {
      */
     public native int setWaitingMaterialLoaded(boolean needWait);
 
+    /**
+     * 设置贴纸素材图像所占用的最大内存
+     * @param value   贴纸素材图像所占用的最大内存（MB）,默认150MB,素材过大时,循环加载,降低内存； 贴纸较小时,全部加载,降低cpu
+     * @return        成功返回ST_OK,失败返回其他错误码,错误码定义在st_mobile_common.h中,如ST_E_FAIL等
+     */
+    public native int setMaxMemory(int value);
 
     /**
      * 销毁实例，必须在opengl环境中运行

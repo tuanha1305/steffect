@@ -616,8 +616,8 @@ bool convert2st_mobile_face_extra_info_t(JNIEnv *env, jobject faceExtraInfoObj, 
         for(int j = 0; j < 13; ++j){
             jobject point = env->GetObjectArrayElement(eyebrow_left_points_array, i * 13 + j);
 
-            face_extra_info.eye_left[i][j].x = env->GetFloatField(point, fpoint_x);
-            face_extra_info.eye_left[i][j].y = env->GetFloatField(point, fpoint_y);
+            face_extra_info.eyebrow_left[i][j].x = env->GetFloatField(point, fpoint_x);
+            face_extra_info.eyebrow_left[i][j].y = env->GetFloatField(point, fpoint_y);
             env->DeleteLocalRef(point);
         }
 
@@ -793,16 +793,13 @@ bool convert2human_action(JNIEnv *env, jobject humanActionObject, st_mobile_huma
     env->DeleteLocalRef(imageObj);
 
     //face extra info
-    //jobject faceExtraInfoObj = env->GetObjectField(humanActionObject, fieldFaceExtraInfo);
-    //if(faceExtraInfoObj != NULL){
-    //    st_mobile_face_extra_info_t face_extra_info = {0};
-
-    //    if (!convert2st_mobile_face_extra_info_t(env, faceExtraInfoObj, face_extra_info)) {
-    //        memset(&face_extra_info, 0, sizeof(st_mobile_face_extra_info_t));
-    //    }
-    //    env->DeleteLocalRef(faceExtraInfoObj);
-    //    human_action.p_face_extra_info = &face_extra_info;
-    //}
+    jobject faceExtraInfoObj = env->GetObjectField(humanActionObject, fieldFaceExtraInfo);
+    if(faceExtraInfoObj != NULL){
+       if (!convert2st_mobile_face_extra_info_t(env, faceExtraInfoObj, *human_action.p_face_extra_info)) {
+            memset(human_action.p_face_extra_info, 0, sizeof(st_mobile_face_extra_info_t));
+        }
+        env->DeleteLocalRef(faceExtraInfoObj);
+    }
 
     env->DeleteLocalRef(st_mobile_106_class);
     env->DeleteLocalRef(st_face_rect_class);

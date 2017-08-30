@@ -252,11 +252,12 @@ typedef enum {
 	ST_RGBA_BGR = 34,       ///< ST_PIX_FMT_RGBA888到ST_PIX_FMT_BGR888转换
 	ST_BGRA_RGB = 35,       ///< ST_PIX_FMT_BGRA888到ST_PIX_FMT_RGB888转换
 	ST_RGBA_GRAY = 36,      ///< ST_PIX_FMT_RGBA8888到ST_PIX_FMT_GRAY8转换
-	ST_RGB_GRAY = 37,
-	ST_RGB_BGR = 38,
-	ST_BGR_RGB = 39,
+	ST_RGB_GRAY = 37,       ///< ST_PIX_FMT_RGB888到ST_PIX_FMT_GRAY8转换
+	ST_RGB_BGR = 38,        ///< ST_PIX_FMT_RGB888到ST_PIX_FMT_BGR888转换
+	ST_BGR_RGB = 39,        ///< ST_PIX_FMT_BGR888到ST_PIX_FMT_RGB888转换
 	ST_YUV420P_RGBA = 40,   ///< ST_PIX_FMT_YUV420P到ST_PIX_FMT_RGBA8888转换
-	ST_RGBA_YUV420P = 41    ///< ST_PIX_FMT_RGBA8888到ST_PIX_FMT_YUV420P转换
+	ST_RGBA_YUV420P = 41,   ///< ST_PIX_FMT_RGBA8888到ST_PIX_FMT_YUV420P转换
+	ST_RGBA_NV21 = 42       ///< ST_PIX_FMT_RGBA8888到ST_PIX_FMT_NV21转换
 } st_color_convert_type;
 
 /// @brief 进行颜色格式转换, 不建议使用关于YUV420P的转换,速度较慢
@@ -273,6 +274,25 @@ st_mobile_color_convert(
 	int image_width,
 	int image_height,
 	st_color_convert_type type
+);
+
+/// @brief 旋转图像
+/// @param image_src 待旋转的图像数据
+/// @param image_dst 旋转后的图像数据, 由客户分配内存。旋转90/180/270度后，图像会变成紧凑的（没有padding）
+/// @param image_width 待旋转的图像的宽度, 旋转后图像的宽度可能会发生变化，由用户处理
+/// @param image_height 待旋转的图像的高度, 旋转后图像的高度可能会发生变化，由用户处理
+/// @param image_stride 待旋转的图像的跨度, 旋转后图像的跨度可能会发生变化，由用户处理
+/// @param pixel_format 待旋转的图像的格式
+/// @param rotate_type 旋转角度
+ST_SDK_API st_result_t
+st_mobile_image_rotate(
+	unsigned char *image_src,
+	unsigned char *image_dst,
+	int image_width,
+	int image_height,
+	int image_stride,
+	st_pixel_format pixel_format,
+	st_rotate_type rotate_type
 );
 
 /// @}

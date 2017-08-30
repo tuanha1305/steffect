@@ -19,6 +19,7 @@ extern "C" {
 	JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_reset(JNIEnv * env, jobject obj);
 	JNIEXPORT void JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_destroyInstance(JNIEnv * env, jobject obj);
 	JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_setParam(JNIEnv * env, jobject obj, jint type, jfloat value);
+	JNIEXPORT jobject JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_humanActionMirror(JNIEnv * env, jobject obj, jint width, jobject humanAction);
 };
 
 static inline jfieldID getHumanActionHandleField(JNIEnv *env, jobject obj)
@@ -135,4 +136,37 @@ JNIEXPORT jint JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_set
     LOGE("set Param for %d, %f", type, value);
     int result = (int)st_mobile_human_action_setparam(handle,(st_human_action_type)type,value);
     return result;
+}
+
+JNIEXPORT jobject JNICALL Java_com_sensetime_stmobile_STMobileHumanActionNative_humanActionMirror(JNIEnv * env, jobject obj, jint width, jobject humanAction)
+{
+    if(humanAction == NULL){
+        return NULL;
+    }
+
+    st_mobile_human_action_t human_action = {0};
+    st_mobile_face_extra_info_t face_extra_info = {0};
+
+    jclass humanActionCls = env->GetObjectClass(humanAction);
+    jfieldID fieldFaceExtraInfo = env->GetFieldID(humanActionCls, "faceExtraInfo", "Lcom/sensetime/stmobile/model/STFaceExtraInfo;");
+    jobject faceExtraInfoObj = env->GetObjectField(humanAction, fieldFaceExtraInfo);
+
+    if(faceExtraInfoObj != NULL){
+        env->DeleteLocalRef(faceExtraInfoObj);
+        human_action.p_face_extra_info = &face_extra_info;
+    }
+
+    if (!convert2human_action(env, humanAction, human_action)) {
+        memset(&human_action, 0, sizeof(st_mobile_human_action_t));
+    }
+
+    st_mobile_human_action_mirror(width, &human_action);
+
+    humanAction = convert2HumanAction(env, human_action);
+
+    if (humanActionCls != NULL) {
+        env->DeleteLocalRef(humanActionCls);
+    }
+
+    return humanAction;
 }
