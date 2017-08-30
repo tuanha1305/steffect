@@ -27,7 +27,7 @@ const char* const g_mouseFraShader = SHADER_STRING
         varying lowp vec4 DestinationColor;
         void main()
         {
-            gl_FragColor =  vec4(DestinationColor.rgb, DestinationColor.a * 0.15);
+            gl_FragColor =  vec4(DestinationColor.rgb, DestinationColor.a * 0.25);
         }
 );
 
@@ -250,7 +250,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     }
     glUseProgram(mGLMouseId);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribMousePos);
     glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, squareVertices2);

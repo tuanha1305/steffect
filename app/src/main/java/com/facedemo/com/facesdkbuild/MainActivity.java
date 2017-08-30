@@ -1,17 +1,9 @@
 package com.facedemo.com.facesdkbuild;
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.facebeauty.com.beautysdk.domain.Brand;
@@ -20,7 +12,6 @@ import com.facebeauty.com.beautysdk.view.CameraView;
 import com.facedemo.com.facesdkbuild.adapter.DemoAdapter;
 import com.facedemo.com.facesdkbuild.view.HorizontalListView;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 public class MainActivity extends Activity {
