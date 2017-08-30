@@ -125,7 +125,6 @@ public class CameraView extends RelativeLayout {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    mPreviewFrameLayout.requestLayout();
                     requestLayout();
                 }
 
@@ -289,7 +288,15 @@ public class CameraView extends RelativeLayout {
     }
 
 
+    /**
+     * 16：9
+     * @param mCurrentPreview
+     */
     public void changePreviewSize(int mCurrentPreview){
         mCameraDisplay.changePreviewSize(mCurrentPreview);
+    }
+
+    public void changeChoice(){
+        mCameraDisplay.switchCamera();
     }
 }

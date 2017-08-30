@@ -28,7 +28,8 @@ public class MainActivity extends Activity {
 
     private HorizontalListView horizontalList;
     CameraView cameraView;
-    private Button btnStart,btnEnd;
+    private Button btnStart,btnEnd,btnTest,btnChoice;
+    private int mCurrent = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +39,7 @@ public class MainActivity extends Activity {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: 授权成功");
-
             }
-
             @Override
             public void onFail() {
                 Log.d(TAG, "onSuccess: 授权失败");
@@ -50,9 +49,11 @@ public class MainActivity extends Activity {
         cameraView.init(MainActivity.this);
         btnStart = (Button)findViewById(R.id.start);
         btnEnd = (Button)findViewById(R.id.stop);
+        btnTest = (Button)findViewById(R.id.test);
+        btnChoice = (Button)findViewById(R.id.choice);
 
-        String pathTiezhi = "/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip";
-        cameraView.setTiezhi(3,pathTiezhi);
+//        String pathTiezhi = "/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip";
+//        cameraView.setTiezhi(3,pathTiezhi);
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
         JSONObject jsonObject = JSON.parseObject(data);
@@ -63,14 +64,29 @@ public class MainActivity extends Activity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cameraView.changePreviewSize(0);
             }
         });
 
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+            }
+        });
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCurrent==0){
+                    mCurrent =1;
+                }else {
+                    mCurrent = 0;
+                }
+                cameraView.changePreviewSize(mCurrent);
+            }
+        });
+        btnChoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cameraView.changeChoice();
             }
         });
     }

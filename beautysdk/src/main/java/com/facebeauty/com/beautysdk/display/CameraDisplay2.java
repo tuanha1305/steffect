@@ -1097,7 +1097,6 @@ public class CameraDisplay2 implements Renderer {
                         for (int j = 0; j < 64; j++) {
                             stPoint240[106 + 22 * 2 + 13 * 2 + j] = pointsLips[j];
                         }
-//                        mGLRender.drawMeizhuang(stPoint240,texture_left,texture_right,textSiaHongId,downMouseColors);
                         if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
                             initMakeup();
                         }
