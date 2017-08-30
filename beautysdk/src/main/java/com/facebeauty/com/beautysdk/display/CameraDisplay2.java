@@ -283,7 +283,6 @@ public class CameraDisplay2 implements Renderer {
                 synchronized (mHumanActionHandleLock) {
                     int result = mSTHumanActionNative.createInstance(FileUtils.getTrackModelPath(mContext), mHumanActionCreateConfig);
                     LogUtils.i(TAG, "the result for createInstance for human_action is %d", result);
-
                     if (result == 0) {
                         mIsCreateHumanActionHandleSucceeded = true;
                         mSTHumanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_BACKGROUND_BLUR_STRENGTH, 0.35f);
@@ -307,9 +306,9 @@ public class CameraDisplay2 implements Renderer {
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.36f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.30f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.13f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.11f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_JAW_RATIO, 0.10f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.0f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.0f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_JAW_RATIO, 0.0f);
         }
     }
 
@@ -750,11 +749,10 @@ public class CameraDisplay2 implements Renderer {
             mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480"});
 //            if (mSupportedPreviewSizes.contains("640x480")) {
 //                mCurrentPreview = mSupportedPreviewSizes.indexOf("640x480");
-//            }else if(mSupportedPreviewSizes.contains("1280x720")){
-//                mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
-//            }
-            mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
-
+//            }else
+                if(mSupportedPreviewSizes.contains("1280x720")){
+                mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
+            }
         }
 
 
