@@ -27,7 +27,7 @@ const char* const g_mouseFraShader = SHADER_STRING
         varying lowp vec4 DestinationColor;
         void main()
         {
-            gl_FragColor =  DestinationColor * DestinationColor.a * 0.8;
+            gl_FragColor =  vec4(DestinationColor.rgb, DestinationColor.a * 0.15);
         }
 );
 
