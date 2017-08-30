@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +34,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.facebeauty.com.beautysdk.utils.STLicenseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +93,18 @@ public class WelcomeActivity extends Activity {
                         PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
             }
         }
+        STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("info", "onSuccess: 授权成功");
 
+            }
+
+            @Override
+            public void onFail() {
+                Log.d("info", "onSuccess: 授权失败");
+            }
+        });
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override

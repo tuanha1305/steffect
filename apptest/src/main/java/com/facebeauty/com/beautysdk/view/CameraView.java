@@ -18,6 +18,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
+import com.facebeauty.com.beautysdk.display.CameraDisplay2;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
@@ -35,7 +36,7 @@ import java.nio.ByteBuffer;
  */
 
 public class CameraView extends RelativeLayout {
-    private CameraDisplay mCameraDisplay;
+    private CameraDisplay2 mCameraDisplay;
     private SurfaceView mSurfaceViewOverlap;
     private Activity mContext;
     private Accelerometer mAccelerometer = null;
@@ -84,7 +85,7 @@ public class CameraView extends RelativeLayout {
         addView(glSurfaceView);
         mSurfaceViewOverlap = new SurfaceView(mContext);
         addView(mSurfaceViewOverlap);
-        mCameraDisplay = new CameraDisplay(mContext.getApplicationContext(), mListener, glSurfaceView);
+        mCameraDisplay = new CameraDisplay2(mContext.getApplicationContext(), mListener, glSurfaceView);
         mCameraDisplay.setHandler(mHandler);
         mCameraDisplay.enableBeautify(true);
     }
@@ -92,15 +93,7 @@ public class CameraView extends RelativeLayout {
     private void initEvent() {
         mSurfaceViewOverlap.setZOrderOnTop(true);
         mSurfaceViewOverlap.setZOrderMediaOverlay(true);
-        mSurfaceViewOverlap.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-//
-//        mPaint = new Paint();
-//        mPaint.setColor(Color.rgb(240, 100, 100));
-//        int strokeWidth = 10;
-//        mPaint.setStrokeWidth(strokeWidth);
-//        mPaint.setStyle(Paint.Style.STROKE);
-
-        mCameraDisplay.setFaceAttributeChangeListener(new CameraDisplay.FaceAttributeChangeListener() {
+        mCameraDisplay.setFaceAttributeChangeListener(new CameraDisplay2.FaceAttributeChangeListener() {
             @Override
             public void onFaceAttributeChanged(final String attribute) {
                 mContext.runOnUiThread(new Runnable() {
@@ -126,13 +119,12 @@ public class CameraView extends RelativeLayout {
         }
     }
 
-    private CameraDisplay.ChangePreviewSizeListener mListener = new CameraDisplay.ChangePreviewSizeListener() {
+    private CameraDisplay2.ChangePreviewSizeListener mListener = new CameraDisplay2.ChangePreviewSizeListener() {
         @Override
         public void onChangePreviewSize(final int previewW, final int previewH) {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    mPreviewFrameLayout.requestLayout();
                     requestLayout();
                 }
 
@@ -293,5 +285,18 @@ public class CameraView extends RelativeLayout {
 
     public Surface getSurfaceView(){
         return mSurfaceViewOverlap.getHolder().getSurface();
+    }
+
+
+    /**
+     * 16：9
+     * @param mCurrentPreview
+     */
+    public void changePreviewSize(int mCurrentPreview){
+        mCameraDisplay.changePreviewSize(mCurrentPreview);
+    }
+
+    public void changeChoice(){
+        mCameraDisplay.switchCamera();
     }
 }

@@ -17,18 +17,29 @@
             android:layout_height="match_parent"/>
 
     </FrameLayout>
-
+    <Button
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="16:9"/>
     <Button
         android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
         android:text="开始录制"/>
     <Button
         android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="200dp"
         android:text="停止录制"/>
+    <Button
+        android:id="@+id/choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="300dp"
+        android:text="切换"/>
     <TextView
         android:id="@+id/id_tv_changesticker"
         android:layout_width="100dp"
@@ -74,6 +85,5 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="80dp">
-
     </com.facedemo.com.facesdkbuild.view.HorizontalListView>
 </RelativeLayout>

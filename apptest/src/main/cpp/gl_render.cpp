@@ -27,7 +27,7 @@ const char* const g_mouseFraShader = SHADER_STRING
         varying lowp vec4 DestinationColor;
         void main()
         {
-            gl_FragColor =  DestinationColor * DestinationColor.a;
+            gl_FragColor =  DestinationColor * DestinationColor.a * 0.8;
         }
 );
 
@@ -131,6 +131,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     float mousecolors[4];
     memset(mousecolors, 0, sizeof(float) * 4);
     env->GetFloatArrayRegion(downmousecolors, 0, 4, mousecolors);
+
     for(int i = 0; i<pointMouseList.size(); i++) {
         squareVertices2[i*8]   = mousecolors[0];
         squareVertices2[i*8+1] = mousecolors[1];
@@ -368,7 +369,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glUseProgram(mGLProgId);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendColor(1.0f, 0.0f,0.0f, 1.0f);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribPosition);
@@ -435,7 +435,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glUseProgram(mGLProgId);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendColor(1.0f, 0.0f,0.0f, 1.0f);
     glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribPosition);

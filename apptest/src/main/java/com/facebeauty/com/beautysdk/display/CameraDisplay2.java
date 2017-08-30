@@ -14,7 +14,6 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -48,11 +47,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
 /**
  * CameraDisplay is used for camera preview
  */
@@ -62,21 +59,24 @@ import javax.microedition.khronos.opengles.GL10;
  * 请重点关注Camera.PreviewCallback的onPreviewFrame/onSurfaceCreated,onSurfaceChanged,onDrawFrame
  * 四个接口, 基本上所有的处理逻辑都是围绕这四个接口展开
  */
-public class CameraDisplay implements Renderer {
+public class CameraDisplay2 implements Renderer {
 
     private String TAG = "CameraDisplay";
     /**
      * SurfaceTexure texture id
      */
     protected int mTextureId = OpenGLUtils.NO_TEXTURE;
-    private STHumanAction humanAction;
+
     private int mImageWidth;
     private int mImageHeight;
     private GLSurfaceView mGlSurfaceView;
     private ChangePreviewSizeListener mListener;
     private int mSurfaceWidth;
     private int mSurfaceHeight;
+
     private Context mContext;
+    private STPoint[] stPoint240;
+
     public CameraProxy mCameraProxy;
     private SurfaceTexture mSurfaceTexture;
     private String mCurrentSticker;
@@ -84,6 +84,7 @@ public class CameraDisplay implements Renderer {
     private float mCurrentFilterStrength = 0.5f;//阈值为[0,1]
     private float mFilterStrength = 0.5f;
     private String mFilterStyle;
+
     private int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private STGLRender mGLRender;
     private STMobileStickerNative mStStickerNative = new STMobileStickerNative();
@@ -97,7 +98,6 @@ public class CameraDisplay implements Renderer {
     private int[] mBeautifyTextureId;
     private int[] mTextureOutId;
     private int[] mFilterTextureOutId;
-    private int[] mMeiMaoTextureId;
     private boolean mCameraChanging = false;
     private int mCurrentPreview = 0;
     private ArrayList<String> mSupportedPreviewSizes;
@@ -106,18 +106,16 @@ public class CameraDisplay implements Renderer {
     private FaceAttributeChangeListener mFaceAttributeChangeListener;
     private long mStartTime;
     private boolean mShowOriginal = false;
-    private boolean mNeedBeautify = true;
-    private boolean mNeedFaceAttribute = true;
+    private boolean mNeedBeautify = false;
+    private boolean mNeedFaceAttribute = false;
     private boolean mNeedUpdateFaceAttribute = true;
-    private boolean mNeedSticker = true;
+    private boolean mNeedSticker = false;
     private boolean mNeedFilter = false;
     private boolean mNeedSave = false;
     private boolean mNeedObject = false;
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
-    private STPoint[] stPoint240;
-    private File file;
-
+    private STHumanAction humanAction;
 
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
@@ -142,24 +140,20 @@ public class CameraDisplay implements Renderer {
 
     private Rect mTargetRect = new Rect();
     private Rect mIndexRect = new Rect();
-    private boolean mNeedSetObjectTarget = true;
-    private boolean mIsObjectTracking = true;
+    private boolean mNeedSetObjectTarget = false;
+    private boolean mIsObjectTracking = false;
     private  STPoint[] pointsBrowLeft;
+    private File file;
+
     //face extra info swicth
     private boolean mNeedFaceExtraInfo = true;
     private int mHumanActionCreateConfig = STMobileHumanActionNative.ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_VIDEO;
 
-    int textureMId = OpenGLUtils.NO_TEXTURE;
-    int texture_left = OpenGLUtils.NO_TEXTURE;
-    int texture_right =  OpenGLUtils.NO_TEXTURE;
-    int saiHong = OpenGLUtils.NO_TEXTURE;
-
-
-
     public interface ChangePreviewSizeListener {
         void onChangePreviewSize(int previewW, int previewH);
     }
-    public CameraDisplay(Context context, ChangePreviewSizeListener listener, GLSurfaceView glSurfaceView) {
+
+    public CameraDisplay2(Context context, ChangePreviewSizeListener listener, GLSurfaceView glSurfaceView) {
         mCameraProxy = new CameraProxy(context);
         mGlSurfaceView = glSurfaceView;
         mListener = listener;
@@ -169,8 +163,8 @@ public class CameraDisplay implements Renderer {
         glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         mTextureBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.TEXTURE_NO_ROTATION.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer();
 
         mTextureBuffer.put(TextureRotationUtil.TEXTURE_NO_ROTATION).position(0);
         mGLRender = new STGLRender();
@@ -183,7 +177,6 @@ public class CameraDisplay implements Renderer {
         initHumanAction(); //因为人脸模型加载较慢，建议异步调用
         initFaceAttribute();
         initObjectTrack();
-
     }
 
     public void setFpsChangeListener(FpsChangeListener listener) {
@@ -290,7 +283,6 @@ public class CameraDisplay implements Renderer {
                 synchronized (mHumanActionHandleLock) {
                     int result = mSTHumanActionNative.createInstance(FileUtils.getTrackModelPath(mContext), mHumanActionCreateConfig);
                     LogUtils.i(TAG, "the result for createInstance for human_action is %d", result);
-
                     if (result == 0) {
                         mIsCreateHumanActionHandleSucceeded = true;
                         mSTHumanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_BACKGROUND_BLUR_STRENGTH, 0.35f);
@@ -306,59 +298,17 @@ public class CameraDisplay implements Renderer {
         LogUtils.i(TAG, "the result for createInstance for human_action is %d", result);
     }
 
-    private void initMakeup(){
-        if (bSaihongDirty && saihongBitmap != null) {
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
-        } else {
-            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
-        }
-
-        if (bLeftMeiDirty && leftMeiBitmap != null) {
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
-        } else {
-            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
-        }
-
-        if (bRightMeiDirty && rightMeiBitmap != null) {
-            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
-        } else {
-            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
-        }
-
-        if (bYanXianDirty && yanXianBitmap != null) {
-            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, false);
-        } else {
-            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
-        }
-
-        if (bYanYingDirty && yanYingBitmap != null) {
-            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, false);
-        } else {
-            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
-        }
-
-        if (bJieMaoDirty && jieMaoBitmap != null) {
-            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, false);
-        } else {
-            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
-        }
-    }
     private void initBeauty() {
         // 初始化beautify,preview的宽高
         int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
+        LogUtils.i(TAG, "the result is for initBeautify " + result);
         if (result == 0) {
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.2f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.36f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.02f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_JAW_RATIO, 0f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.30f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.0f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.0f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_JAW_RATIO, 0.0f);
         }
     }
 
@@ -386,6 +336,7 @@ public class CameraDisplay implements Renderer {
         mCurrentFilterStyle = null;
         mFilterStyle = null;
         mSTMobileStreamFilterNative.setStyle(mCurrentFilterStyle);
+
         mCurrentFilterStrength = mFilterStrength;
         mSTMobileStreamFilterNative.setParam(STFilterParamsType.ST_FILTER_STRENGTH, mCurrentFilterStrength);
     }
@@ -429,6 +380,7 @@ public class CameraDisplay implements Renderer {
             return ;
         }
         adjustViewPort(width, height);
+
         mGLRender.init(mImageWidth, mImageHeight);
         mStartTime = System.currentTimeMillis();
     }
@@ -443,11 +395,11 @@ public class CameraDisplay implements Renderer {
         mSurfaceHeight = height;
         mSurfaceWidth = width;
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 720, 1280);
+        mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
     }
 
-
     private int mTemTextureId = 0;
+
     /**
      * 工作在opengl线程, 具体渲染的工作函数
      *
@@ -479,11 +431,6 @@ public class CameraDisplay implements Renderer {
             GlUtil.initEffectTexture(mImageWidth, mImageHeight, mTextureOutId, GLES20.GL_TEXTURE_2D);
         }
 
-        if (mMeiMaoTextureId == null) {
-            mMeiMaoTextureId = new int[1];
-            GlUtil.initEffectTexture(mImageWidth, mImageHeight, mMeiMaoTextureId, GLES20.GL_TEXTURE_2D);
-        }
-
         if(mSurfaceTexture != null){
             mSurfaceTexture.updateTexImage();
         }else{
@@ -496,15 +443,11 @@ public class CameraDisplay implements Renderer {
         mRGBABuffer.rewind();
 
         long preProcessCostTime = System.currentTimeMillis();
-
         int textureId = mGLRender.preProcess(mTextureId, mRGBABuffer);
+        LogUtils.i(TAG, "preprocess cost time: %d", System.currentTimeMillis() - preProcessCostTime);
         mTemTextureId = textureId;
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-
-//        stPoint240 = getAllPrint();
-
         int result = -1;
+
         if(!mShowOriginal){
             if(mNeedObject) {
                 if (mNeedSetObjectTarget) {
@@ -528,10 +471,10 @@ public class CameraDisplay implements Renderer {
                         rect = STUtils.adjustToScreenRect(outputRect.getRect(), mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
 
                         if(outputRect.getRect().equals(new Rect(0,0,0,0)) || score[0] < 0.1f){
-                            mNeedObject = false;
-                            mSTMobileObjectTrackNative.reset();
-
-//                            Message msg = mHandler.obtainMessage(CameraActivity.MSG_MISSED_OBJECT_TRACK);
+//                            mNeedObject = false;
+//                            mSTMobileObjectTrackNative.reset();
+//
+//                            Message msg = mHandler.obtainMessage(CameraView.MSG_MISSED_OBJECT_TRACK);
 //                            mHandler.sendMessage(msg);
                         }
                     }
@@ -539,33 +482,43 @@ public class CameraDisplay implements Renderer {
 //                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
 //                    msg.obj = rect;
 //                    mHandler.sendMessage(msg);
-                    mIndexRect = rect;
+//                    mIndexRect = rect;
                 }else{
-                    if (mNeedShowRect) {
+//                    if (mNeedShowRect) {
 //                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE_AND_RECT);
 //                        msg.obj = mIndexRect;
 //                        mHandler.sendMessage(msg);
-                    } else {
+//                    } else {
 //                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
 //                        msg.obj = rect;
 //                        mHandler.sendMessage(msg);
-                        mIndexRect = rect;
-                    }
+//                        mIndexRect = rect;
+//                    }
                 }
             }else{
-                if(!mNeedFaceExtraInfo || !(mNeedBeautify || mNeedSticker || mNeedFaceAttribute)){
+//                if(!mNeedFaceExtraInfo || !(mNeedBeautify || mNeedSticker || mNeedFaceAttribute)){
 //                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
 //                    mHandler.sendMessage(msg);
-                }
+//                }
             }
 
             if(mNeedBeautify || mNeedSticker || mNeedFaceAttribute && mIsCreateHumanActionHandleSucceeded) {
                 STMobile106[] arrayFaces = null, arrayOutFaces = null;
                 int orientation = getCurrentOrientation();
                 long humanActionCostTime = System.currentTimeMillis();
-                humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
+                 humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
                         mDetectConfig, orientation, mImageWidth, mImageHeight);
+
                 if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
+                    if(humanAction.faceExtraInfo != null){
+                        //在屏幕画点
+//                        STPoint[] points = humanAction.faceExtraInfo.getAllPoints();
+//                        points = STUtils.adjustToScreenPoints(points, mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
+//                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_FACE_EXTRA_POINTS);
+//                        msg.obj = points;
+//                        mHandler.sendMessage(msg);
+                    }
+
                     if(humanAction.faceExtraInfo != null && humanAction.faceExtraInfo.eyebrowCount == 0 &&
                             humanAction.faceExtraInfo.eyeCount == 0 && humanAction.faceExtraInfo.lipsCount == 0){
 //                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
@@ -629,7 +582,8 @@ public class CameraDisplay implements Renderer {
                     }
                 }
 
-//                //调用贴纸API绘制贴纸
+
+                //调用贴纸API绘制贴纸
                 if(mNeedSticker){
                     boolean needOutputBuffer = false; //如果需要输出buffer推流或其他，设置该开关为true
                     long stickerStartTime = System.currentTimeMillis();
@@ -649,7 +603,7 @@ public class CameraDisplay implements Renderer {
                         textureId = mTextureOutId[0];
                     }
                 }
-                /////////
+
             }
 
             if(mCurrentFilterStyle != mFilterStyle){
@@ -675,12 +629,15 @@ public class CameraDisplay implements Renderer {
                     textureId = mFilterTextureOutId[0];
                 }
             }
+
             LogUtils.i(TAG, "frame cost time total: %d", System.currentTimeMillis() - mStartTime);
         }else{
 //            Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
 //            mHandler.sendMessage(msg);
+
             resetObjectTrack();
         }
+
         int frameBuffer = mGLRender.getFrameBufferId();
         if(mTemTextureId != textureId)
         {
@@ -692,13 +649,14 @@ public class CameraDisplay implements Renderer {
             savePicture(textureId,file);
             mNeedSave = false;
         }
+
         long dt = System.currentTimeMillis() - mStartTime;
         if(mFpsListener != null) {
             mFpsListener.onFpsChanged((int) dt);
         }
+
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
         mGLRender.onDrawFrame(textureId);
-        stPoint240 = null;
     }
 
     private void savePicture(int textureId, File file) {
@@ -750,10 +708,10 @@ public class CameraDisplay implements Renderer {
             mSurfaceTexture.setOnFrameAvailableListener(mOnFrameAvailableListener);
         }
 
-//        String size = mSupportedPreviewSizes.get(mCurrentPreview);
-//        int index = size.indexOf('x');
-//        mImageHeight = Integer.parseInt(size.substring(0, index));
-//        mImageWidth = Integer.parseInt(size.substring(index + 1));
+        String size = mSupportedPreviewSizes.get(mCurrentPreview);
+        int index = size.indexOf('x');
+        mImageHeight = Integer.parseInt(size.substring(0, index));
+        mImageWidth = Integer.parseInt(size.substring(index + 1));
 
         mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
 
@@ -789,33 +747,29 @@ public class CameraDisplay implements Renderer {
             }
             mCameraProxy.openCamera(mCameraID);
             mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480"});
-            if (mSupportedPreviewSizes.contains("640x480")) {
-                mCurrentPreview = mSupportedPreviewSizes.indexOf("640x480");
-            }else {
+//            if (mSupportedPreviewSizes.contains("640x480")) {
+//                mCurrentPreview = mSupportedPreviewSizes.indexOf("640x480");
+//            }else
+                if(mSupportedPreviewSizes.contains("1280x720")){
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
             }
         }
 
-//        List<Camera.Size> sizes = mCameraProxy.getCamera().getParameters().getSupportedPreviewSizes();
-//        for(Camera.Size size:sizes){
-//            Log.d("liupan",size.height+"++++++"+size.width);
-//        }
-//       Camera.Size size =  mCameraProxy.getCamera().getParameters().getPreviewSize();
-//        Log.d("liupan",size.height+"!!!!!!!"+size.width);
-//        mImageWidth = sizes.get(sizes.size()-1).height;
-//        mImageHeight = sizes.get(sizes.size()-1).width;
 
-        mImageWidth =720;
-        mImageHeight = 1280;
-
+        mImageHeight=320;
+        mImageWidth = 240;
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
     }
 
     public void onPause() {
+        LogUtils.i(TAG, "onPause");
         mCurrentSticker = null;
         mIsPaused = true;
         mCameraProxy.releaseCamera();
+        LogUtils.d(TAG, "Release camera");
+
+
         mGlSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
@@ -936,13 +890,12 @@ public class CameraDisplay implements Renderer {
                 }
 
                 mGLRender.init(mImageWidth, mImageHeight);
-//                InitPrograme();
 
                 if(mNeedObject){
                     resetIndexRect();
                 }
 
-                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, 720, 1280);
+                mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
                 if (mListener != null) {
                     mListener.onChangePreviewSize(mImageHeight, mImageWidth);
                 }
@@ -1022,76 +975,6 @@ public class CameraDisplay implements Renderer {
         return res == 0 ? 0 : 1;
     }
 
-
-    /**
-     * 获取所有的点
-     * @return
-     */
-    public STPoint[] getAllPrint(int frameBuffer){
-        STMobile106[] arrayFaces = null, arrayOutFaces = null;
-        int orientation = getCurrentOrientation();
-        long humanActionCostTime = System.currentTimeMillis();
-//        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
-//                mDetectConfig, orientation, mImageWidth, mImageHeight);
-        if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
-            if(humanAction.faceExtraInfo != null){
-                arrayFaces = humanAction.getMobileFaces();
-                if(arrayFaces!=null) {
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
-                    for (int i = 0; i < arrayFaces.length; i++) {
-                        STPoint[] stPoints = arrayFaces[i].getPoints_array();
-                        stPoint240 = new STPoint[240];
-                        STPoint[] points = humanAction.faceExtraInfo.getAllPoints();
-                        pointsBrowLeft = humanAction.faceExtraInfo.getEyebrowLeftPoints(0);
-                        STPoint[] pointsBrowRight = humanAction.faceExtraInfo.getEyebrowRightPoints(0);
-                        STPoint[] pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
-                        STPoint[] pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
-                        STPoint[] pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
-
-                        //106+左眼+右眼+做眉毛+右眉毛+嘴
-                        for (int j = 0; j < 106; j++) {
-//                            stPoint240[j] = getSTPoint(stPoints[j]);
-                            stPoint240[j] = stPoints[j];
-
-                        }
-
-                        //左眼
-                        for (int j = 0; j < 22; j++) {
-                            stPoint240[106 + j] = pointsEyeLeft[j];
-                        }
-                        //右眼
-                        for (int j = 0; j < 22; j++) {
-                            stPoint240[106 + 22 + j] = pointsEyeRight[j];
-                        }
-                        //左眉毛
-                        for (int j = 0; j < 13; j++) {
-                            stPoint240[106 + 22 + 22 + j] = pointsBrowLeft[j];
-                        }
-                        //右眉毛
-                        for (int j = 0; j < 13; j++) {
-                            stPoint240[106 + 22 * 2 + 13 + j] = pointsBrowRight[j];
-                        }
-                        //嘴
-                        for (int j = 0; j < 64; j++) {
-                            stPoint240[106 + 22 * 2 + 13 * 2 + j] = pointsLips[j];
-                        }
-//                        mGLRender.drawMeizhuang(stPoint240,texture_left,texture_right,textSiaHongId,downMouseColors);
-                        if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
-                         initMakeup();
-                        }
-                        mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
-                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
-                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
-                    }
-                    GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-                }
-            }
-        }
-        return stPoint240;
-    }
-
-
     int textLeftMeiMaoId = OpenGLUtils.NO_TEXTURE;
     int textRightMeiMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanXianId = OpenGLUtils.NO_TEXTURE;
@@ -1162,12 +1045,115 @@ public class CameraDisplay implements Renderer {
     public void setDownMouseColors(float[] downMouseColors) {
         this.downMouseColors=downMouseColors;
     }
+    /**
+     * 获取所有的点
+     * @return
+     */
+    public STPoint[] getAllPrint(int frameBuffer){
+        STMobile106[] arrayFaces = null, arrayOutFaces = null;
+        int orientation = getCurrentOrientation();
+        long humanActionCostTime = System.currentTimeMillis();
+//        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
+//                mDetectConfig, orientation, mImageWidth, mImageHeight);
+        if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
+            if(humanAction.faceExtraInfo != null){
+                arrayFaces = humanAction.getMobileFaces();
+                if(arrayFaces!=null) {
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
+                    for (int i = 0; i < arrayFaces.length; i++) {
+                        STPoint[] stPoints = arrayFaces[i].getPoints_array();
+                        stPoint240 = new STPoint[240];
+                        STPoint[] points = humanAction.faceExtraInfo.getAllPoints();
+                        pointsBrowLeft = humanAction.faceExtraInfo.getEyebrowLeftPoints(0);
+                        STPoint[] pointsBrowRight = humanAction.faceExtraInfo.getEyebrowRightPoints(0);
+                        STPoint[] pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
+                        STPoint[] pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
+                        STPoint[] pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
 
-//public STPoint getSTPoint(STPoint stPoint){
-//   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
-//   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
-//    stPoint.setX(_scale*stPoint.getX()-_margin);
-//     stPoint.setY(_scale*stPoint.getY());
-//     return stPoint;
-//  }
+                        //106+左眼+右眼+做眉毛+右眉毛+嘴
+                        for (int j = 0; j < 106; j++) {
+//                            stPoint240[j] = getSTPoint(stPoints[j]);
+                            stPoint240[j] = stPoints[j];
+
+                        }
+
+                        //左眼
+                        for (int j = 0; j < 22; j++) {
+                            stPoint240[106 + j] = pointsEyeLeft[j];
+                        }
+                        //右眼
+                        for (int j = 0; j < 22; j++) {
+                            stPoint240[106 + 22 + j] = pointsEyeRight[j];
+                        }
+                        //左眉毛
+                        for (int j = 0; j < 13; j++) {
+                            stPoint240[106 + 22 + 22 + j] = pointsBrowLeft[j];
+                        }
+                        //右眉毛
+                        for (int j = 0; j < 13; j++) {
+                            stPoint240[106 + 22 * 2 + 13 + j] = pointsBrowRight[j];
+                        }
+                        //嘴
+                        for (int j = 0; j < 64; j++) {
+                            stPoint240[106 + 22 * 2 + 13 * 2 + j] = pointsLips[j];
+                        }
+                        if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
+                            initMakeup();
+                        }
+                        mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
+                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
+                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+                    }
+                    GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+                }
+            }
+        }
+        return stPoint240;
+    }
+
+    private void initMakeup(){
+        if (bSaihongDirty && saihongBitmap != null) {
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, false);
+        } else {
+            Bitmap saihongBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textSiaHongId = OpenGLUtils.loadTexture(saihongBitmap, textSiaHongId, true);
+        }
+
+        if (bLeftMeiDirty && leftMeiBitmap != null) {
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, false);
+        } else {
+            Bitmap leftMeiBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textLeftMeiMaoId = OpenGLUtils.loadTexture(leftMeiBitmap, textLeftMeiMaoId, true);
+        }
+
+        if (bRightMeiDirty && rightMeiBitmap != null) {
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiBitmap, textRightMeiMaoId, false);
+        } else {
+            Bitmap rightMeiMaobitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textRightMeiMaoId = OpenGLUtils.loadTexture(rightMeiMaobitmap, textRightMeiMaoId, true);
+        }
+
+        if (bYanXianDirty && yanXianBitmap != null) {
+            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, false);
+        } else {
+            Bitmap yanXianBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textYanXianId = OpenGLUtils.loadTexture(yanXianBitmap, textYanXianId, true);
+        }
+
+        if (bYanYingDirty && yanYingBitmap != null) {
+            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, false);
+        } else {
+            Bitmap yanYingBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textYanYingId = OpenGLUtils.loadTexture(yanYingBitmap, textYanYingId, true);
+        }
+
+        if (bJieMaoDirty && jieMaoBitmap != null) {
+            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, false);
+        } else {
+            Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
+        }
+    }
+
 }
