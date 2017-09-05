@@ -14,7 +14,6 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -47,7 +46,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -73,10 +71,8 @@ public class CameraDisplay2 implements Renderer {
     private ChangePreviewSizeListener mListener;
     private int mSurfaceWidth;
     private int mSurfaceHeight;
-
     private Context mContext;
     private STPoint[] stPoint240;
-
     public CameraProxy mCameraProxy;
     private SurfaceTexture mSurfaceTexture;
     private String mCurrentSticker;
@@ -142,8 +138,13 @@ public class CameraDisplay2 implements Renderer {
     private Rect mIndexRect = new Rect();
     private boolean mNeedSetObjectTarget = false;
     private boolean mIsObjectTracking = false;
-    private  STPoint[] pointsBrowLeft;
+    private  STPoint[] pointsBrowLeft;//左眉毛
     private File file;
+    private STPoint[] pointsBrowRight;//右眉毛
+    private STPoint[] stPoints;//106个点
+    private STPoint[] pointsEyeLeft;
+    private STPoint[] pointsEyeRight;
+    private STPoint[] pointsLips;
 
     //face extra info swicth
     private boolean mNeedFaceExtraInfo = true;
@@ -324,7 +325,6 @@ public class CameraDisplay2 implements Renderer {
         }else{
             mDetectConfig = config;
         }
-
         if(mNeedFaceExtraInfo){
             mDetectConfig = mDetectConfig | STMobileHumanActionNative.ST_MOBILE_FACE_240_DETECT;
         }
@@ -470,38 +470,10 @@ public class CameraDisplay2 implements Renderer {
                     if(outputRect != null && score != null && score.length >0){
                         rect = STUtils.adjustToScreenRect(outputRect.getRect(), mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
 
-                        if(outputRect.getRect().equals(new Rect(0,0,0,0)) || score[0] < 0.1f){
-//                            mNeedObject = false;
-//                            mSTMobileObjectTrackNative.reset();
-//
-//                            Message msg = mHandler.obtainMessage(CameraView.MSG_MISSED_OBJECT_TRACK);
-//                            mHandler.sendMessage(msg);
-                        }
                     }
 
-//                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
-//                    msg.obj = rect;
-//                    mHandler.sendMessage(msg);
-//                    mIndexRect = rect;
-                }else{
-//                    if (mNeedShowRect) {
-//                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE_AND_RECT);
-//                        msg.obj = mIndexRect;
-//                        mHandler.sendMessage(msg);
-//                    } else {
-//                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_OBJECT_IMAGE);
-//                        msg.obj = rect;
-//                        mHandler.sendMessage(msg);
-//                        mIndexRect = rect;
-//                    }
                 }
-            }else{
-//                if(!mNeedFaceExtraInfo || !(mNeedBeautify || mNeedSticker || mNeedFaceAttribute)){
-//                    Message msg = mHandler.obtainMessage(CameraActivity.MSG_CLEAR_OBJECT);
-//                    mHandler.sendMessage(msg);
-//                }
             }
-
             if(mNeedBeautify || mNeedSticker || mNeedFaceAttribute && mIsCreateHumanActionHandleSucceeded) {
                 STMobile106[] arrayFaces = null, arrayOutFaces = null;
                 int orientation = getCurrentOrientation();
@@ -510,14 +482,6 @@ public class CameraDisplay2 implements Renderer {
                         mDetectConfig, orientation, mImageWidth, mImageHeight);
 
                 if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
-                    if(humanAction.faceExtraInfo != null){
-                        //在屏幕画点
-//                        STPoint[] points = humanAction.faceExtraInfo.getAllPoints();
-//                        points = STUtils.adjustToScreenPoints(points, mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
-//                        Message msg = mHandler.obtainMessage(CameraActivity.MSG_DRAW_FACE_EXTRA_POINTS);
-//                        msg.obj = points;
-//                        mHandler.sendMessage(msg);
-                    }
 
                     if(humanAction.faceExtraInfo != null && humanAction.faceExtraInfo.eyebrowCount == 0 &&
                             humanAction.faceExtraInfo.eyeCount == 0 && humanAction.faceExtraInfo.lipsCount == 0){
@@ -747,10 +711,7 @@ public class CameraDisplay2 implements Renderer {
             }
             mCameraProxy.openCamera(mCameraID);
             mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480"});
-//            if (mSupportedPreviewSizes.contains("640x480")) {
-//                mCurrentPreview = mSupportedPreviewSizes.indexOf("640x480");
-//            }else
-                if(mSupportedPreviewSizes.contains("1280x720")){
+            if(mSupportedPreviewSizes.contains("1280x720")){
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
             }
         }
@@ -758,18 +719,20 @@ public class CameraDisplay2 implements Renderer {
 
         mImageHeight=320;
         mImageWidth = 240;
-        mGlSurfaceView.forceLayout();
-        mGlSurfaceView.requestRender();
+//        mGlSurfaceView.onResume();
+//        mGlSurfaceView.forceLayout();
+//        mGlSurfaceView.requestRender();
     }
 
     public void onPause() {
-        LogUtils.i(TAG, "onPause");
+//        mGlSurfaceView.onPause();
+    }
+
+    public void onDestroy()
+    {
         mCurrentSticker = null;
         mIsPaused = true;
         mCameraProxy.releaseCamera();
-        LogUtils.d(TAG, "Release camera");
-
-
         mGlSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
@@ -785,12 +748,6 @@ public class CameraDisplay2 implements Renderer {
                 mGLRender.destroyFrameBuffers();
             }
         });
-
-        mGlSurfaceView.onPause();
-    }
-
-    public void onDestroy()
-    {
         //必须释放非opengGL句柄资源,负责内存泄漏
         synchronized (mHumanActionHandleLock)
         {
@@ -1024,14 +981,14 @@ public class CameraDisplay2 implements Renderer {
         bJieMaoDirty = true;
         jieMaoBitmap = bitmap;
         this.jiemaobgcolors = jiemaobgcolors;
-
     }
+
     public void setYanYing(Bitmap bitmap,float[] yanyingbgcolors) {
         bYanYingDirty =true;
         yanYingBitmap = bitmap;
         this.yanyingbgcolors = yanyingbgcolors;
-
     }
+
     public void setSaihong(Bitmap bitmap,float[] saihongbgcolors) {
         bSaihongDirty = true;
         saihongBitmap = bitmap;
@@ -1061,20 +1018,19 @@ public class CameraDisplay2 implements Renderer {
                 if(arrayFaces!=null) {
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
                     for (int i = 0; i < arrayFaces.length; i++) {
-                        STPoint[] stPoints = arrayFaces[i].getPoints_array();
+                        stPoints = arrayFaces[i].getPoints_array();
                         stPoint240 = new STPoint[240];
                         STPoint[] points = humanAction.faceExtraInfo.getAllPoints();
                         pointsBrowLeft = humanAction.faceExtraInfo.getEyebrowLeftPoints(0);
-                        STPoint[] pointsBrowRight = humanAction.faceExtraInfo.getEyebrowRightPoints(0);
-                        STPoint[] pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
-                        STPoint[] pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
-                        STPoint[] pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
+                        pointsBrowRight = humanAction.faceExtraInfo.getEyebrowRightPoints(0);
+                        pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
+                        pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
+                        pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
 
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
 //                            stPoint240[j] = getSTPoint(stPoints[j]);
                             stPoint240[j] = stPoints[j];
-
                         }
 
                         //左眼
@@ -1156,4 +1112,10 @@ public class CameraDisplay2 implements Renderer {
         }
     }
 
+    public void startSurface(){
+        mGlSurfaceView.onResume();
+        mGlSurfaceView.forceLayout();
+        mGlSurfaceView.requestRender();
+    }
 }
+

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
+import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -76,7 +78,7 @@ public class CameraView extends RelativeLayout {
         FileUtils.copyModelFiles(context);
         initView();
         initEvent();
-
+        mCameraDisplay.onResume();
     }
 
     private void initView() {
@@ -204,7 +206,7 @@ public class CameraView extends RelativeLayout {
 
     public void onResume() {
         mAccelerometer.start();
-        mCameraDisplay.onResume();
+        mCameraDisplay.startSurface();
     }
 
     public void onPause() {
@@ -296,7 +298,25 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.changePreviewSize(mCurrentPreview);
     }
 
+    /**
+     * 切换摄像头
+     */
     public void changeChoice(){
         mCameraDisplay.switchCamera();
+    }
+
+    /**
+     * 一键卸妆
+     */
+    public void cleanMakeUp(){
+        float[] color = {0,0,0,0};
+        Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+        setEyebrow(bitmap,color);
+        setBlush(bitmap,color);
+        setEyeShadow(bitmap,color);
+        setEyelash(bitmap,color);
+        setEyeliner(bitmap,color);
+        setEyebrow(bitmap,color);
+        setLip(0,0,0,0);
     }
 }

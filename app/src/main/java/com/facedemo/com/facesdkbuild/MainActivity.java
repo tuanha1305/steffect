@@ -1,12 +1,16 @@
 package com.facedemo.com.facesdkbuild;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.facebeauty.com.beautysdk.domain.Brand;
+import com.facebeauty.com.beautysdk.utils.LogUtils;
 import com.facebeauty.com.beautysdk.utils.STLicenseUtils;
 import com.facebeauty.com.beautysdk.view.CameraView;
 import com.facedemo.com.facesdkbuild.adapter.DemoAdapter;
@@ -24,16 +28,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-//        STLicenseUtils.getTokenLicense(this);
         STLicenseUtils.checkLicense(this, new STLicenseUtils.OnCheckLicenseListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "onSuccess: 授权成功");
             }
             @Override
             public void onFail() {
-                Log.d(TAG, "onSuccess: 授权失败");
             }
         });
         cameraView = (CameraView) findViewById(R.id.cameraView);
@@ -43,8 +46,11 @@ public class MainActivity extends Activity {
         btnTest = (Button)findViewById(R.id.test);
         btnChoice = (Button)findViewById(R.id.choice);
 
-//        String pathTiezhi = "/storage/emulated/0/Android/data/com.sensetime.senseme.effects/files/bunny.zip";
+        LogUtils.setIsLoggable(false);
+//        String pathTiezhi = "/storage/emulated/0/Download/bunny.zip";
+//        String pathTiezhi = Environment.getExternalStorageDirectory()+"/Download/banny.zip";
 //        cameraView.setTiezhi(3,pathTiezhi);
+
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
         JSONObject jsonObject = JSON.parseObject(data);
@@ -55,12 +61,14 @@ public class MainActivity extends Activity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cameraView.cleanMakeUp();
             }
         });
 
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
             }
         });
         btnTest.setOnClickListener(new View.OnClickListener() {
@@ -110,5 +118,4 @@ public class MainActivity extends Activity {
         super.onPause();
         cameraView.onPause();
     }
-
 }

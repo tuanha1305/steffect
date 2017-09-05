@@ -1031,8 +1031,6 @@ public class CameraDisplay implements Renderer {
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
-//        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
-//                mDetectConfig, orientation, mImageWidth, mImageHeight);
         if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
             if(humanAction.faceExtraInfo != null){
                 arrayFaces = humanAction.getMobileFaces();
@@ -1162,12 +1160,4 @@ public class CameraDisplay implements Renderer {
     public void setDownMouseColors(float[] downMouseColors) {
         this.downMouseColors=downMouseColors;
     }
-
-//public STPoint getSTPoint(STPoint stPoint){
-//   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
-//   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
-//    stPoint.setX(_scale*stPoint.getX()-_margin);
-//     stPoint.setY(_scale*stPoint.getY());
-//     return stPoint;
-//  }
 }
