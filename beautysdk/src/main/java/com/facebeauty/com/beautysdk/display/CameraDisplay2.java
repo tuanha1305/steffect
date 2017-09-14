@@ -46,6 +46,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -1026,6 +1028,9 @@ public class CameraDisplay2 implements Renderer {
                         pointsEyeLeft = humanAction.faceExtraInfo.getEyeLeftPoints(0);
                         pointsEyeRight = humanAction.faceExtraInfo.getEyeRightPoints(0);
                         pointsLips = humanAction.faceExtraInfo.getLipsPoints(0);
+                        if(mOnCameraDisplayFacePointsChangeListener!=null){
+                            mOnCameraDisplayFacePointsChangeListener.onChangeListener(pointsBrowLeft,pointsBrowRight,pointsEyeLeft,pointsEyeRight,pointsLips);
+                        }
 
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
@@ -1116,6 +1121,16 @@ public class CameraDisplay2 implements Renderer {
         mGlSurfaceView.onResume();
         mGlSurfaceView.forceLayout();
         mGlSurfaceView.requestRender();
+    }
+
+    public interface OnCameraDisplayFacePointsChangeListener {
+        void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
+    }
+
+    private OnCameraDisplayFacePointsChangeListener mOnCameraDisplayFacePointsChangeListener;
+
+    public void registerCameraDisplayFacePointsChangeListener(OnCameraDisplayFacePointsChangeListener onCameraDisplayFacePointsChangeListener) {
+        mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
     }
 }
 

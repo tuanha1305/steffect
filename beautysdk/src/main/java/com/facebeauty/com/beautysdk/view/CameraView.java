@@ -32,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by liupan on 17/8/14.
@@ -81,6 +83,30 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.onResume();
     }
 
+    public interface OnFacePointsChangeListener {
+        void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
+    }
+
+    private List<OnFacePointsChangeListener> mFacePointsListeners = new ArrayList<>();
+   //添加监听
+    public void registerFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
+        if (onFacePointsChangeListener == null)
+            return;
+        mFacePointsListeners.add(onFacePointsChangeListener);
+    }
+    //删除监听
+    public void unregisterFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
+        if (onFacePointsChangeListener == null)
+            return;
+        if (mFacePointsListeners.contains(onFacePointsChangeListener)) {
+            mFacePointsListeners.remove(onFacePointsChangeListener);
+        }
+    }
+   //清空所有监听
+    public void resetFacePointsChangeListener() {
+        mFacePointsListeners.clear();
+    }
+
     private void initView() {
         mAccelerometer = new Accelerometer(mContext.getApplicationContext());
         GLSurfaceView glSurfaceView = new GLSurfaceView(mContext);
@@ -90,6 +116,14 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay = new CameraDisplay2(mContext.getApplicationContext(), mListener, glSurfaceView);
         mCameraDisplay.setHandler(mHandler);
         mCameraDisplay.enableBeautify(true);
+        mCameraDisplay.registerCameraDisplayFacePointsChangeListener(new CameraDisplay2.OnCameraDisplayFacePointsChangeListener() {
+            @Override
+            public void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips) {
+                for (OnFacePointsChangeListener onFacePointsChangeListener : mFacePointsListeners) {
+                    onFacePointsChangeListener.onChangeListener(pointsBrowLeft, pointsBrowRight, pointsEyeLeft, pointsEyeRight, pointsLips);
+                }
+            }
+        });
     }
 
     private void initEvent() {
