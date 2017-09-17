@@ -198,7 +198,7 @@ public class CameraProxy {
 	}
 
 	private Point getSuitablePreviewSize(){
-		Point defaultsize = new Point(1920, 1080);
+		Point defaultsize = new Point(1280, 720);
 		if(mCamera != null){
 			List<Size> sizes = mCamera.getParameters().getSupportedPreviewSizes();
 			for (Size s : sizes)

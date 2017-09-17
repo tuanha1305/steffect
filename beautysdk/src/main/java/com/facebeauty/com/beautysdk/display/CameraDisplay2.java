@@ -46,8 +46,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -678,9 +676,11 @@ public class CameraDisplay2 implements Renderer {
         int index = size.indexOf('x');
         mImageHeight = Integer.parseInt(size.substring(0, index));
         mImageWidth = Integer.parseInt(size.substring(index + 1));
-
-        mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
-
+        if(mImageHeight==640){
+            mCameraProxy.setPreviewSize(480, 480);
+        }else {
+            mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
+        }
         boolean flipHorizontal = mCameraProxy.isFlipHorizontal();
         mGLRender.adjustTextureBuffer(mCameraProxy.getOrientation(), flipHorizontal);
         mCameraProxy.startPreview(mSurfaceTexture, null);
@@ -712,9 +712,11 @@ public class CameraDisplay2 implements Renderer {
                 mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
             }
             mCameraProxy.openCamera(mCameraID);
-            mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480"});
+            mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480","480x480"});
             if(mSupportedPreviewSizes.contains("1280x720")){
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
+            }else if (mSupportedPreviewSizes.contains("480x480")){
+                mCurrentPreview = mSupportedPreviewSizes.indexOf("480x480");
             }
         }
 
@@ -1031,7 +1033,6 @@ public class CameraDisplay2 implements Renderer {
                         if(mOnCameraDisplayFacePointsChangeListener!=null){
                             mOnCameraDisplayFacePointsChangeListener.onChangeListener(pointsBrowLeft,pointsBrowRight,pointsEyeLeft,pointsEyeRight,pointsLips);
                         }
-
                         //106+左眼+右眼+做眉毛+右眉毛+嘴
                         for (int j = 0; j < 106; j++) {
 //                            stPoint240[j] = getSTPoint(stPoints[j]);
@@ -1126,9 +1127,7 @@ public class CameraDisplay2 implements Renderer {
     public interface OnCameraDisplayFacePointsChangeListener {
         void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
     }
-
     private OnCameraDisplayFacePointsChangeListener mOnCameraDisplayFacePointsChangeListener;
-
     public void registerCameraDisplayFacePointsChangeListener(OnCameraDisplayFacePointsChangeListener onCameraDisplayFacePointsChangeListener) {
         mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
     }

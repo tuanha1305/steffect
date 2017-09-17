@@ -86,9 +86,8 @@ public class CameraView extends RelativeLayout {
     public interface OnFacePointsChangeListener {
         void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
     }
-
     private List<OnFacePointsChangeListener> mFacePointsListeners = new ArrayList<>();
-   //添加监听
+    //添加监听
     public void registerFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
         if (onFacePointsChangeListener == null)
             return;
@@ -102,7 +101,7 @@ public class CameraView extends RelativeLayout {
             mFacePointsListeners.remove(onFacePointsChangeListener);
         }
     }
-   //清空所有监听
+    //清空所有监听
     public void resetFacePointsChangeListener() {
         mFacePointsListeners.clear();
     }
