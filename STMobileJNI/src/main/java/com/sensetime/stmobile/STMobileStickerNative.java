@@ -50,7 +50,6 @@ public class STMobileStickerNative {
         void processTextureCallback(String materialName, RenderStatus status);
     }
 
-    private final static String TAG = STMobileStickerNative.class.getSimpleName();
     private static ItemCallback mCallback;
 
     /**

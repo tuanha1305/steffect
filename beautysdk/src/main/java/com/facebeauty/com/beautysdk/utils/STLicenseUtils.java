@@ -387,4 +387,7 @@ public class STLicenseUtils {
     }
 
     private static OnCheckLicenseListener onCheckLicenseListener;
+
+
+
 }

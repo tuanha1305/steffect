@@ -27,7 +27,80 @@ const char* const g_mouseFraShader = SHADER_STRING
         varying lowp vec4 DestinationColor;
         void main()
         {
-            gl_FragColor =  DestinationColor * DestinationColor.a;
+            gl_FragColor =  vec4(DestinationColor.rgb, DestinationColor.a * 0.2);
+        }
+);
+
+const char *const ChangeFaceSizeVsh = SHADER_STRING
+(
+        attribute vec4 position;
+        attribute vec4 inputTextureCoordinate;
+        varying highp vec2 textureCoordinate;
+
+        void main(void)
+        {
+            gl_Position =  position;
+            textureCoordinate = inputTextureCoordinate.xy;
+        }
+
+
+);
+
+const char *const ChangeFaceSizeFsh = SHADER_STRING
+(
+// 瘦脸
+        precision highp float;
+
+        varying highp vec2 textureCoordinate;
+        uniform sampler2D inputImageTexture;
+
+        uniform highp float radius;
+
+        uniform highp float aspectRatio;
+
+        uniform float leftContourPoints[9*2];
+        uniform float rightContourPoints[9*2];
+        uniform float deltaArray[9];
+        uniform int arraySize;
+
+        highp vec2 warpPositionToUse(vec2 currentPoint, vec2 contourPointA,  vec2 contourPointB, float radius, float delta, float aspectRatio)
+{
+    vec2 positionToUse = currentPoint;
+
+//    vec2 currentPointToUse = vec2(currentPoint.x, currentPoint.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
+//    vec2 contourPointAToUse = vec2(contourPointA.x, contourPointA.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
+
+    vec2 currentPointToUse = currentPoint;
+    vec2 contourPointAToUse = contourPointA;
+
+    float r = distance(currentPointToUse, contourPointAToUse);
+    if(r < radius)
+    {
+        vec2 dir = normalize(contourPointB - contourPointA);
+        float dist = radius * radius - r * r;
+        float alpha = dist / (dist + (r-delta) * (r-delta));
+        alpha = alpha * alpha;
+
+        positionToUse = positionToUse - alpha * delta * dir;
+
+    }
+
+    return positionToUse;
+}
+
+        void main()
+        {
+            vec2 positionToUse = textureCoordinate;
+
+            for(int i = 0; i < 9; i++)
+            {
+                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaArray[i], aspectRatio);
+                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaArray[i], aspectRatio);
+            }
+
+
+            gl_FragColor = texture2D(inputImageTexture, positionToUse);
+
         }
 );
 
@@ -56,10 +129,99 @@ const char* const fragmentShaderCode =SHADER_STRING(
         }
 );
 
+
+const char *const ChangeFaceAndJawV = SHADER_STRING
+(
+//贴图渲染
+
+        attribute vec4 position;
+        attribute vec4 inputTextureCoordinate;
+        varying highp vec2 textureCoordinate;
+
+        void main(void)
+        {
+            gl_Position =  position;
+            textureCoordinate = inputTextureCoordinate.xy;
+            //    textureCoordinate = vec2(inputTextureCoordinate.x*2.0-1.0, inputTextureCoordinate.y*2.0-1.0);
+        }
+
+
+);
+
+const char *const ChangeFaceAndJawF = SHADER_STRING
+(
+// 瘦脸
+        precision highp float;
+
+        varying highp vec2 textureCoordinate;
+        uniform sampler2D inputImageTexture;
+
+        uniform highp float radius;
+
+        uniform highp float aspectRatio;
+
+        uniform float leftContourPoints[9*2];
+        uniform float rightContourPoints[9*2];
+        uniform float deltaFaceArray[9];
+
+        uniform float jawContourPoints[7*2];
+        uniform float jawDownPoints[7*2];
+        uniform float deltaJawArray[7];
+
+        highp vec2 warpPositionToUse(vec2 currentPoint, vec2 contourPointA, vec2 contourPointB,float radius, float delta, float aspectRatio)
+{
+    vec2 positionToUse = currentPoint;
+
+    //    vec2 currentPointToUse = vec2(currentPoint.x, currentPoint.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
+    //    vec2 contourPointAToUse = vec2(contourPointA.x, contourPointA.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
+
+    vec2 currentPointToUse = currentPoint;
+    vec2 contourPointAToUse = contourPointA;
+
+    float r = distance(currentPointToUse, contourPointAToUse);
+    if(r < radius)
+    {
+        vec2 dir = normalize(contourPointB - contourPointA);
+        float dist = radius * radius - r * r;
+        float alpha = dist / (dist + (r-delta) * (r-delta));
+        alpha = alpha * alpha;
+
+        positionToUse = positionToUse - alpha * delta * dir;
+    }
+
+    return positionToUse;
+}
+
+        void main()
+        {
+            vec2 positionToUse = textureCoordinate;
+
+            for(int i = 0; i < 9; i++)
+            {
+                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+            }
+
+            for(int i = 0; i < 7; i++)
+            {
+                positionToUse = warpPositionToUse(positionToUse,
+                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
+                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
+                                                  radius, deltaJawArray[i], aspectRatio);
+            }
+
+            gl_FragColor = texture2D(inputImageTexture, positionToUse);
+
+        }
+
+);
+
 GLint mGLProgId,mGLAttribPosition,mGLUniformTexture,mGLAttribTextureCoordinate;
 GLint mGLMouseId, mGLAttribMousePos,mGLUniformTexture2, mGLAttribMouseColor;
 int mViewPortWidth;
 int mViewPortHeight;
+
+GLuint _faceandjawProgram;
 
 float changeToGLPointT(float x){
     float tempX = (float)(x - mViewPortWidth/2) / (mViewPortWidth/2);
@@ -86,10 +248,14 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     mGLMouseId = esLoadProgram(g_mouseVerShader, g_mouseFraShader);
     mGLAttribMousePos = glGetAttribLocation(mGLMouseId, "vPosition");
     mGLAttribMouseColor = glGetAttribLocation(mGLMouseId,"SourceColor");
+
     mGLProgId = esLoadProgram(vertexShaderCode, fragmentShaderCode);
     mGLAttribPosition = glGetAttribLocation(mGLProgId, "position");
     mGLUniformTexture = glGetUniformLocation(mGLProgId, "inputImageTexture");
     mGLAttribTextureCoordinate = glGetAttribLocation(mGLProgId,"inputTextureCoordinate");
+
+    _faceandjawProgram = esLoadProgram(ChangeFaceAndJawV, ChangeFaceAndJawF);
+
 }
 
 
@@ -250,7 +416,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     }
     glUseProgram(mGLMouseId);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribPointer(mGLAttribMousePos, 2, GL_FLOAT, false, 0, squareVertices);
     glEnableVertexAttribArray(mGLAttribMousePos);
     glVertexAttribPointer(mGLAttribMouseColor, 4, GL_FLOAT, false, 0, squareVertices2);
@@ -790,3 +956,172 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glDisable( GL_BLEND);
     return;
 }
+//
+//JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeChangeFaceAndJaw(JNIEnv* env, jobject obj, jobjectArray stPoint, int texture,  float scale, float jawsale)
+//{
+//    GLuint resultTexture = 0;
+//
+//    jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
+//    jfieldID id_x = env->GetFieldID(objClass, "x", "F");
+//    jfieldID id_y = env->GetFieldID(objClass, "y", "F");
+//
+//    GLfloat x,y,x0,y0,radius,theta0;
+//
+//    static const int iFaceArrSize = 9;
+//    static const int iJawArrSize = 7;
+//
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, texture);
+//    glUseProgram(_faceandjawProgram);
+////    glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVertices);
+////    glEnableVertexAttribArray(0);
+////    glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices);
+////    glEnableVertexAttribArray(1);
+//
+//    // 左脸控制点
+//    float arrleft[iFaceArrSize*2] = {
+//            face.points_array[6].x/_width,face.points_array[6].y/_height,
+//            face.points_array[7].x/_width,face.points_array[7].y/_height,
+//            face.points_array[8].x/_width,face.points_array[8].y/_height,
+//            face.points_array[9].x/_width,face.points_array[9].y/_height,
+//            face.points_array[10].x/_width,face.points_array[10].y/_height,
+//            face.points_array[11].x/_width,face.points_array[11].y/_height,
+//            face.points_array[12].x/_width,face.points_array[12].y/_height,
+//            face.points_array[13].x/_width,face.points_array[13].y/_height,
+//            face.points_array[14].x/_width,face.points_array[14].y/_height,
+//
+//    };
+//
+//    GLuint leftFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "leftContourPoints");
+//    glUniform1fv(leftFaceCenterPosition, iFaceArrSize*2, arrleft);
+//
+//    // 右脸控制点
+//    float arrright[iFaceArrSize*2] = {
+//            face.points_array[26].x/_width,face.points_array[26].y/_height,
+//            face.points_array[25].x/_width,face.points_array[25].y/_height,
+//            face.points_array[24].x/_width,face.points_array[24].y/_height,
+//            face.points_array[23].x/_width,face.points_array[23].y/_height,
+//            face.points_array[22].x/_width,face.points_array[22].y/_height,
+//            face.points_array[21].x/_width,face.points_array[21].y/_height,
+//            face.points_array[20].x/_width,face.points_array[20].y/_height,
+//            face.points_array[19].x/_width,face.points_array[19].y/_height,
+//            face.points_array[18].x/_width,face.points_array[18].y/_height,
+//    };
+//
+//    static GLuint GrightFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "rightContourPoints");
+//    glUniform1fv(GrightFaceCenterPosition, iFaceArrSize*2, arrright);
+//
+//    float arrdeltaface[9] = {
+//            static_cast<float>(ffacescale*0.0045), static_cast<float>(ffacescale*0.006), static_cast<float>(ffacescale*0.009), static_cast<float>(0.012*ffacescale), static_cast<float>(0.002*ffacescale), static_cast<float>(0.002*ffacescale), static_cast<float>(0.004*ffacescale), static_cast<float>(0.002*ffacescale), static_cast<float>(ffacescale*0.001)
+//    };
+//
+//    static GLuint deltafaceArray = glGetUniformLocation(_faceandjawProgram, "deltaFaceArray");
+//    glUniform1fv(deltafaceArray, iFaceArrSize, arrdeltaface);
+//
+//    //调整下巴长度
+//    // 缩放算法的作用域半径
+//    x0 = face.points_array[16].x;
+//    y0 = face.points_array[16].y;
+//    x = face.points_array[93].x;
+//    y = face.points_array[93].y;
+//
+//    x = x/_width;
+//    y = y /_height;
+//    x0 = x0/_width;
+//    y0 = y0/_height;
+//
+//    radius = sqrtf((x-x0)*(x-x0)+(y-y0)*(y-y0));
+//    theta0 = atanf((y-y0)/(x-x0));
+//
+//    //radius = 0.5;
+//
+//    // 缩放系数，0无缩放，大于0则放大
+//    static GLuint Gtheta0 = glGetUniformLocation(_faceandjawProgram, "theta0");
+//    glUniform1f(Gtheta0,theta0);
+//
+//    static GLuint GscaleRatio = glGetUniformLocation(_faceandjawProgram, "scaleRatio");
+//    glUniform1f(GscaleRatio,2.0);
+//
+//    static GLuint Gradius = glGetUniformLocation(_faceandjawProgram, "radius");
+//    glUniform1f(Gradius,radius);
+//
+//    float arrjawpoints[iJawArrSize*2] = {
+//            face.points_array[13].x/_width,face.points_array[13].y/_height,
+//            face.points_array[14].x/_width,face.points_array[14].y/_height,
+//            face.points_array[15].x/_width,face.points_array[15].y/_height,
+//            face.points_array[16].x/_width,face.points_array[16].y/_height,
+//            face.points_array[17].x/_width,face.points_array[17].y/_height,
+//            face.points_array[18].x/_width,face.points_array[18].y/_height,
+//            face.points_array[19].x/_width,face.points_array[19].y/_height,
+//    };
+//
+//    float arrjawdownpoints[iJawArrSize*2] = {
+//            static_cast<float>(face.points_array[13].x/_width *1.2 - face.points_array[56].x/_width *0.2),
+//            static_cast<float>(face.points_array[13].y/_height*1.2 - face.points_array[56].y/_height*0.2),
+//            static_cast<float>(face.points_array[14].x/_width *1.2 - face.points_array[55].x/_width *0.2),
+//            static_cast<float>(face.points_array[14].y/_height*1.2 - face.points_array[55].y/_height*0.2),
+//            static_cast<float>(face.points_array[15].x/_width *1.2 - face.points_array[78].x/_width *0.2),
+//            static_cast<float>(face.points_array[15].y/_height*1.2 - face.points_array[78].y/_height*0.2),
+//            static_cast<float>(face.points_array[16].x/_width *1.2 - face.points_array[43].x/_width *0.2),
+//            static_cast<float>(face.points_array[16].y/_height*1.2 - face.points_array[43].y/_height*0.2),
+//            static_cast<float>(face.points_array[17].x/_width *1.2 - face.points_array[79].x/_width *0.2),
+//            static_cast<float>(face.points_array[17].y/_height*1.2 - face.points_array[79].y/_height*0.2),
+//            static_cast<float>(face.points_array[18].x/_width *1.2 - face.points_array[58].x/_width *0.2),
+//            static_cast<float>(face.points_array[18].y/_height*1.2 - face.points_array[58].y/_height*0.2),
+//            static_cast<float>(face.points_array[19].x/_width *1.2 - face.points_array[63].x/_width *0.2),
+//            static_cast<float>(face.points_array[19].y/_height*1.2 - face.points_array[63].y/_height*0.2),
+//    };
+//
+//    // 下巴控制点
+//    GLuint jawCenterPosition = glGetUniformLocation(_faceandjawProgram, "jawContourPoints");
+//    glUniform1fv(jawCenterPosition, iJawArrSize*2, arrjawpoints);
+//
+//    GLuint jawDownPoints = glGetUniformLocation(_faceandjawProgram, "jawDownPoints");
+//    glUniform1fv(jawDownPoints, iJawArrSize*2, arrjawdownpoints);
+//
+//    float deltajawarr[iJawArrSize] = {
+//
+//            static_cast<float>(fjawscale*0.005), static_cast<float>(fjawscale*0.008),
+//            static_cast<float>(0.011*fjawscale),static_cast<float>(0.016*fjawscale),
+//            static_cast<float>(0.011*fjawscale), static_cast<float>(0.008*fjawscale),
+//            static_cast<float>(0.005*fjawscale)
+//
+//    };
+//
+//    static GLuint deltajawArray = glGetUniformLocation(_faceandjawProgram, "deltaJawArray");
+//    glUniform1fv(deltajawArray, iJawArrSize, deltajawarr);
+//
+//    GLfloat aspectratio = _width/_height;
+//    static GLuint GaspectRatio = glGetUniformLocation(_faceandjawProgram, "aspectRatio");
+//    glUniform1f(GaspectRatio,aspectratio);
+//
+//    static const GLfloat squareVertices1[] = {
+//            0.0f,  0.0f,
+//            1.0f,  0.0f,
+//            0.0f,   1.0f,
+//            1.0f,   1.0f,
+//    };
+//    static const GLfloat textureVertices1[] = {
+//            -1.0f,  1.0f,
+//            1.0f,  1.0f,
+//            -1.0f, -1.0f,
+//            1.0f, -1.0f,
+//
+//    };
+//
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, texture);
+//    glUseProgram(_faceandjawProgram);
+//    glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVertices1);
+//    glEnableVertexAttribArray(0);
+//    glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices1);
+//    glEnableVertexAttribArray(1);
+//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//
+//    resultTexture = texture;
+//    return resultTexture;
+
+//
+//    return;
+//
+//}

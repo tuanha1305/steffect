@@ -430,5 +430,6 @@ public class STGLRender {
     public native void nativeDrawUPMouse(STPoint[] stPoint240, float downmousecolors[]);
     public native void nativeInitMousePrograme();
     public native void nativeInitWH(int w, int h);
+    public native void nativeChangeFaceAndJaw(STPoint[] points, int texid, float scale, float jawsale);
 
 }
