@@ -97,7 +97,6 @@ public class WelcomeActivity extends Activity {
             @Override
             public void onSuccess() {
                 Log.d("info", "onSuccess: 授权成功");
-
             }
 
             @Override

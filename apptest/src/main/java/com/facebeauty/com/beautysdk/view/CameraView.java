@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
+import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -30,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by liupan on 17/8/14.
@@ -76,7 +80,30 @@ public class CameraView extends RelativeLayout {
         FileUtils.copyModelFiles(context);
         initView();
         initEvent();
+        mCameraDisplay.onResume();
+    }
 
+    public interface OnFacePointsChangeListener {
+        void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
+    }
+    private List<OnFacePointsChangeListener> mFacePointsListeners = new ArrayList<>();
+    //添加监听
+    public void registerFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
+        if (onFacePointsChangeListener == null)
+            return;
+        mFacePointsListeners.add(onFacePointsChangeListener);
+    }
+    //删除监听
+    public void unregisterFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
+        if (onFacePointsChangeListener == null)
+            return;
+        if (mFacePointsListeners.contains(onFacePointsChangeListener)) {
+            mFacePointsListeners.remove(onFacePointsChangeListener);
+        }
+    }
+    //清空所有监听
+    public void resetFacePointsChangeListener() {
+        mFacePointsListeners.clear();
     }
 
     private void initView() {
@@ -88,6 +115,14 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay = new CameraDisplay2(mContext.getApplicationContext(), mListener, glSurfaceView);
         mCameraDisplay.setHandler(mHandler);
         mCameraDisplay.enableBeautify(true);
+        mCameraDisplay.registerCameraDisplayFacePointsChangeListener(new CameraDisplay2.OnCameraDisplayFacePointsChangeListener() {
+            @Override
+            public void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips) {
+                for (OnFacePointsChangeListener onFacePointsChangeListener : mFacePointsListeners) {
+                    onFacePointsChangeListener.onChangeListener(pointsBrowLeft, pointsBrowRight, pointsEyeLeft, pointsEyeRight, pointsLips);
+                }
+            }
+        });
     }
 
     private void initEvent() {
@@ -204,7 +239,7 @@ public class CameraView extends RelativeLayout {
 
     public void onResume() {
         mAccelerometer.start();
-        mCameraDisplay.onResume();
+        mCameraDisplay.startSurface();
     }
 
     public void onPause() {
@@ -296,7 +331,25 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.changePreviewSize(mCurrentPreview);
     }
 
+    /**
+     * 切换摄像头
+     */
     public void changeChoice(){
         mCameraDisplay.switchCamera();
+    }
+
+    /**
+     * 一键卸妆
+     */
+    public void cleanMakeUp(){
+        float[] color = {0,0,0,0};
+        Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+        setEyebrow(bitmap,color);
+        setBlush(bitmap,color);
+        setEyeShadow(bitmap,color);
+        setEyelash(bitmap,color);
+        setEyeliner(bitmap,color);
+        setEyebrow(bitmap,color);
+        setLip(0,0,0,0);
     }
 }

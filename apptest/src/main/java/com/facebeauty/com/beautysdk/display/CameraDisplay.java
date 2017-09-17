@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.glutils.GlUtil;
@@ -26,7 +27,6 @@ import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.facebeauty.com.beautysdk.utils.LogUtils;
 import com.facebeauty.com.beautysdk.view.CameraView;
-import com.facedemo.com.facesdkbuild.R;
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -1031,8 +1031,6 @@ public class CameraDisplay implements Renderer {
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
-//        STHumanAction humanAction = mSTHumanActionNative.humanActionDetect(mRGBABuffer.array(), STCommon.ST_PIX_FMT_RGBA8888,
-//                mDetectConfig, orientation, mImageWidth, mImageHeight);
         if(mNeedFaceExtraInfo && humanAction != null && !mNeedObject){
             if(humanAction.faceExtraInfo != null){
                 arrayFaces = humanAction.getMobileFaces();
@@ -1162,12 +1160,4 @@ public class CameraDisplay implements Renderer {
     public void setDownMouseColors(float[] downMouseColors) {
         this.downMouseColors=downMouseColors;
     }
-
-//public STPoint getSTPoint(STPoint stPoint){
-//   float _scale = Math.max(mSurfaceHeight / mImageHeight, mSurfaceWidth / mImageWidth);
-//   float _margin = (mImageWidth * _scale - mSurfaceWidth) / 2;
-//    stPoint.setX(_scale*stPoint.getX()-_margin);
-//     stPoint.setY(_scale*stPoint.getY());
-//     return stPoint;
-//  }
 }
