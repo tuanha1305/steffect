@@ -686,7 +686,7 @@ public class CameraDisplay implements Renderer {
         {
             frameBuffer = mGLRender.bindFrameBuffer(textureId);
         }
-        stPoint240 = getAllPrint(frameBuffer);
+        stPoint240 = getAllPrint(frameBuffer, textureId);
 
         if(mNeedSave) {
             savePicture(textureId,file);
@@ -1027,7 +1027,7 @@ public class CameraDisplay implements Renderer {
      * 获取所有的点
      * @return
      */
-    public STPoint[] getAllPrint(int frameBuffer){
+    public STPoint[] getAllPrint(int frameBuffer, int texid){
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
@@ -1080,6 +1080,8 @@ public class CameraDisplay implements Renderer {
                         mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
                                 textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
                                 jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+
+                        mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
