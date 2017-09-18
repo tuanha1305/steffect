@@ -14,17 +14,18 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.glutils.GlUtil;
 import com.facebeauty.com.beautysdk.glutils.OpenGLUtils;
 import com.facebeauty.com.beautysdk.glutils.STUtils;
 import com.facebeauty.com.beautysdk.glutils.TextureRotationUtil;
+import com.facebeauty.com.beautysdk.glutils.Utils;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.facebeauty.com.beautysdk.utils.LogUtils;
 import com.facebeauty.com.beautysdk.view.CameraView;
+import com.facedemo.com.facesdkbuild.R;
 import com.sensetime.stmobile.STBeautifyNative;
 import com.sensetime.stmobile.STBeautyParamsType;
 import com.sensetime.stmobile.STCommon;
@@ -445,6 +446,10 @@ public class CameraDisplay2 implements Renderer {
         long preProcessCostTime = System.currentTimeMillis();
         int textureId = mGLRender.preProcess(mTextureId, mRGBABuffer);
         LogUtils.i(TAG, "preprocess cost time: %d", System.currentTimeMillis() - preProcessCostTime);
+//        if( mTemTextureId == 0 ) {
+//            mTemTextureId = mGLRender.genTexture();
+//            mGLRender.bindFrameBuffer(mTemTextureId);
+//        }
         mTemTextureId = textureId;
         int result = -1;
 
@@ -607,7 +612,10 @@ public class CameraDisplay2 implements Renderer {
         {
             frameBuffer = mGLRender.bindFrameBuffer(textureId);
         }
-        stPoint240 = getAllPrint(frameBuffer);
+        stPoint240 = getAllPrint(frameBuffer, textureId);
+//        if(stPoints != null)
+//            mGLRender.nativeChangeFaceAndJaw(stPoints, textureId, 0.8f, 0.8f);
+//        stPoints = null;
 
         if(mNeedSave) {
             savePicture(textureId,file);
@@ -620,7 +628,14 @@ public class CameraDisplay2 implements Renderer {
         }
 
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        mGLRender.onDrawFrame(textureId);
+        if(stPoints != null) {
+            mGLRender.onDrawFrame(stPoints, textureId);
+//            mGLRender.onDrawFrame(textureId);
+        }
+        else
+            mGLRender.onDrawFrame(textureId);
+        GlUtil.checkGlError("glUseProgram");
+        stPoints = null;
     }
 
     private void savePicture(int textureId, File file) {
@@ -1010,7 +1025,7 @@ public class CameraDisplay2 implements Renderer {
      * 获取所有的点
      * @return
      */
-    public STPoint[] getAllPrint(int frameBuffer){
+    public STPoint[] getAllPrint(int frameBuffer, int texid){
         STMobile106[] arrayFaces = null, arrayOutFaces = null;
         int orientation = getCurrentOrientation();
         long humanActionCostTime = System.currentTimeMillis();
@@ -1065,6 +1080,7 @@ public class CameraDisplay2 implements Renderer {
                         mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
                                 textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
                                 jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+//                        mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);

@@ -18,12 +18,12 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
-import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
 import com.facebeauty.com.beautysdk.domain.FileSave;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
+import com.facedemo.com.facesdkbuild.R;
 import com.sensetime.stmobile.model.STPoint;
 
 import java.io.BufferedOutputStream;
