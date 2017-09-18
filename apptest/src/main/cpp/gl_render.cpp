@@ -150,16 +150,11 @@ const char *const ChangeFaceAndJawV = SHADER_STRING
 
 const char *const ChangeFaceAndJawF = SHADER_STRING
 (
-// 瘦脸
         precision highp float;
-
         varying highp vec2 textureCoordinate;
         uniform sampler2D inputImageTexture;
-
         uniform highp float radius;
-
         uniform highp float aspectRatio;
-
         uniform float leftContourPoints[9*2];
         uniform float rightContourPoints[9*2];
         uniform float deltaFaceArray[9];
@@ -196,19 +191,19 @@ const char *const ChangeFaceAndJawF = SHADER_STRING
         {
             vec2 positionToUse = textureCoordinate;
 
-//            for(int i = 0; i < 9; i++)
-//            {
-//                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-//                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-//            }
-//
-//            for(int i = 0; i < 7; i++)
-//            {
-//                positionToUse = warpPositionToUse(positionToUse,
-//                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
-//                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
-//                                                  radius, deltaJawArray[i], aspectRatio);
-//            }
+            for(int i = 0; i < 9; i++)
+            {
+                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+            }
+
+            for(int i = 0; i < 7; i++)
+            {
+                positionToUse = warpPositionToUse(positionToUse,
+                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
+                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
+                                                  radius, deltaJawArray[i], aspectRatio);
+            }
 
             gl_FragColor = texture2D(inputImageTexture, positionToUse);
 
@@ -974,253 +969,245 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     static const int iFaceArrSize = 9;
     static const int iJawArrSize = 7;
 
-//    glActiveTexture(GL_TEXTURE1);
-//    glBindTexture(GL_TEXTURE_2D, texture);
-//    glUseProgram(_faceandjawProgram);
-//    glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVertices);
-//    glEnableVertexAttribArray(0);
-//    glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices);
-//    glEnableVertexAttribArray(1);
+    glUseProgram(_faceandjawProgram);
 
-    // 左脸控制点
+    jobject jobj = env->GetObjectArrayElement(stPoint, 6);
+    float x6 = env->GetFloatField(jobj, id_x);
+    float y6 = env->GetFloatField(jobj, id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 7);
+    float x7 = env->GetFloatField(jobj, id_x);
+    float y7 = env->GetFloatField(jobj, id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 8);
+    float x8 = env->GetFloatField(jobj, id_x);
+    float y8 = env->GetFloatField(jobj, id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 9);
+    float x9 = env->GetFloatField(jobj, id_x);
+    float y9 = env->GetFloatField(jobj, id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 10);
+    float x10 = env->GetFloatField(jobj, id_x);
+    float y10 = env->GetFloatField(jobj, id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 11);
+    float x11 = env->GetFloatField(jobj, id_x);
+    float y11 = env->GetFloatField(jobj, id_y);
 
-//    jobject jobj = env->GetObjectArrayElement(stPoint, 6);
-//    float x6 = env->GetFloatField(jobj, id_x);
-//    float y6 = env->GetFloatField(jobj, id_y);
-//    jobj = env->GetObjectArrayElement(stPoint, 7);
-//    float x7 = env->GetFloatField(jobj, id_x);
-//    float y7 = env->GetFloatField(jobj, id_y);
-//    jobj = env->GetObjectArrayElement(stPoint, 8);
-//    float x8 = env->GetFloatField(jobj, id_x);
-//    float y8 = env->GetFloatField(jobj, id_y);
-//    jobj = env->GetObjectArrayElement(stPoint, 9);
-//    float x9 = env->GetFloatField(jobj, id_x);
-//    float y9 = env->GetFloatField(jobj, id_y);
-//    jobj = env->GetObjectArrayElement(stPoint, 10);
-//    float x10 = env->GetFloatField(jobj, id_x);
-//    float y10 = env->GetFloatField(jobj, id_y);
-//    jobj = env->GetObjectArrayElement(stPoint, 11);
-//    float x11 = env->GetFloatField(jobj, id_x);
-//    float y11 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 12);
-//    float x12 = env->GetFloatField(jobj, id_x);
-//    float y12 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 13);
-//    float x13 = env->GetFloatField(jobj, id_x);
-//    float y13 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 14);
-//    float x14 = env->GetFloatField(jobj, id_x);
-//    float y14 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 15);
-//    float x15 = env->GetFloatField(jobj, id_x);
-//    float y15 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 16);
-//    float x16 = env->GetFloatField(jobj, id_x);
-//    float y16 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 17);
-//    float x17 = env->GetFloatField(jobj, id_x);
-//    float y17 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 18);
-//    float x18 = env->GetFloatField(jobj, id_x);
-//    float y18 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 19);
-//    float x19 = env->GetFloatField(jobj, id_x);
-//    float y19 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 20);
-//    float x20 = env->GetFloatField(jobj, id_x);
-//    float y20 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 21);
-//    float x21 = env->GetFloatField(jobj, id_x);
-//    float y21 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 22);
-//    float x22 = env->GetFloatField(jobj, id_x);
-//    float y22 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 23);
-//    float x23 = env->GetFloatField(jobj, id_x);
-//    float y23 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 24);
-//    float x24 = env->GetFloatField(jobj, id_x);
-//    float y24 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 25);
-//    float x25 = env->GetFloatField(jobj, id_x);
-//    float y25 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 26);
-//    float x26 = env->GetFloatField(jobj, id_x);
-//    float y26 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 43);
-//    float x43 = env->GetFloatField(jobj, id_x);
-//    float y43 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 55);
-//    float x55 = env->GetFloatField(jobj, id_x);
-//    float y55 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 56);
-//    float x56 = env->GetFloatField(jobj, id_x);
-//    float y56 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 58);
-//    float x58 = env->GetFloatField(jobj, id_x);
-//    float y58 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 63);
-//    float x63 = env->GetFloatField(jobj, id_x);
-//    float y63 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 78);
-//    float x78 = env->GetFloatField(jobj, id_x);
-//    float y78 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 79);
-//    float x79 = env->GetFloatField(jobj, id_x);
-//    float y79 = env->GetFloatField(jobj, id_y);
-//
-//    jobj = env->GetObjectArrayElement(stPoint, 93);
-//    float x93 = env->GetFloatField(jobj, id_x);
-//    float y93 = env->GetFloatField(jobj, id_y);
-//
-//    float arrleft[iFaceArrSize*2] = {
-//            x6/mViewPortWidth, y6/mViewPortHeight,
-//            x7/mViewPortWidth,y7/mViewPortHeight,
-//            x8/mViewPortWidth,y8/mViewPortHeight,
-//            x9/mViewPortWidth,y9/mViewPortHeight,
-//            x10/mViewPortWidth,y10/mViewPortHeight,
-//            x11/mViewPortWidth,y11/mViewPortHeight,
-//            x12/mViewPortWidth,y12/mViewPortHeight,
-//            x13/mViewPortWidth,y13/mViewPortHeight,
-//            x14/mViewPortWidth,y14/mViewPortHeight,
-//
-//    };
-//
-//    GLuint leftFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "leftContourPoints");
-//    glUniform1fv(leftFaceCenterPosition, iFaceArrSize*2, arrleft);
-//
-//    // 右脸控制点
-//    float arrright[iFaceArrSize*2] = {
-//            x26/mViewPortWidth,y26/mViewPortHeight,
-//            x25/mViewPortWidth,y25/mViewPortHeight,
-//            x24/mViewPortWidth,y24/mViewPortHeight,
-//            x23/mViewPortWidth,y23/mViewPortHeight,
-//            x22/mViewPortWidth,y22/mViewPortHeight,
-//            x21/mViewPortWidth,y21/mViewPortHeight,
-//            x20/mViewPortWidth,y20/mViewPortHeight,
-//            x19/mViewPortWidth,y19/mViewPortHeight,
-//            x18/mViewPortWidth,y18/mViewPortHeight,
-//    };
-//
-//    static GLuint GrightFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "rightContourPoints");
-//    glUniform1fv(GrightFaceCenterPosition, iFaceArrSize*2, arrright);
-//
-//    float arrdeltaface[9] = {
-//            static_cast<float>(scale*0.0045),
-//            static_cast<float>(scale*0.006),
-//            static_cast<float>(scale*0.009),
-//            static_cast<float>(0.012*scale),
-//            static_cast<float>(0.002*scale),
-//            static_cast<float>(0.002*scale),
-//            static_cast<float>(0.004*scale),
-//            static_cast<float>(0.002*scale),
-//            static_cast<float>(scale*0.001)
-//    };
-//
-//    static GLuint deltafaceArray = glGetUniformLocation(_faceandjawProgram, "deltaFaceArray");
-//    glUniform1fv(deltafaceArray, iFaceArrSize, arrdeltaface);
-//
-//    //调整下巴长度
-//    // 缩放算法的作用域半径
-//    x0 = x16;
-//    y0 = y16;
-//    x = x93;
-//    y = y93;
-//
-//    x = x/mViewPortWidth;
-//    y = y /mViewPortHeight;
-//    x0 = x0/mViewPortWidth;
-//    y0 = y0/mViewPortHeight;
-//
-//    radius = sqrtf((x-x0)*(x-x0)+(y-y0)*(y-y0));
-//    theta0 = atanf((y-y0)/(x-x0));
-//
-//    //radius = 0.5;
-//
-//    // 缩放系数，0无缩放，大于0则放大
-//    static GLuint Gtheta0 = glGetUniformLocation(_faceandjawProgram, "theta0");
-//    glUniform1f(Gtheta0,theta0);
-//
-//    static GLuint GscaleRatio = glGetUniformLocation(_faceandjawProgram, "scaleRatio");
-//    glUniform1f(GscaleRatio,2.0);
-//
-//    static GLuint Gradius = glGetUniformLocation(_faceandjawProgram, "radius");
-//    glUniform1f(Gradius,radius);
-//
-//    float arrjawpoints[iJawArrSize*2] = {
-//            x13/mViewPortWidth,y13/mViewPortHeight,
-//            x14/mViewPortWidth,y14/mViewPortHeight,
-//            x15/mViewPortWidth,y15/mViewPortHeight,
-//            x16/mViewPortWidth,y16/mViewPortHeight,
-//            x17/mViewPortWidth,y17/mViewPortHeight,
-//            x18/mViewPortWidth,y18/mViewPortHeight,
-//            x19/mViewPortWidth,y19/mViewPortHeight,
-//    };
-//
-//    float arrjawdownpoints[iJawArrSize*2] = {
-//            static_cast<float>(x13/mViewPortWidth *1.2 - x56/mViewPortWidth *0.2),
-//            static_cast<float>(y13/mViewPortHeight*1.2 - y56/mViewPortHeight*0.2),
-//            static_cast<float>(x14/mViewPortWidth *1.2 - x55/mViewPortWidth *0.2),
-//            static_cast<float>(y14/mViewPortHeight*1.2 - y55/mViewPortHeight*0.2),
-//            static_cast<float>(x15/mViewPortWidth *1.2 - x78/mViewPortWidth *0.2),
-//            static_cast<float>(y15/mViewPortHeight*1.2 - y78/mViewPortHeight*0.2),
-//            static_cast<float>(x16/mViewPortWidth *1.2 - x43/mViewPortWidth *0.2),
-//            static_cast<float>(y16/mViewPortHeight*1.2 - y43/mViewPortHeight*0.2),
-//            static_cast<float>(x17/mViewPortWidth *1.2 - x79/mViewPortWidth *0.2),
-//            static_cast<float>(y17/mViewPortHeight*1.2 - y79/mViewPortHeight*0.2),
-//            static_cast<float>(x18/mViewPortWidth *1.2 - x58/mViewPortWidth *0.2),
-//            static_cast<float>(y18/mViewPortHeight*1.2 - y58/mViewPortHeight*0.2),
-//            static_cast<float>(x19/mViewPortWidth *1.2 - x63/mViewPortWidth *0.2),
-//            static_cast<float>(y19/mViewPortHeight*1.2 - y63/mViewPortHeight*0.2),
-//    };
-//
-//    // 下巴控制点
-//    GLuint jawCenterPosition = glGetUniformLocation(_faceandjawProgram, "jawContourPoints");
-//    glUniform1fv(jawCenterPosition, iJawArrSize*2, arrjawpoints);
-//
-//    GLuint jawDownPoints = glGetUniformLocation(_faceandjawProgram, "jawDownPoints");
-//    glUniform1fv(jawDownPoints, iJawArrSize*2, arrjawdownpoints);
-//
-//    float deltajawarr[iJawArrSize] = {
-//
-//            static_cast<float>(jawscale*0.005),
-//            static_cast<float>(jawscale*0.008),
-//            static_cast<float>(0.011*jawscale),
-//            static_cast<float>(0.016*jawscale),
-//            static_cast<float>(0.011*jawscale),
-//            static_cast<float>(0.008*jawscale),
-//            static_cast<float>(0.005*jawscale)
-//
-//    };
-//
-//    static GLuint deltajawArray = glGetUniformLocation(_faceandjawProgram, "deltaJawArray");
-//    glUniform1fv(deltajawArray, iJawArrSize, deltajawarr);
-//
-//    GLfloat aspectratio = mViewPortWidth/mViewPortHeight;
-//    static GLuint GaspectRatio = glGetUniformLocation(_faceandjawProgram, "aspectRatio");
-//    glUniform1f(GaspectRatio,aspectratio);
+    jobj = env->GetObjectArrayElement(stPoint, 12);
+    float x12 = env->GetFloatField(jobj, id_x);
+    float y12 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 13);
+    float x13 = env->GetFloatField(jobj, id_x);
+    float y13 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 14);
+    float x14 = env->GetFloatField(jobj, id_x);
+    float y14 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 15);
+    float x15 = env->GetFloatField(jobj, id_x);
+    float y15 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 16);
+    float x16 = env->GetFloatField(jobj, id_x);
+    float y16 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 17);
+    float x17 = env->GetFloatField(jobj, id_x);
+    float y17 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 18);
+    float x18 = env->GetFloatField(jobj, id_x);
+    float y18 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 19);
+    float x19 = env->GetFloatField(jobj, id_x);
+    float y19 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 20);
+    float x20 = env->GetFloatField(jobj, id_x);
+    float y20 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 21);
+    float x21 = env->GetFloatField(jobj, id_x);
+    float y21 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 22);
+    float x22 = env->GetFloatField(jobj, id_x);
+    float y22 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 23);
+    float x23 = env->GetFloatField(jobj, id_x);
+    float y23 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 24);
+    float x24 = env->GetFloatField(jobj, id_x);
+    float y24 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 25);
+    float x25 = env->GetFloatField(jobj, id_x);
+    float y25 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 26);
+    float x26 = env->GetFloatField(jobj, id_x);
+    float y26 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 43);
+    float x43 = env->GetFloatField(jobj, id_x);
+    float y43 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 55);
+    float x55 = env->GetFloatField(jobj, id_x);
+    float y55 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 56);
+    float x56 = env->GetFloatField(jobj, id_x);
+    float y56 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 58);
+    float x58 = env->GetFloatField(jobj, id_x);
+    float y58 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 63);
+    float x63 = env->GetFloatField(jobj, id_x);
+    float y63 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 78);
+    float x78 = env->GetFloatField(jobj, id_x);
+    float y78 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 79);
+    float x79 = env->GetFloatField(jobj, id_x);
+    float y79 = env->GetFloatField(jobj, id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 93);
+    float x93 = env->GetFloatField(jobj, id_x);
+    float y93 = env->GetFloatField(jobj, id_y);
+
+    float arrleft[iFaceArrSize*2] = {
+            x6/mViewPortWidth, y6/mViewPortHeight,
+            x7/mViewPortWidth,y7/mViewPortHeight,
+            x8/mViewPortWidth,y8/mViewPortHeight,
+            x9/mViewPortWidth,y9/mViewPortHeight,
+            x10/mViewPortWidth,y10/mViewPortHeight,
+            x11/mViewPortWidth,y11/mViewPortHeight,
+            x12/mViewPortWidth,y12/mViewPortHeight,
+            x13/mViewPortWidth,y13/mViewPortHeight,
+            x14/mViewPortWidth,y14/mViewPortHeight,
+
+    };
+
+    GLuint leftFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "leftContourPoints");
+    glUniform1fv(leftFaceCenterPosition, iFaceArrSize*2, arrleft);
+
+    // 右脸控制点
+    float arrright[iFaceArrSize*2] = {
+            x26/mViewPortWidth,y26/mViewPortHeight,
+            x25/mViewPortWidth,y25/mViewPortHeight,
+            x24/mViewPortWidth,y24/mViewPortHeight,
+            x23/mViewPortWidth,y23/mViewPortHeight,
+            x22/mViewPortWidth,y22/mViewPortHeight,
+            x21/mViewPortWidth,y21/mViewPortHeight,
+            x20/mViewPortWidth,y20/mViewPortHeight,
+            x19/mViewPortWidth,y19/mViewPortHeight,
+            x18/mViewPortWidth,y18/mViewPortHeight,
+    };
+
+    static GLuint GrightFaceCenterPosition = glGetUniformLocation(_faceandjawProgram, "rightContourPoints");
+    glUniform1fv(GrightFaceCenterPosition, iFaceArrSize*2, arrright);
+
+    float arrdeltaface[9] = {
+            static_cast<float>(scale*0.0045),
+            static_cast<float>(scale*0.006),
+            static_cast<float>(scale*0.009),
+            static_cast<float>(0.012*scale),
+            static_cast<float>(0.002*scale),
+            static_cast<float>(0.002*scale),
+            static_cast<float>(0.004*scale),
+            static_cast<float>(0.002*scale),
+            static_cast<float>(scale*0.001)
+    };
+
+    static GLuint deltafaceArray = glGetUniformLocation(_faceandjawProgram, "deltaFaceArray");
+    glUniform1fv(deltafaceArray, iFaceArrSize, arrdeltaface);
+
+    //调整下巴长度
+    // 缩放算法的作用域半径
+    x0 = x16;
+    y0 = y16;
+    x = x93;
+    y = y93;
+
+    x = x/mViewPortWidth;
+    y = y /mViewPortHeight;
+    x0 = x0/mViewPortWidth;
+    y0 = y0/mViewPortHeight;
+
+    radius = sqrtf((x-x0)*(x-x0)+(y-y0)*(y-y0));
+    theta0 = atanf((y-y0)/(x-x0));
+
+    //radius = 0.5;
+
+    // 缩放系数，0无缩放，大于0则放大
+    static GLuint Gtheta0 = glGetUniformLocation(_faceandjawProgram, "theta0");
+    glUniform1f(Gtheta0,theta0);
+
+    static GLuint GscaleRatio = glGetUniformLocation(_faceandjawProgram, "scaleRatio");
+    glUniform1f(GscaleRatio,2.0);
+
+    static GLuint Gradius = glGetUniformLocation(_faceandjawProgram, "radius");
+    glUniform1f(Gradius,radius);
+
+    float arrjawpoints[iJawArrSize*2] = {
+            x13/mViewPortWidth,y13/mViewPortHeight,
+            x14/mViewPortWidth,y14/mViewPortHeight,
+            x15/mViewPortWidth,y15/mViewPortHeight,
+            x16/mViewPortWidth,y16/mViewPortHeight,
+            x17/mViewPortWidth,y17/mViewPortHeight,
+            x18/mViewPortWidth,y18/mViewPortHeight,
+            x19/mViewPortWidth,y19/mViewPortHeight,
+    };
+
+    float arrjawdownpoints[iJawArrSize*2] = {
+            static_cast<float>(x13/mViewPortWidth *1.2 - x56/mViewPortWidth *0.2),
+            static_cast<float>(y13/mViewPortHeight*1.2 - y56/mViewPortHeight*0.2),
+            static_cast<float>(x14/mViewPortWidth *1.2 - x55/mViewPortWidth *0.2),
+            static_cast<float>(y14/mViewPortHeight*1.2 - y55/mViewPortHeight*0.2),
+            static_cast<float>(x15/mViewPortWidth *1.2 - x78/mViewPortWidth *0.2),
+            static_cast<float>(y15/mViewPortHeight*1.2 - y78/mViewPortHeight*0.2),
+            static_cast<float>(x16/mViewPortWidth *1.2 - x43/mViewPortWidth *0.2),
+            static_cast<float>(y16/mViewPortHeight*1.2 - y43/mViewPortHeight*0.2),
+            static_cast<float>(x17/mViewPortWidth *1.2 - x79/mViewPortWidth *0.2),
+            static_cast<float>(y17/mViewPortHeight*1.2 - y79/mViewPortHeight*0.2),
+            static_cast<float>(x18/mViewPortWidth *1.2 - x58/mViewPortWidth *0.2),
+            static_cast<float>(y18/mViewPortHeight*1.2 - y58/mViewPortHeight*0.2),
+            static_cast<float>(x19/mViewPortWidth *1.2 - x63/mViewPortWidth *0.2),
+            static_cast<float>(y19/mViewPortHeight*1.2 - y63/mViewPortHeight*0.2),
+    };
+
+    // 下巴控制点
+    GLuint jawCenterPosition = glGetUniformLocation(_faceandjawProgram, "jawContourPoints");
+    glUniform1fv(jawCenterPosition, iJawArrSize*2, arrjawpoints);
+
+    GLuint jawDownPoints = glGetUniformLocation(_faceandjawProgram, "jawDownPoints");
+    glUniform1fv(jawDownPoints, iJawArrSize*2, arrjawdownpoints);
+
+    float deltajawarr[iJawArrSize] = {
+
+            static_cast<float>(jawscale*0.005),
+            static_cast<float>(jawscale*0.008),
+            static_cast<float>(0.011*jawscale),
+            static_cast<float>(0.016*jawscale),
+            static_cast<float>(0.011*jawscale),
+            static_cast<float>(0.008*jawscale),
+            static_cast<float>(0.005*jawscale)
+
+    };
+
+    static GLuint deltajawArray = glGetUniformLocation(_faceandjawProgram, "deltaJawArray");
+    glUniform1fv(deltajawArray, iJawArrSize, deltajawarr);
+
+    GLfloat aspectratio = mViewPortWidth/mViewPortHeight;
+    static GLuint GaspectRatio = glGetUniformLocation(_faceandjawProgram, "aspectRatio");
+    glUniform1f(GaspectRatio,aspectratio);
 
     static const GLfloat squareVertices1[] = {
             0.0f,  0.0f,
@@ -1236,13 +1223,12 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
 
     };
 
-    glUseProgram(_faceandjawProgram);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uinputImageTexture, 0);
-    glVertexAttribPointer(facejawAttPos, 2, GL_FLOAT, 0, 0, squareVertices1);
+    glVertexAttribPointer(facejawAttPos, 2, GL_FLOAT, 0, 0, textureVertices1);
     glEnableVertexAttribArray(facejawAttPos);
-    glVertexAttribPointer(facejawCoord, 2, GL_FLOAT, 0, 0, textureVertices1);
+    glVertexAttribPointer(facejawCoord, 2, GL_FLOAT, 0, 0, squareVertices1);
     glEnableVertexAttribArray(facejawCoord);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
