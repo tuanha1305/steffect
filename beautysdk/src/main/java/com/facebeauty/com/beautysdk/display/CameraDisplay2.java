@@ -676,8 +676,8 @@ public class CameraDisplay2 implements Renderer {
         int index = size.indexOf('x');
         mImageHeight = Integer.parseInt(size.substring(0, index));
         mImageWidth = Integer.parseInt(size.substring(index + 1));
-        if(mImageHeight==640){
-            mCameraProxy.setPreviewSize(480, 480);
+        if(mImageWidth==480){
+            mCameraProxy.setPreviewSize(480, mImageWidth);
         }else {
             mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
         }
@@ -850,15 +850,18 @@ public class CameraDisplay2 implements Renderer {
                     setUpCamera();
                 }
 
+                if(mImageHeight==640){
+                    mImageHeight = 480;
+                }
                 mGLRender.init(mImageWidth, mImageHeight);
-
                 if(mNeedObject){
                     resetIndexRect();
                 }
 
                 mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
+
                 if (mListener != null) {
-                    mListener.onChangePreviewSize(mImageHeight, mImageWidth);
+                        mListener.onChangePreviewSize(mImageHeight, mImageWidth);
                 }
 
                 mCameraChanging = false;
