@@ -156,10 +156,11 @@ public class CameraView extends RelativeLayout {
 
     private CameraDisplay2.ChangePreviewSizeListener mListener = new CameraDisplay2.ChangePreviewSizeListener() {
         @Override
-        public void onChangePreviewSize(final int previewW, final int previewH) {
+        public void onChangePreviewSize(final int previewW,int previewH) {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
                     requestLayout();
                 }
 
