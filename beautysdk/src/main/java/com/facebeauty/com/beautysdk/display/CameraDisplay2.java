@@ -14,6 +14,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
@@ -633,7 +634,12 @@ public class CameraDisplay2 implements Renderer {
         }
 
         if(mTakingScreenShoot){
+           long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
+            long time2 = System.currentTimeMillis();
+            Log.d("liupan", "liupan----time1==" + time1);
+            Log.d("liupan", "liupan-----time2==" + time2);
+            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
         }
 
         long dt = System.currentTimeMillis() - mStartTime;
@@ -670,12 +676,21 @@ public class CameraDisplay2 implements Renderer {
     }
 
     private void takeScreenShot(int textureId) {
+        if (mImageWidth <= 0 || mImageHeight <= 0)
+            return;
+
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
+
+
+        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
+        mTmpBuffer.position(0);
+        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
+
         Message msg = Message.obtain(mHandler);
         msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
-        msg.obj = mTmpBuffer;
+        msg.obj = srcBitmap;
         Bundle bundle = new Bundle();
         bundle.putInt("imageWidth", mImageWidth);
         bundle.putInt("imageHeight", mImageHeight);

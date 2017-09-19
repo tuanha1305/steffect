@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
@@ -37,7 +38,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by liupan on 17/8/14.
@@ -50,6 +54,30 @@ public class CameraView extends RelativeLayout {
     private Accelerometer mAccelerometer = null;
     public static final int MSG_SAVING_IMG = 1;
     public static final int MSG_TAKE_SCREEN_SHOT = 2;
+    public static final int MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME = 3;
+
+    private boolean mTakingScreenShoot = false;
+    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+    LinkedList<Integer> imageWidths = new LinkedList<>();
+    LinkedList<Integer> imageHeights = new LinkedList<>();
+    int position;
+
+//    Runnable runnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            while (mTakingScreenShoot) {
+//                if (byteBuffers.size() > 0 && position != (byteBuffers.size() - 1)) {
+//                    long  time1 = System.currentTimeMillis();
+//                    onTakeScreenShot(byteBuffers.get(position), imageWidths.get(position), imageHeights.get(position));
+//                    position++;
+//                    long time2 = System.currentTimeMillis();
+//                    Log.d("liupan", "liupan----CameraView time1==" + time1);
+//                    Log.d("liupan", "liupan-----CameraView time2==" + time2);
+//                    Log.d("liupan", "liupan-----CameraView preprocess===" + (time2-time1));
+//                }
+//            }
+//        }
+//    };
 
     private Handler mHandler = new Handler() {
         @Override
@@ -67,14 +95,19 @@ public class CameraView extends RelativeLayout {
 
                 break;
                 case MSG_TAKE_SCREEN_SHOT: {
-                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
+//                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
+                    Bitmap bitmap = (Bitmap) msg.obj;
                     Bundle bundle = msg.getData();
                     int imageWidth = bundle.getInt("imageWidth");
                     int imageHeight = bundle.getInt("imageHeight");
-                    onTakeScreenShot(byteBuffer, imageWidth, imageHeight);
+                    byteBuffers.add(bitmap);
+//                    imageWidths.add(imageWidth);
+//                    imageHeights.add(imageHeight);
                 }
-
                 break;
+                case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
+                    endRecoderScreen(true);
+                    break;
             }
         }
     };
@@ -288,12 +321,34 @@ public class CameraView extends RelativeLayout {
         srcBitmap.recycle();
     }
 
-    private void onTakeScreenShot(ByteBuffer data, int mImageWidth, int mImageHeight) {
+//    private void onTakeScreenShot(ByteBuffer data, int mImageWidth, int mImageHeight) {
+//        if (mImageWidth <= 0 || mImageHeight <= 0)
+//            return;
+//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+//        data.position(0);
+//        srcBitmap.copyPixelsFromBuffer(data);
+//
+//        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
+//        if (!directory.exists()) {
+//            directory.mkdirs();
+//        }
+//        String fileName = directory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".png";
+//        try {
+//            FileOutputStream out = new FileOutputStream(fileName);
+//            srcBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        srcBitmap.recycle();
+//    }
+
+    private void onTakeScreenShot(Bitmap srcBitmap, int mImageWidth, int mImageHeight) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
-        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
-        data.position(0);
-        srcBitmap.copyPixelsFromBuffer(data);
+//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+//        data.position(0);
+//        srcBitmap.copyPixelsFromBuffer(data);
 
         File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
         if (!directory.exists()) {
@@ -302,11 +357,10 @@ public class CameraView extends RelativeLayout {
         String fileName = directory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".png";
         try {
             FileOutputStream out = new FileOutputStream(fileName);
-            srcBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            srcBitmap.compress(Bitmap.CompressFormat.PNG, 80, out);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         srcBitmap.recycle();
     }
 
@@ -317,15 +371,20 @@ public class CameraView extends RelativeLayout {
     public void startRecoderScreen() {
         mCameraDisplay.setTakingScreenShoot(true);
         Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
+        mTakingScreenShoot = true;
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME,10*1000);
+//        new Thread(runnable).start();
     }
-
     public void endRecoderScreen() {
+        endRecoderScreen(false);
+    }
+    private void endRecoderScreen(boolean bTimeout) {
         mCameraDisplay.setTakingScreenShoot(false);
-
-        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+        mTakingScreenShoot = false;
+//        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
+//        if (!directory.exists()) {
+//            directory.mkdirs();
+//        }
 
         File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
         if (!destdirectory.exists()) {
@@ -336,20 +395,27 @@ public class CameraView extends RelativeLayout {
         SequenceEncoder sequenceEncoderMp4;
         try {
             sequenceEncoderMp4 = new SequenceEncoder(destFile);
-            File[] files = directory.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (!files[i].exists()) {
-                    break;
-                }
-                Bitmap frame = BitmapFactory.decodeFile(files[i].getAbsolutePath());
-//            Bitmap frame = BitmapUtil.decodeSampledBitmapFromFile(files[i].getAbsolutePath(), 480, 320);
+//            File[] files = directory.listFiles();
+//            for (int i = 0; i < files.length; i++) {
+//                if (!files[i].exists()) {
+//                    break;
+//                }
+//                Bitmap frame = BitmapFactory.decodeFile(files[i].getAbsolutePath());
+//                sequenceEncoderMp4.encodeImage(frame);
+//            }
+            for(Bitmap frame: byteBuffers){
                 sequenceEncoderMp4.encodeImage(frame);
             }
             sequenceEncoderMp4.finish();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
+        if(bTimeout){
+            Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getContext(), "录屏最长15秒时间", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void saveToSDCard(File file, Bitmap bmp) {
