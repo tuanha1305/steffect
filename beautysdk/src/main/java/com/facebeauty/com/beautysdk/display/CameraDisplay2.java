@@ -115,6 +115,8 @@ public class CameraDisplay2 implements Renderer {
     private float[] mBeautifyParams = new float[6];
     private STHumanAction humanAction;
 
+    private boolean mTakingScreenShoot = false;
+
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
             STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH,
@@ -238,8 +240,15 @@ public class CameraDisplay2 implements Renderer {
         }
     }
 
+    public void setTakingScreenShoot(boolean takingScreenShoot) {
+        mTakingScreenShoot = takingScreenShoot;
+    }
+
+    public boolean getTakingScreenShoot() {
+        return mTakingScreenShoot;
+    }
     public void setSaveImage(File file) {
-        this.file =file;
+        this.file = file;
         mNeedSave = true;
     }
 
@@ -623,6 +632,10 @@ public class CameraDisplay2 implements Renderer {
             mNeedSave = false;
         }
 
+        if(mTakingScreenShoot){
+            takeScreenShot(textureId);
+        }
+
         long dt = System.currentTimeMillis() - mStartTime;
         if(mFpsListener != null) {
             mFpsListener.onFpsChanged((int) dt);
@@ -649,6 +662,20 @@ public class CameraDisplay2 implements Renderer {
         fileSave.setBitmap(mTmpBuffer);
         fileSave.setFile(file);
         msg.obj = fileSave;
+        Bundle bundle = new Bundle();
+        bundle.putInt("imageWidth", mImageWidth);
+        bundle.putInt("imageHeight", mImageHeight);
+        msg.setData(bundle);
+        msg.sendToTarget();
+    }
+
+    private void takeScreenShot(int textureId) {
+        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+        mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
+        mTmpBuffer.position(0);
+        Message msg = Message.obtain(mHandler);
+        msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
+        msg.obj = mTmpBuffer;
         Bundle bundle = new Bundle();
         bundle.putInt("imageWidth", mImageWidth);
         bundle.putInt("imageHeight", mImageHeight);
