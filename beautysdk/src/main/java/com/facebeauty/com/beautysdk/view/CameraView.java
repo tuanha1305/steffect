@@ -11,12 +11,15 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
@@ -26,6 +29,8 @@ import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.sensetime.stmobile.model.STPoint;
 
+import org.jcodec.api.android.SequenceEncoder;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +38,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by liupan on 17/8/14.
@@ -45,20 +53,67 @@ public class CameraView extends RelativeLayout {
     private Activity mContext;
     private Accelerometer mAccelerometer = null;
     public static final int MSG_SAVING_IMG = 1;
+    public static final int MSG_TAKE_SCREEN_SHOT = 2;
+    public static final int MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME = 3;
+    public static final int MSG_TAKE_SCREEN_SHOT_END = 4;
+
+    private boolean mTakingScreenShoot = false;
+    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+    LinkedList<Integer> imageWidths = new LinkedList<>();
+    LinkedList<Integer> imageHeights = new LinkedList<>();
+    int position;
+
+//    Runnable runnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            while (mTakingScreenShoot) {
+//                if (byteBuffers.size() > 0 && position != (byteBuffers.size() - 1)) {
+//                    long  time1 = System.currentTimeMillis();
+//                    onTakeScreenShot(byteBuffers.get(position), imageWidths.get(position), imageHeights.get(position));
+//                    position++;
+//                    long time2 = System.currentTimeMillis();
+//                    Log.d("liupan", "liupan----CameraView time1==" + time1);
+//                    Log.d("liupan", "liupan-----CameraView time2==" + time2);
+//                    Log.d("liupan", "liupan-----CameraView preprocess===" + (time2-time1));
+//                }
+//            }
+//        }
+//    };
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(final Message msg) {
             super.handleMessage(msg);
-
             switch (msg.what) {
-                case MSG_SAVING_IMG:
+                case MSG_SAVING_IMG: {
                     FileSave data = (FileSave) msg.obj;
                     Bundle bundle = msg.getData();
                     int imageWidth = bundle.getInt("imageWidth");
                     int imageHeight = bundle.getInt("imageHeight");
-                    onPictureTaken(data.getBitmap(),data.getFile(), imageWidth, imageHeight);
+                    onPictureTaken(data.getBitmap(), data.getFile(), imageWidth, imageHeight);
+                }
+
+                break;
+                case MSG_TAKE_SCREEN_SHOT: {
+//                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
+                    Bitmap bitmap = (Bitmap) msg.obj;
+//                    Bundle bundle = msg.getData();
+//                    int imageWidth = bundle.getInt("imageWidth");
+//                    int imageHeight = bundle.getInt("imageHeight");
+                    if (mCameraDisplay.getTakingScreenShoot())
+                        byteBuffers.add(bitmap);
+                }
+                break;
+                case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
+                    if (mTakingScreenShoot)
+                        endRecoderScreen(true);
                     break;
+                case MSG_TAKE_SCREEN_SHOT_END: {
+                    mTakingScreenShoot = false;
+                    byteBuffers.clear();
+                    Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
+                }
+                break;
             }
         }
     };
@@ -86,13 +141,16 @@ public class CameraView extends RelativeLayout {
     public interface OnFacePointsChangeListener {
         void onChangeListener(STPoint[] pointsBrowLeft, STPoint[] pointsBrowRight, STPoint[] pointsEyeLeft, STPoint[] pointsEyeRight, STPoint[] pointsLips);
     }
+
     private List<OnFacePointsChangeListener> mFacePointsListeners = new ArrayList<>();
+
     //添加监听
     public void registerFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
         if (onFacePointsChangeListener == null)
             return;
         mFacePointsListeners.add(onFacePointsChangeListener);
     }
+
     //删除监听
     public void unregisterFacePointsChangeListener(OnFacePointsChangeListener onFacePointsChangeListener) {
         if (onFacePointsChangeListener == null)
@@ -101,6 +159,7 @@ public class CameraView extends RelativeLayout {
             mFacePointsListeners.remove(onFacePointsChangeListener);
         }
     }
+
     //清空所有监听
     public void resetFacePointsChangeListener() {
         mFacePointsListeners.clear();
@@ -156,7 +215,7 @@ public class CameraView extends RelativeLayout {
 
     private CameraDisplay2.ChangePreviewSizeListener mListener = new CameraDisplay2.ChangePreviewSizeListener() {
         @Override
-        public void onChangePreviewSize(final int previewW,int previewH) {
+        public void onChangePreviewSize(final int previewW, int previewH) {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -171,9 +230,9 @@ public class CameraView extends RelativeLayout {
     /**
      * 眉毛
      */
-    public void setEyebrow(Bitmap bitmap,float[] bocolor){
-        mCameraDisplay.setRightMeiMao(bitmap,bocolor);
-        mCameraDisplay.setLeftMeiMao(bitmap,bocolor);
+    public void setEyebrow(Bitmap bitmap, float[] bocolor) {
+        mCameraDisplay.setRightMeiMao(bitmap, bocolor);
+        mCameraDisplay.setLeftMeiMao(bitmap, bocolor);
     }
 
     /**
@@ -181,8 +240,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyelash(Bitmap bitmap,float[] bocolor) {
-        mCameraDisplay.setYanJieMao(bitmap,bocolor);
+    public void setEyelash(Bitmap bitmap, float[] bocolor) {
+        mCameraDisplay.setYanJieMao(bitmap, bocolor);
     }
 
     /**
@@ -190,8 +249,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyeliner(Bitmap bitmap,float[] eyeLinerColor) {
-        mCameraDisplay.setYanXian(bitmap,eyeLinerColor);
+    public void setEyeliner(Bitmap bitmap, float[] eyeLinerColor) {
+        mCameraDisplay.setYanXian(bitmap, eyeLinerColor);
     }
 
     /**
@@ -199,8 +258,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setEyeShadow(Bitmap bitmap,float[] eyeShadowColor) {
-        mCameraDisplay.setYanYing(bitmap,eyeShadowColor);
+    public void setEyeShadow(Bitmap bitmap, float[] eyeShadowColor) {
+        mCameraDisplay.setYanYing(bitmap, eyeShadowColor);
     }
 
     /**
@@ -208,8 +267,8 @@ public class CameraView extends RelativeLayout {
      *
      * @param bitmap
      */
-    public void setBlush(Bitmap bitmap,float[] blushColor) {
-        mCameraDisplay.setSaihong(bitmap,blushColor);
+    public void setBlush(Bitmap bitmap, float[] blushColor) {
+        mCameraDisplay.setSaihong(bitmap, blushColor);
     }
 
     /**
@@ -233,7 +292,7 @@ public class CameraView extends RelativeLayout {
      * @param alpha
      */
     public void setLip(float red, float green, float blue, float alpha) {
-       float _mousecolors[] = {red/255f, green/255f, blue/255f, alpha};
+        float _mousecolors[] = {red / 255f, green / 255f, blue / 255f, alpha};
         mCameraDisplay.setDownMouseColors(_mousecolors);
         mCameraDisplay.setUpMouseColors(_mousecolors);
     }
@@ -268,6 +327,115 @@ public class CameraView extends RelativeLayout {
         srcBitmap.recycle();
     }
 
+//    private void onTakeScreenShot(ByteBuffer data, int mImageWidth, int mImageHeight) {
+//        if (mImageWidth <= 0 || mImageHeight <= 0)
+//            return;
+//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+//        data.position(0);
+//        srcBitmap.copyPixelsFromBuffer(data);
+//
+//        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
+//        if (!directory.exists()) {
+//            directory.mkdirs();
+//        }
+//        String fileName = directory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".png";
+//        try {
+//            FileOutputStream out = new FileOutputStream(fileName);
+//            srcBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        srcBitmap.recycle();
+//    }
+
+    private void onTakeScreenShot(Bitmap srcBitmap, int mImageWidth, int mImageHeight) {
+        if (mImageWidth <= 0 || mImageHeight <= 0)
+            return;
+//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+//        data.position(0);
+//        srcBitmap.copyPixelsFromBuffer(data);
+
+        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdk");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        String fileName = directory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".png";
+        try {
+            FileOutputStream out = new FileOutputStream(fileName);
+            srcBitmap.compress(Bitmap.CompressFormat.PNG, 80, out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        srcBitmap.recycle();
+    }
+
+    public boolean isRecoderScreen() {
+//        return mCameraDisplay.getTakingScreenShoot();
+        return mTakingScreenShoot;
+    }
+
+    public void startRecoderScreen() {
+        mCameraDisplay.setTakingScreenShoot(true);
+        Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
+        mTakingScreenShoot = true;
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 5 * 1000);
+//        new Thread(runnable).start();
+    }
+
+    public void endRecoderScreen() {
+        if (mTakingScreenShoot) {
+            endRecoderScreen(false);
+        } else {
+            Toast.makeText(getContext(), "录屏已经结束", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void endRecoderScreen(final boolean bTimeout) {
+        mCameraDisplay.setTakingScreenShoot(false);
+        if(bTimeout){
+            Toast.makeText(getContext(), "录屏最长15秒时间,录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getContext(), "录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
+                if (!destdirectory.exists()) {
+                    destdirectory.mkdirs();
+                }
+                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
+                File destFile = new File(destFileName);
+                SequenceEncoder sequenceEncoderMp4;
+                try {
+                    sequenceEncoderMp4 = new SequenceEncoder(destFile);
+
+                    for (Bitmap frame : byteBuffers) {
+                        sequenceEncoderMp4.encodeImage(frame);
+                    }
+                    sequenceEncoderMp4.finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                catch (Throwable throwable){
+//                    throwable.printStackTrace();
+//                }finally {
+//                }
+//                for (Bitmap frame : byteBuffers) {
+//                    if(!frame.isRecycled()){
+//                        frame.recycle();
+//                    }
+//                }
+                Message message = Message.obtain();
+                message.what = MSG_TAKE_SCREEN_SHOT_END;
+                mHandler.sendMessage(message);
+            }
+        }).start();
+
+
+    }
 
     private void saveToSDCard(File file, Bitmap bmp) {
 
@@ -319,38 +487,39 @@ public class CameraView extends RelativeLayout {
         }
     }
 
-    public Surface getSurfaceView(){
+    public Surface getSurfaceView() {
         return mSurfaceViewOverlap.getHolder().getSurface();
     }
 
 
     /**
      * 16：9
+     *
      * @param mCurrentPreview
      */
-    public void changePreviewSize(int mCurrentPreview){
+    public void changePreviewSize(int mCurrentPreview) {
         mCameraDisplay.changePreviewSize(mCurrentPreview);
     }
 
     /**
      * 切换摄像头
      */
-    public void changeChoice(){
+    public void changeChoice() {
         mCameraDisplay.switchCamera();
     }
 
     /**
      * 一键卸妆
      */
-    public void cleanMakeUp(){
-        float[] color = {0,0,0,0};
-        Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
-        setEyebrow(bitmap,color);
-        setBlush(bitmap,color);
-        setEyeShadow(bitmap,color);
-        setEyelash(bitmap,color);
-        setEyeliner(bitmap,color);
-        setEyebrow(bitmap,color);
-        setLip(0,0,0,0);
+    public void cleanMakeUp() {
+        float[] color = {0, 0, 0, 0};
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+        setEyebrow(bitmap, color);
+        setBlush(bitmap, color);
+        setEyeShadow(bitmap, color);
+        setEyelash(bitmap, color);
+        setEyeliner(bitmap, color);
+        setEyebrow(bitmap, color);
+        setLip(0, 0, 0, 0);
     }
 }
