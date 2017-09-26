@@ -117,6 +117,19 @@ public class CameraDisplay2 implements Renderer {
     private STHumanAction humanAction;
 
     private boolean mTakingScreenShoot = false;
+    private boolean mNeedTakingScreenShoot = true;
+    private Handler mTakingScreenShootHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0: {
+                    mNeedTakingScreenShoot= true;
+                }
+                break;
+            }
+        }
+    };
 
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
@@ -633,10 +646,14 @@ public class CameraDisplay2 implements Renderer {
             mNeedSave = false;
         }
 
-        if(mTakingScreenShoot){
+        if(mTakingScreenShoot&&mNeedTakingScreenShoot){
            long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
+            mNeedTakingScreenShoot =false;
+            mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
+
             long time2 = System.currentTimeMillis();
+
             Log.d("liupan", "liupan----time1==" + time1);
             Log.d("liupan", "liupan-----time2==" + time2);
             Log.d("liupan", "liupan-----preprocess===" + (time2-time1));

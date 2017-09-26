@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebeauty.com.beautysdk.MyAndroidSequenceEncoder;
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
@@ -62,6 +63,7 @@ public class CameraView extends RelativeLayout {
     LinkedList<Integer> imageWidths = new LinkedList<>();
     LinkedList<Integer> imageHeights = new LinkedList<>();
     int position;
+    int count;
 
 //    Runnable runnable = new Runnable() {
 //        @Override
@@ -100,8 +102,12 @@ public class CameraView extends RelativeLayout {
 //                    Bundle bundle = msg.getData();
 //                    int imageWidth = bundle.getInt("imageWidth");
 //                    int imageHeight = bundle.getInt("imageHeight");
-                    if (mCameraDisplay.getTakingScreenShoot())
+                    if (mCameraDisplay.getTakingScreenShoot()){
                         byteBuffers.add(bitmap);
+                        count++;
+                        Log.d("liupan","liupan count =" +count);
+                    }
+
                 }
                 break;
                 case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
@@ -379,7 +385,7 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setTakingScreenShoot(true);
         Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
         mTakingScreenShoot = true;
-        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 5 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
 //        new Thread(runnable).start();
     }
 
@@ -408,9 +414,9 @@ public class CameraView extends RelativeLayout {
                 }
                 String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
                 File destFile = new File(destFileName);
-                SequenceEncoder sequenceEncoderMp4;
+                MyAndroidSequenceEncoder sequenceEncoderMp4;
                 try {
-                    sequenceEncoderMp4 = new SequenceEncoder(destFile);
+                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
 
                     for (Bitmap frame : byteBuffers) {
                         sequenceEncoderMp4.encodeImage(frame);
