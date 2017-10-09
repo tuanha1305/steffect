@@ -59,10 +59,11 @@ public class CameraView extends RelativeLayout {
     public static final int MSG_TAKE_SCREEN_SHOT_END = 4;
 
     private boolean mTakingScreenShoot = false;
-    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+//    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
     LinkedList<Integer> imageWidths = new LinkedList<>();
     LinkedList<Integer> imageHeights = new LinkedList<>();
-    int position;
+//    int position;
     int count;
 
 //    Runnable runnable = new Runnable() {
@@ -97,13 +98,16 @@ public class CameraView extends RelativeLayout {
 
                 break;
                 case MSG_TAKE_SCREEN_SHOT: {
-//                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
-                    Bitmap bitmap = (Bitmap) msg.obj;
-//                    Bundle bundle = msg.getData();
-//                    int imageWidth = bundle.getInt("imageWidth");
-//                    int imageHeight = bundle.getInt("imageHeight");
+                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
+//                    Bitmap bitmap = (Bitmap) msg.obj;
+                    Bundle bundle = msg.getData();
+                    int imageWidth = bundle.getInt("imageWidth");
+                    int imageHeight = bundle.getInt("imageHeight");
                     if (mCameraDisplay.getTakingScreenShoot()){
-                        byteBuffers.add(bitmap);
+//                        byteBuffers.add(bitmap);
+                        byteBuffers.add(byteBuffer);
+                        imageWidths.add(imageWidth);
+                        imageHeights.add(imageHeight);
                         count++;
                         Log.d("liupan","liupan count =" +count);
                     }
@@ -117,6 +121,9 @@ public class CameraView extends RelativeLayout {
                 case MSG_TAKE_SCREEN_SHOT_END: {
                     mTakingScreenShoot = false;
                     byteBuffers.clear();
+                    imageHeights.clear();
+                    imageWidths.clear();
+                    Log.d("liupan","liupan 录屏结束");
                     Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -418,9 +425,19 @@ public class CameraView extends RelativeLayout {
                 try {
                     sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
 
-                    for (Bitmap frame : byteBuffers) {
-                        sequenceEncoderMp4.encodeImage(frame);
+//                    for (Bitmap frame : byteBuffers) {
+//                        sequenceEncoderMp4.encodeImage(frame);
+//                    }
+
+                    for (int i = 0;i<byteBuffers.size();i++) {
+                         ByteBuffer byteBuffer = byteBuffers.get(i);
+                         Bitmap srcBitmap = Bitmap.createBitmap(imageWidths.get(i), imageHeights.get(i), Bitmap.Config.ARGB_4444);
+                         byteBuffer.position(0);
+                         srcBitmap.copyPixelsFromBuffer(byteBuffer);
+                         sequenceEncoderMp4.encodeImage(srcBitmap);
+                         srcBitmap.recycle();
                     }
+
                     sequenceEncoderMp4.finish();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -647,16 +647,15 @@ public class CameraDisplay2 implements Renderer {
         }
 
         if(mTakingScreenShoot&&mNeedTakingScreenShoot){
-           long  time1 = System.currentTimeMillis();
+//           long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
             mNeedTakingScreenShoot =false;
             mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
 
-            long time2 = System.currentTimeMillis();
-
-            Log.d("liupan", "liupan----time1==" + time1);
-            Log.d("liupan", "liupan-----time2==" + time2);
-            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
+//            long time2 = System.currentTimeMillis();
+//            Log.d("liupan", "liupan----time1==" + time1);
+//            Log.d("liupan", "liupan-----time2==" + time2);
+//            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
         }
 
         long dt = System.currentTimeMillis() - mStartTime;
@@ -701,13 +700,14 @@ public class CameraDisplay2 implements Renderer {
         mTmpBuffer.position(0);
 
 
-        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
-        mTmpBuffer.position(0);
-        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
+//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
+//        mTmpBuffer.position(0);
+//        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
 
         Message msg = Message.obtain(mHandler);
         msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
-        msg.obj = srcBitmap;
+//        msg.obj = srcBitmap;
+        msg.obj = mTmpBuffer;
         Bundle bundle = new Bundle();
         bundle.putInt("imageWidth", mImageWidth);
         bundle.putInt("imageHeight", mImageHeight);

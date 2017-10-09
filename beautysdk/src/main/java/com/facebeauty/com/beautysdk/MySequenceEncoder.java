@@ -79,9 +79,10 @@ public class MySequenceEncoder {
         H264Utils.encodeMOVPacket(result);
 
         // Add packet to video track
-        outTrack.addFrame(new MP4Packet(result, frameNo, 25, 1, frameNo, true, null, frameNo, 0));
+        outTrack.addFrame(new MP4Packet(result, frameNo, 5, 15, frameNo, true, null, frameNo, 0));
 
-        frameNo++;
+//        frameNo++;
+        frameNo+=5;
     }
 
     public void finish() throws IOException {
