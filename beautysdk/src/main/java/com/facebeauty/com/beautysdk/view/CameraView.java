@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -429,6 +430,10 @@ public class CameraView extends RelativeLayout {
 //                        sequenceEncoderMp4.encodeImage(frame);
 //                    }
 
+//                    ByteBuffer byteBuffer = mCameraDisplay.getmTmpBuffer();
+//                    for(int i =0;i<byteBuffer.){
+//
+//                    }
                     for (int i = 0;i<byteBuffers.size();i++) {
                          ByteBuffer byteBuffer = byteBuffers.get(i);
                          Bitmap srcBitmap = Bitmap.createBitmap(imageWidths.get(i), imageHeights.get(i), Bitmap.Config.ARGB_4444);

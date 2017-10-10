@@ -91,6 +91,7 @@
         android:id="@+id/main_progress_bar"
         android:layout_width="85dp"
         android:layout_height="85dp"
+        android:visibility="gone"
         android:layout_centerInParent="true" />
 
     <TextView
@@ -102,5 +103,6 @@
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#ffffff"
+        android:visibility="gone"
         android:textSize="16sp" />
 </RelativeLayout>

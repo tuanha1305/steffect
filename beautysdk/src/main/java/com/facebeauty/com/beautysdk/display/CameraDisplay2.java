@@ -94,6 +94,7 @@ public class CameraDisplay2 implements Renderer {
     private STMobileObjectTrackNative mSTMobileObjectTrackNative = new STMobileObjectTrackNative();
 
     private ByteBuffer mRGBABuffer;
+    private ByteBuffer mTmpBuffer;
     private int[] mBeautifyTextureId;
     private int[] mTextureOutId;
     private int[] mFilterTextureOutId;
@@ -115,9 +116,10 @@ public class CameraDisplay2 implements Renderer {
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
     private STHumanAction humanAction;
-
+    int count = 0;
     private boolean mTakingScreenShoot = false;
     private boolean mNeedTakingScreenShoot = true;
+    private boolean mStopVideo =false;
     private Handler mTakingScreenShootHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -260,6 +262,10 @@ public class CameraDisplay2 implements Renderer {
 
     public boolean getTakingScreenShoot() {
         return mTakingScreenShoot;
+    }
+
+    public void setStopVedio(boolean mStopVideo){
+        this.mStopVideo = mStopVideo;
     }
     public void setSaveImage(File file) {
         this.file = file;
@@ -649,8 +655,8 @@ public class CameraDisplay2 implements Renderer {
         if(mTakingScreenShoot&&mNeedTakingScreenShoot){
 //           long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
-            mNeedTakingScreenShoot =false;
-            mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
+//            mNeedTakingScreenShoot =false;
+//            mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
 
 //            long time2 = System.currentTimeMillis();
 //            Log.d("liupan", "liupan----time1==" + time1);
@@ -695,24 +701,27 @@ public class CameraDisplay2 implements Renderer {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
 
-        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+        mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
-        mTmpBuffer.position(0);
-
+        mTmpBuffer.position(count);
+        count++;
 
 //        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
 //        mTmpBuffer.position(0);
 //        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
 
-        Message msg = Message.obtain(mHandler);
-        msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
-//        msg.obj = srcBitmap;
-        msg.obj = mTmpBuffer;
-        Bundle bundle = new Bundle();
-        bundle.putInt("imageWidth", mImageWidth);
-        bundle.putInt("imageHeight", mImageHeight);
-        msg.setData(bundle);
-        msg.sendToTarget();
+//        if(mStopVideo){
+//            Message msg = Message.obtain(mHandler);
+//            msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
+////        msg.obj = srcBitmap;
+//            msg.obj = mTmpBuffer;
+//            Bundle bundle = new Bundle();
+//            bundle.putInt("imageWidth", mImageWidth);
+//            bundle.putInt("imageHeight", mImageHeight);
+//            msg.setData(bundle);
+//            msg.sendToTarget();
+//        }
+
     }
 
     private int getCurrentOrientation() {
@@ -928,6 +937,9 @@ public class CameraDisplay2 implements Renderer {
 
                 if(mNeedObject){
                     resetIndexRect();
+                }
+                if(mImageHeight==640){
+                    mImageHeight=480;
                 }
 
                 mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
@@ -1205,6 +1217,10 @@ public class CameraDisplay2 implements Renderer {
     private OnCameraDisplayFacePointsChangeListener mOnCameraDisplayFacePointsChangeListener;
     public void registerCameraDisplayFacePointsChangeListener(OnCameraDisplayFacePointsChangeListener onCameraDisplayFacePointsChangeListener) {
         mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
+    }
+
+    public ByteBuffer getmTmpBuffer(){
+        return mTmpBuffer;
     }
 }
 
