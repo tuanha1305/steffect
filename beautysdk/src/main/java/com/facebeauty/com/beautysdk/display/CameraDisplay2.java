@@ -335,8 +335,8 @@ public class CameraDisplay2 implements Renderer {
         int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         LogUtils.i(TAG, "the result is for initBeautify " + result);
         if (result == 0) {
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.36f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.3f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.5f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.02f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.0f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.0f);
@@ -670,10 +670,10 @@ public class CameraDisplay2 implements Renderer {
         }
 
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        if(stPoints != null) {
-            mGLRender.onDrawFrame(stPoints, textureId);
-        }
-        else
+//        if(stPoints != null) {
+//            mGLRender.onDrawFrame(stPoints, textureId);
+//        }
+//        else
             mGLRender.onDrawFrame(textureId);
         GlUtil.checkGlError("glUseProgram");
         stPoints = null;
@@ -1028,6 +1028,7 @@ public class CameraDisplay2 implements Renderer {
     int textJieMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanYingId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
+    int textFendiId = OpenGLUtils.NO_TEXTURE;
     float[] jiemaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] meimaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] saihongbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -1035,6 +1036,7 @@ public class CameraDisplay2 implements Renderer {
     float[] yanxianbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] upMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] downMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] fendiColors = {1.0f, 0.0f, 0.0f, 1.0f};
 
     boolean bLeftMeiDirty = false;
     Bitmap leftMeiBitmap;
@@ -1048,6 +1050,8 @@ public class CameraDisplay2 implements Renderer {
     Bitmap yanYingBitmap;
     boolean bSaihongDirty = false;
     Bitmap saihongBitmap;
+    boolean bFendiDirty = false;
+    Bitmap fendiBitmap;
 
     public void setLeftMeiMao(Bitmap bitmap,float[] meimaobgcolors) {
         bLeftMeiDirty =true;
@@ -1083,6 +1087,11 @@ public class CameraDisplay2 implements Renderer {
         bSaihongDirty = true;
         saihongBitmap = bitmap;
         this.saihongbgcolors = saihongbgcolors;
+    }
+    public void setFendi(Bitmap bitmap,float[] fendibgcolors) {
+        bFendiDirty = true;
+        fendiBitmap = bitmap;
+//        this.fendiColors = fendibgcolors;
     }
 
     public void setUpMouseColors(float[] upMouseColors) {
@@ -1149,8 +1158,8 @@ public class CameraDisplay2 implements Renderer {
                             initMakeup();
                         }
                         mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
-                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
-                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+                                textYanXianId,textYanYingId,textSiaHongId,textFendiId,upMouseColors,downMouseColors,
+                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors,fendiColors);
 //                        mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
@@ -1203,6 +1212,13 @@ public class CameraDisplay2 implements Renderer {
             Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
         }
+        if (bFendiDirty && fendiBitmap != null) {
+            textFendiId = OpenGLUtils.loadTexture(fendiBitmap, textFendiId, false);
+        } else {
+            Bitmap fdBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textFendiId = OpenGLUtils.loadTexture(fdBitmap, textFendiId, true);
+        }
+
     }
 
     public void startSurface(){

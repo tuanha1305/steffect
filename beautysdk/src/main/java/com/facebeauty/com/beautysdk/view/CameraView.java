@@ -311,6 +311,11 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setUpMouseColors(_mousecolors);
     }
 
+    public void setFoundation(Bitmap bitmap, float[] foundationColor){
+        mCameraDisplay.setFendi(bitmap,foundationColor);
+    }
+
+
     public void onResume() {
         mAccelerometer.start();
         mCameraDisplay.startSurface();

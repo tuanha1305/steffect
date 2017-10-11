@@ -15,7 +15,7 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
 JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawRightMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);
 JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawSaiHong(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);
 JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeChangeFaceAndJaw(JNIEnv* env, jobject obj, jobjectArray stPoint, int texture,  float scale, float jawscale);
-
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawFenDi(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);;
 
 #ifdef __cplusplus
 }

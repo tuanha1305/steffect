@@ -245,7 +245,7 @@ public class STGLRender {
         }
     }
 
-    public void makeup(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong, float _upmousecolors[], float _downmousecolors[],float jiemaobgcolors[],float meimaobgcolors[],float saihongbgcolors[],float yanyingbgcolors[],float yanxianbgcolors[])
+    public void makeup(STPoint[] stPoint240, int texture_left_meimao, int texture_right_meimao, int texture_jiemao, int texture_yanxian, int texture_yanying, int texture_saihong,int texture_fendi,float _upmousecolors[], float _downmousecolors[],float jiemaobgcolors[],float meimaobgcolors[],float saihongbgcolors[],float yanyingbgcolors[],float yanxianbgcolors[],float fendibgcolors[])
     {
         if( stPoint240 != null) {
             nativeDrawLeftMeiMao(stPoint240, texture_left_meimao,meimaobgcolors);
@@ -257,6 +257,7 @@ public class STGLRender {
             nativeDrawRightJiemao(stPoint240,texture_yanxian,yanxianbgcolors);
             nativeDrawRightJiemao(stPoint240,texture_yanying,yanyingbgcolors);
             nativeDrawSaiHong(stPoint240,texture_saihong,saihongbgcolors);
+            nativeDrawFenDi(stPoint240,texture_fendi,fendibgcolors);
             GlUtil.checkGlError("test");
         }
 
@@ -444,5 +445,6 @@ public class STGLRender {
     public native void nativeInitMousePrograme();
     public native void nativeInitWH(int w, int h);
     public native void nativeChangeFaceAndJaw(STPoint[] points, int texid, float scale, float jawsale);
+    public native void nativeDrawFenDi(STPoint[] points, int textureId, float bgcolors[]);
 
 }

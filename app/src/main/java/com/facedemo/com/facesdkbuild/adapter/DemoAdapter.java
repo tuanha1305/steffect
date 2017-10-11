@@ -193,6 +193,8 @@ public class DemoAdapter extends BaseAdapter {
 //                                    cameraView.setSaihong(bitmap);
                                     cameraView.setBlush(bitmap,color);
                                     Log.i("info","腮红");
+                                }else if(organ.getOrganName().trim().equals("粉底")){
+                                      cameraView.setFoundation(bitmap,color);
                                 }
                             }
 
