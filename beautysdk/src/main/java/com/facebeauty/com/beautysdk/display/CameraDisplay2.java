@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.facebeauty.com.beautysdk.DBService;
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -702,12 +703,20 @@ public class CameraDisplay2 implements Renderer {
     private void takeScreenShot(int textureId) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
-
+        long  time1111 = System.currentTimeMillis();
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
         byte[] tempdata =  mTmpBuffer.array();
-        byteBuffers.add(tempdata);
+        long time222 = System.currentTimeMillis();
+//        byteBuffers.add(tempdata);
+        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
+
+        long  time1 = System.currentTimeMillis();
+        DBService.getInstance(mContext).addData(tempdata);
+        long time2 = System.currentTimeMillis();
+
+        Log.d("liupan", "liupan preprocess===" + (time2-time1));
         count++;
         Log.d("liupan","liupan takeScreenShot count =" +count);
 
