@@ -49,6 +49,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.LinkedList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -94,7 +96,6 @@ public class CameraDisplay2 implements Renderer {
     private STMobileObjectTrackNative mSTMobileObjectTrackNative = new STMobileObjectTrackNative();
 
     private ByteBuffer mRGBABuffer;
-    private ByteBuffer mTmpBuffer;
     private int[] mBeautifyTextureId;
     private int[] mTextureOutId;
     private int[] mFilterTextureOutId;
@@ -116,10 +117,9 @@ public class CameraDisplay2 implements Renderer {
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
     private STHumanAction humanAction;
-    int count = 0;
+
     private boolean mTakingScreenShoot = false;
     private boolean mNeedTakingScreenShoot = true;
-    private boolean mStopVideo =false;
     private Handler mTakingScreenShootHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -264,9 +264,7 @@ public class CameraDisplay2 implements Renderer {
         return mTakingScreenShoot;
     }
 
-    public void setStopVedio(boolean mStopVideo){
-        this.mStopVideo = mStopVideo;
-    }
+
     public void setSaveImage(File file) {
         this.file = file;
         mNeedSave = true;
@@ -697,31 +695,34 @@ public class CameraDisplay2 implements Renderer {
         msg.sendToTarget();
     }
 
+//    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
+    LinkedList<byte[]> byteBuffers = new LinkedList<>();
+    int count = 0;
+
     private void takeScreenShot(int textureId) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
 
-        mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
-        mTmpBuffer.position(count);
+        mTmpBuffer.position(0);
+        byte[] tempdata =  mTmpBuffer.array();
+        byteBuffers.add(tempdata);
         count++;
+        Log.d("liupan","liupan takeScreenShot count =" +count);
 
 //        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
 //        mTmpBuffer.position(0);
 //        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
 
-//        if(mStopVideo){
 //            Message msg = Message.obtain(mHandler);
 //            msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
-////        msg.obj = srcBitmap;
-//            msg.obj = mTmpBuffer;
-//            Bundle bundle = new Bundle();
+//            msg.obj = srcBitmap;
+        //            msg.obj = mTmpBuffer;
 //            bundle.putInt("imageWidth", mImageWidth);
 //            bundle.putInt("imageHeight", mImageHeight);
 //            msg.setData(bundle);
 //            msg.sendToTarget();
-//        }
-
     }
 
     private int getCurrentOrientation() {
@@ -1235,8 +1236,5 @@ public class CameraDisplay2 implements Renderer {
         mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
     }
 
-    public ByteBuffer getmTmpBuffer(){
-        return mTmpBuffer;
-    }
 }
 
