@@ -704,34 +704,32 @@ public class CameraDisplay2 implements Renderer {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
         long  time1111 = System.currentTimeMillis();
-        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth*4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
-        byte[] tempdata =  mTmpBuffer.array();
-        long time222 = System.currentTimeMillis();
-//        byteBuffers.add(tempdata);
-        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
+//        byte[] tempdata =  mTmpBuffer.array();
+//        long time222 = System.currentTimeMillis();
+////        byteBuffers.add(tempdata);
+//        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
+//
+//        long  time1 = System.currentTimeMillis();
+//        DBService.getInstance(mContext).addData(tempdata);
+//        long time2 = System.currentTimeMillis();
+//
+//        Log.d("liupan", "liupan preprocess===" + (time2-time1));
+//        count++;
+//        Log.d("liupan","liupan takeScreenShot count =" +count);
 
-        long  time1 = System.currentTimeMillis();
-        DBService.getInstance(mContext).addData(tempdata);
-        long time2 = System.currentTimeMillis();
+        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
+        mTmpBuffer.position(0);
+        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
+        mTmpBuffer.clear();
 
-        Log.d("liupan", "liupan preprocess===" + (time2-time1));
-        count++;
-        Log.d("liupan","liupan takeScreenShot count =" +count);
-
-//        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
-//        mTmpBuffer.position(0);
-//        srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
-
-//            Message msg = Message.obtain(mHandler);
-//            msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
-//            msg.obj = srcBitmap;
-        //            msg.obj = mTmpBuffer;
-//            bundle.putInt("imageWidth", mImageWidth);
-//            bundle.putInt("imageHeight", mImageHeight);
-//            msg.setData(bundle);
-//            msg.sendToTarget();
+        Message msg = Message.obtain(mHandler);
+        msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
+        msg.obj = srcBitmap;
+        msg.sendToTarget();
+        srcBitmap.recycle();
     }
 
     private int getCurrentOrientation() {

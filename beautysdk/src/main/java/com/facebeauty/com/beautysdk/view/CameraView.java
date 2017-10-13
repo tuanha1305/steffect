@@ -64,7 +64,9 @@ public class CameraView extends RelativeLayout {
     LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
     LinkedList<Integer> imageWidths = new LinkedList<>();
     LinkedList<Integer> imageHeights = new LinkedList<>();
+    List<Bitmap> bitmaps = new ArrayList<Bitmap>();
 //    int position;
+Bitmap bitmap;
     int count;
 
 //    Runnable runnable = new Runnable() {
@@ -99,20 +101,20 @@ public class CameraView extends RelativeLayout {
 
                 break;
                 case MSG_TAKE_SCREEN_SHOT: {
-                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
-//                    Bitmap bitmap = (Bitmap) msg.obj;
-                    Bundle bundle = msg.getData();
-                    int imageWidth = bundle.getInt("imageWidth");
-                    int imageHeight = bundle.getInt("imageHeight");
-                    if (mCameraDisplay.getTakingScreenShoot()){
-//                        byteBuffers.add(bitmap);
-                        byteBuffers.add(byteBuffer);
-                        imageWidths.add(imageWidth);
-                        imageHeights.add(imageHeight);
+//                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
+                     bitmap = (Bitmap) msg.obj;
+//                    Bundle bundle = msg.getData();
+//                    int imageWidth = bundle.getInt("imageWidth");
+//                    int imageHeight = bundle.getInt("imageHeight");
+//                    if (mCameraDisplay.getTakingScreenShoot()){
+////                        byteBuffers.add(bitmap);
+//                        byteBuffers.add(byteBuffer);
+//                        imageWidths.add(imageWidth);
+//                        imageHeights.add(imageHeight);
                         count++;
                         Log.d("liupan","liupan count =" +count);
-                    }
-
+//                    }
+                    bitmaps.add(bitmap);
                 }
                 break;
                 case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
@@ -264,6 +266,14 @@ public class CameraView extends RelativeLayout {
      * @param bitmap
      */
     public void setEyeliner(Bitmap bitmap, float[] eyeLinerColor) {
+        mCameraDisplay.setYanXian(bitmap, eyeLinerColor);
+    }
+    /**
+     * 设置双眼皮呢，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
+    public void setEyelids(Bitmap bitmap, float[] eyeLinerColor) {
         mCameraDisplay.setYanXian(bitmap, eyeLinerColor);
     }
 
@@ -421,13 +431,13 @@ public class CameraView extends RelativeLayout {
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
-//                if (!destdirectory.exists()) {
-//                    destdirectory.mkdirs();
-//                }
-//                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
-//                File destFile = new File(destFileName);
-//                MyAndroidSequenceEncoder sequenceEncoderMp4;
+                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
+                if (!destdirectory.exists()) {
+                    destdirectory.mkdirs();
+                }
+                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
+                File destFile = new File(destFileName);
+                MyAndroidSequenceEncoder sequenceEncoderMp4;
 //                try {
 //                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
 //
