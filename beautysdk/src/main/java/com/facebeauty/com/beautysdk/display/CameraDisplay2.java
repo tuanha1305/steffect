@@ -71,8 +71,8 @@ public class CameraDisplay2 implements Renderer {
      */
     protected int mTextureId = OpenGLUtils.NO_TEXTURE;
 
-    private int mImageWidth;
-    private int mImageHeight;
+    public int mImageWidth;
+    public int mImageHeight;
     private GLSurfaceView mGlSurfaceView;
     private ChangePreviewSizeListener mListener;
     private int mSurfaceWidth;
@@ -652,15 +652,15 @@ public class CameraDisplay2 implements Renderer {
         }
 
         if(mTakingScreenShoot&&mNeedTakingScreenShoot){
-//           long  time1 = System.currentTimeMillis();
+           long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
 //            mNeedTakingScreenShoot =false;
 //            mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
 
-//            long time2 = System.currentTimeMillis();
+            long time2 = System.currentTimeMillis();
 //            Log.d("liupan", "liupan----time1==" + time1);
 //            Log.d("liupan", "liupan-----time2==" + time2);
-//            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
+            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
         }
 
         long dt = System.currentTimeMillis() - mStartTime;
@@ -703,20 +703,21 @@ public class CameraDisplay2 implements Renderer {
     private void takeScreenShot(int textureId) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
-        long  time1111 = System.currentTimeMillis();
+//        long  time1111 = System.currentTimeMillis();
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
         byte[] tempdata =  mTmpBuffer.array();
-        long time222 = System.currentTimeMillis();
+
+//        long time333 = System.currentTimeMillis();
 //        byteBuffers.add(tempdata);
-        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
+//        Log.d("liupan", "liupan preprocess2222222222222===" + (time333-time222));
 
-        long  time1 = System.currentTimeMillis();
+//        long  time1 = System.currentTimeMillis();
         DBService.getInstance(mContext).addData(tempdata);
-        long time2 = System.currentTimeMillis();
+//        long time2 = System.currentTimeMillis();
 
-        Log.d("liupan", "liupan preprocess===" + (time2-time1));
+//        Log.d("liupan", "liupan preprocess3333333333333===" + (time2-time1));
         count++;
         Log.d("liupan","liupan takeScreenShot count =" +count);
 

@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebeauty.com.beautysdk.DBService;
 import com.facebeauty.com.beautysdk.MyAndroidSequenceEncoder;
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
@@ -60,11 +61,11 @@ public class CameraView extends RelativeLayout {
     public static final int MSG_TAKE_SCREEN_SHOT_END = 4;
 
     private boolean mTakingScreenShoot = false;
-//    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+    //    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
     LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
     LinkedList<Integer> imageWidths = new LinkedList<>();
     LinkedList<Integer> imageHeights = new LinkedList<>();
-//    int position;
+    //    int position;
     int count;
 
 //    Runnable runnable = new Runnable() {
@@ -104,13 +105,13 @@ public class CameraView extends RelativeLayout {
                     Bundle bundle = msg.getData();
                     int imageWidth = bundle.getInt("imageWidth");
                     int imageHeight = bundle.getInt("imageHeight");
-                    if (mCameraDisplay.getTakingScreenShoot()){
+                    if (mCameraDisplay.getTakingScreenShoot()) {
 //                        byteBuffers.add(bitmap);
                         byteBuffers.add(byteBuffer);
                         imageWidths.add(imageWidth);
                         imageHeights.add(imageHeight);
                         count++;
-                        Log.d("liupan","liupan count =" +count);
+                        Log.d("liupan", "liupan count =" + count);
                     }
 
                 }
@@ -124,7 +125,7 @@ public class CameraView extends RelativeLayout {
                     byteBuffers.clear();
                     imageHeights.clear();
                     imageWidths.clear();
-                    Log.d("liupan","liupan 录屏结束");
+                    Log.d("liupan", "liupan 录屏结束");
                     Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -311,8 +312,8 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setUpMouseColors(_mousecolors);
     }
 
-    public void setFoundation(Bitmap bitmap, float[] foundationColor){
-        mCameraDisplay.setFendi(bitmap,foundationColor);
+    public void setFoundation(Bitmap bitmap, float[] foundationColor) {
+        mCameraDisplay.setFendi(bitmap, foundationColor);
     }
 
 
@@ -398,7 +399,7 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setTakingScreenShoot(true);
         Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
         mTakingScreenShoot = true;
-//        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
 //        new Thread(runnable).start();
     }
 
@@ -412,12 +413,29 @@ public class CameraView extends RelativeLayout {
 
     private void endRecoderScreen(final boolean bTimeout) {
         mCameraDisplay.setTakingScreenShoot(false);
-        if(bTimeout){
+        if (bTimeout) {
             Toast.makeText(getContext(), "录屏最长15秒时间,录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Toast.makeText(getContext(), "录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
         }
+        File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
+        if (!destdirectory.exists()) {
+            destdirectory.mkdirs();
+        }
+        String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
+        final File destFile = new File(destFileName);
 
+
+        final DBService dbService = DBService.getInstance(getContext());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dbService.endRecord(destFile,mCameraDisplay.mImageHeight, mCameraDisplay.mImageWidth);
+                Message message = Message.obtain();
+                message.what = MSG_TAKE_SCREEN_SHOT_END;
+                mHandler.sendMessage(message);
+            }
+        }).start();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -452,20 +470,20 @@ public class CameraView extends RelativeLayout {
 //                } catch (IOException e) {
 //                    e.printStackTrace();
 //                }
-////                catch (Throwable throwable){
-////                    throwable.printStackTrace();
-////                }finally {
-////                }
-////                for (Bitmap frame : byteBuffers) {
-////                    if(!frame.isRecycled()){
-////                        frame.recycle();
-////                    }
-////                }
-//                Message message = Message.obtain();
-//                message.what = MSG_TAKE_SCREEN_SHOT_END;
-//                mHandler.sendMessage(message);
-//            }
-//        }).start();
+//////                catch (Throwable throwable){
+//////                    throwable.printStackTrace();
+//////                }finally {
+//////                }
+//////                for (Bitmap frame : byteBuffers) {
+//////                    if(!frame.isRecycled()){
+//////                        frame.recycle();
+//////                    }
+//////                }
+////                Message message = Message.obtain();
+////                message.what = MSG_TAKE_SCREEN_SHOT_END;
+////                mHandler.sendMessage(message);
+////            }
+////        }).start();
 
 
     }
