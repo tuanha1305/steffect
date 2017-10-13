@@ -8,7 +8,7 @@ public class DBColumn {
     public static final String DB_TABLE_NAME = "shelfbook";
     public static final String TABLE_NAME = "shelfbook_5";
     public static final String ID = "_id";
-    public static final String DATA = "data";
+    public static final String DATA = "aaaaaa";
 
     public static String createShelfTable() {
         String sql = "create table IF NOT EXISTS " +
