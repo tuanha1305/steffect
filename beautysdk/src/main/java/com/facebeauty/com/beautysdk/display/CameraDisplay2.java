@@ -703,7 +703,8 @@ public class CameraDisplay2 implements Renderer {
     private void takeScreenShot(int textureId) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
-        long  time1111 = System.currentTimeMillis();
+        long  time1 = System.currentTimeMillis();
+//        long  time1111 = System.currentTimeMillis();
         ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth*4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
@@ -712,7 +713,7 @@ public class CameraDisplay2 implements Renderer {
 ////        byteBuffers.add(tempdata);
 //        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
 //
-//        long  time1 = System.currentTimeMillis();
+
 //        DBService.getInstance(mContext).addData(tempdata);
 //        long time2 = System.currentTimeMillis();
 //
@@ -720,7 +721,8 @@ public class CameraDisplay2 implements Renderer {
 //        count++;
 //        Log.d("liupan","liupan takeScreenShot count =" +count);
 
-        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.RGB_565);
+        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth/2, mImageHeight/2, Bitmap.Config.ARGB_4444);
+//        Bitmap srcBitmap = Bitmap.createBitmap(320, 480, Bitmap.Config.ARGB_4444);
         mTmpBuffer.position(0);
         srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
         mTmpBuffer.clear();
@@ -729,6 +731,9 @@ public class CameraDisplay2 implements Renderer {
         msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
         msg.obj = srcBitmap;
         msg.sendToTarget();
+        long time2 = System.currentTimeMillis();
+//
+        Log.d("liupan", "liupan preprocess===" + (time2-time1));
 //        srcBitmap.recycle();
     }
 

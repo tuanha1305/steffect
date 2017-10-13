@@ -66,7 +66,7 @@ public class CameraView extends RelativeLayout {
 //    LinkedList<Integer> imageHeights = new LinkedList<>();
     List<Bitmap> bitmaps = new ArrayList<Bitmap>();
 //    int position;
-Bitmap bitmap;
+//Bitmap bitmap;
     int count;
 
 //    Runnable runnable = new Runnable() {
@@ -102,7 +102,7 @@ Bitmap bitmap;
                 break;
                 case MSG_TAKE_SCREEN_SHOT: {
 //                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
-                     bitmap = (Bitmap) msg.obj;
+                    Bitmap bitmap = (Bitmap) msg.obj;
 //                    Bundle bundle = msg.getData();
 //                    int imageWidth = bundle.getInt("imageWidth");
 //                    int imageHeight = bundle.getInt("imageHeight");
@@ -408,7 +408,7 @@ Bitmap bitmap;
         mCameraDisplay.setTakingScreenShoot(true);
         Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
         mTakingScreenShoot = true;
-        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 5 * 1000);
 //        new Thread(runnable).start();
     }
 
