@@ -720,7 +720,7 @@ public class CameraDisplay2 implements Renderer {
 //        count++;
 //        Log.d("liupan","liupan takeScreenShot count =" +count);
 
-        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
+        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.RGB_565);
         mTmpBuffer.position(0);
         srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
         mTmpBuffer.clear();
@@ -729,7 +729,7 @@ public class CameraDisplay2 implements Renderer {
         msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
         msg.obj = srcBitmap;
         msg.sendToTarget();
-        srcBitmap.recycle();
+//        srcBitmap.recycle();
     }
 
     private int getCurrentOrientation() {
