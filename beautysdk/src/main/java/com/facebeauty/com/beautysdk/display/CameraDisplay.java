@@ -1077,9 +1077,9 @@ public class CameraDisplay implements Renderer {
                         if(bSaihongDirty||bLeftMeiDirty||bRightMeiDirty||bYanXianDirty||bYanYingDirty||bJieMaoDirty){
                          initMakeup();
                         }
-                        mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
-                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
-                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+//                        mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
+//                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
+//                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
 
                         mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
                     }

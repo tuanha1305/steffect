@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebeauty.com.beautysdk.MyAndroidSequenceEncoder;
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
@@ -37,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -58,10 +60,14 @@ public class CameraView extends RelativeLayout {
     public static final int MSG_TAKE_SCREEN_SHOT_END = 4;
 
     private boolean mTakingScreenShoot = false;
-    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
-    LinkedList<Integer> imageWidths = new LinkedList<>();
-    LinkedList<Integer> imageHeights = new LinkedList<>();
-    int position;
+//    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
+//    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
+//    LinkedList<Integer> imageWidths = new LinkedList<>();
+//    LinkedList<Integer> imageHeights = new LinkedList<>();
+    List<Bitmap> bitmaps = new ArrayList<Bitmap>();
+//    int position;
+//Bitmap bitmap;
+    int count;
 
 //    Runnable runnable = new Runnable() {
 //        @Override
@@ -100,8 +106,15 @@ public class CameraView extends RelativeLayout {
 //                    Bundle bundle = msg.getData();
 //                    int imageWidth = bundle.getInt("imageWidth");
 //                    int imageHeight = bundle.getInt("imageHeight");
-                    if (mCameraDisplay.getTakingScreenShoot())
-                        byteBuffers.add(bitmap);
+//                    if (mCameraDisplay.getTakingScreenShoot()){
+////                        byteBuffers.add(bitmap);
+//                        byteBuffers.add(byteBuffer);
+//                        imageWidths.add(imageWidth);
+//                        imageHeights.add(imageHeight);
+                        count++;
+                        Log.d("liupan","liupan count =" +count);
+//                    }
+                    bitmaps.add(bitmap);
                 }
                 break;
                 case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
@@ -110,7 +123,10 @@ public class CameraView extends RelativeLayout {
                     break;
                 case MSG_TAKE_SCREEN_SHOT_END: {
                     mTakingScreenShoot = false;
-                    byteBuffers.clear();
+//                    byteBuffers.clear();
+//                    imageHeights.clear();
+//                    imageWidths.clear();
+                    Log.d("liupan","liupan 录屏结束");
                     Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -252,6 +268,14 @@ public class CameraView extends RelativeLayout {
     public void setEyeliner(Bitmap bitmap, float[] eyeLinerColor) {
         mCameraDisplay.setYanXian(bitmap, eyeLinerColor);
     }
+    /**
+     * 设置双眼皮呢，如果为空，恢复默认设置-默认设置为没有美妆
+     *
+     * @param bitmap
+     */
+    public void setEyelids(Bitmap bitmap, float[] eyeLinerColor) {
+        mCameraDisplay.setYanXian(bitmap, eyeLinerColor);
+    }
 
     /**
      * 设置眼影，如果为空，恢复默认设置-默认设置为没有美妆
@@ -296,6 +320,11 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setDownMouseColors(_mousecolors);
         mCameraDisplay.setUpMouseColors(_mousecolors);
     }
+
+    public void setFoundation(Bitmap bitmap, float[] foundationColor){
+        mCameraDisplay.setFendi(bitmap,foundationColor);
+    }
+
 
     public void onResume() {
         mAccelerometer.start();
@@ -379,7 +408,7 @@ public class CameraView extends RelativeLayout {
         mCameraDisplay.setTakingScreenShoot(true);
         Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
         mTakingScreenShoot = true;
-        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 5 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
 //        new Thread(runnable).start();
     }
 
@@ -393,11 +422,60 @@ public class CameraView extends RelativeLayout {
 
     private void endRecoderScreen(final boolean bTimeout) {
         mCameraDisplay.setTakingScreenShoot(false);
-        if(bTimeout){
+        if (bTimeout) {
             Toast.makeText(getContext(), "录屏最长15秒时间,录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Toast.makeText(getContext(), "录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
         }
+
+////        new Thread(new Runnable() {
+////            @Override
+////            public void run() {
+//                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
+//                if (!destdirectory.exists()) {
+//                    destdirectory.mkdirs();
+//                }
+//                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
+//                File destFile = new File(destFileName);
+//                MyAndroidSequenceEncoder sequenceEncoderMp4;
+////                try {
+////                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
+////
+//////                    for (Bitmap frame : byteBuffers) {
+//////                        sequenceEncoderMp4.encodeImage(frame);
+//////                    }
+////
+//////                    ByteBuffer byteBuffer = mCameraDisplay.getmTmpBuffer();
+//////                    for(int i =0;i<byteBuffer.){
+//////
+//////                    }
+////                    for (int i = 0;i<byteBuffers.size();i++) {
+////                         ByteBuffer byteBuffer = byteBuffers.get(i);
+////                         Bitmap srcBitmap = Bitmap.createBitmap(imageWidths.get(i), imageHeights.get(i), Bitmap.Config.ARGB_4444);
+////                         byteBuffer.position(0);
+////                         srcBitmap.copyPixelsFromBuffer(byteBuffer);
+////                         sequenceEncoderMp4.encodeImage(srcBitmap);
+////                         srcBitmap.recycle();
+////                    }
+////
+////                    sequenceEncoderMp4.finish();
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+////                }
+//////                catch (Throwable throwable){
+//////                    throwable.printStackTrace();
+//////                }finally {
+//////                }
+//////                for (Bitmap frame : byteBuffers) {
+//////                    if(!frame.isRecycled()){
+//////                        frame.recycle();
+//////                    }
+//////                }
+////                Message message = Message.obtain();
+////                message.what = MSG_TAKE_SCREEN_SHOT_END;
+////                mHandler.sendMessage(message);
+////            }
+////        }).start();
 
         new Thread(new Runnable() {
             @Override
@@ -408,33 +486,22 @@ public class CameraView extends RelativeLayout {
                 }
                 String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
                 File destFile = new File(destFileName);
-                SequenceEncoder sequenceEncoderMp4;
+                MyAndroidSequenceEncoder sequenceEncoderMp4;
                 try {
-                    sequenceEncoderMp4 = new SequenceEncoder(destFile);
-
-                    for (Bitmap frame : byteBuffers) {
+                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
+                    for (Bitmap frame : bitmaps) {
                         sequenceEncoderMp4.encodeImage(frame);
                     }
                     sequenceEncoderMp4.finish();
+
+                    Message message = Message.obtain();
+                    message.what = MSG_TAKE_SCREEN_SHOT_END;
+                    mHandler.sendMessage(message);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-//                catch (Throwable throwable){
-//                    throwable.printStackTrace();
-//                }finally {
-//                }
-//                for (Bitmap frame : byteBuffers) {
-//                    if(!frame.isRecycled()){
-//                        frame.recycle();
-//                    }
-//                }
-                Message message = Message.obtain();
-                message.what = MSG_TAKE_SCREEN_SHOT_END;
-                mHandler.sendMessage(message);
             }
         }).start();
-
-
     }
 
     private void saveToSDCard(File file, Bitmap bmp) {

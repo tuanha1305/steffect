@@ -884,6 +884,148 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
      glDisable( GL_BLEND);
 }
 
+JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawFenDi(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId ,jfloatArray bgcolors)
+{
+    jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
+    jfieldID id_x = env->GetFieldID(objClass, "x", "F");
+    jfieldID id_y = env->GetFieldID(objClass, "y", "F");
+    float x0,y0,x,y,x1,y1,x2,y2,x3,y3,x4,y4,k,d;
+    float theta;
+
+    //右粉底
+    jobject jobj = env->GetObjectArrayElement(stPoint, 82);
+    x0 = env->GetFloatField(jobj,id_x);
+    y0 = env->GetFloatField(jobj,id_y);
+    jobj = env->GetObjectArrayElement(stPoint, 83);
+    x = env->GetFloatField(jobj,id_x);
+    y = env->GetFloatField(jobj,id_y);
+
+    //x1 = face.points_array[43].x*0.5 + face.points_array[93].x*0.5;
+    //y1 = face.points_array[43].y*0.5 + face.points_array[93].y*0.5;
+
+    x1 = x0 - (x - x0)*1.25035;
+    y1 = y0 - (y - y0)*1.25035;
+
+    x2 = x + (x - x0)*1.25035;
+    y2 = y + (y - y0)*1.25035;
+
+    jobj = env->GetObjectArrayElement(stPoint, 43);
+    x0 = env->GetFloatField(jobj,id_x);
+    y0 = env->GetFloatField(jobj,id_y);
+    k = (y2-y1)/(x2-x1);
+
+    theta = atanf(k);
+
+    d = fabsf(k*x0-y0+y1-k*x1)/sqrtf(k*k+1)*2.598;
+
+    x3 = x1 + d * sinf(theta);
+    y3 = y1 - d * cosf(theta);
+
+    x4 = x2 + d * sinf(theta);
+    y4 = y2 - d * cosf(theta);
+
+    x1  = changeToGLPointT(x1);
+    y1  = changeToGLPointR(y1);
+    x2  = changeToGLPointT(x2);
+    y2  = changeToGLPointR(y2);
+    x3  = changeToGLPointT(x3);
+    y3  = changeToGLPointR(y3);
+    x4  = changeToGLPointT(x4);
+    y4  = changeToGLPointR(y4);
+
+    float squareVertices[] = {
+            x1,y1,
+            x2,y2,
+            x3,y3,
+            x4,y4,
+    };
+
+    static const float textureVertices1[] = {
+            0.0f,  0.5747f,
+            1.0f,  0.5747f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+    };
+
+    glUseProgram(mGLProgId);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendColor(1,0,0,1);
+    glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
+    glEnableVertexAttribArray(mGLAttribPosition);
+    glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GL_FLOAT, false, 0, textureVertices1);
+    glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    //下粉底
+    jobj = env->GetObjectArrayElement(stPoint, 82);
+    x = env->GetFloatField(jobj,id_x);
+    y = env->GetFloatField(jobj,id_y);
+
+    jobj = env->GetObjectArrayElement(stPoint, 83);
+    x0 = env->GetFloatField(jobj,id_x);
+    y0 = env->GetFloatField(jobj,id_y);
+
+    x3 = x - (x0 - x)*1.25035;
+    y3 = y - (y0 - y)*1.25035;
+
+    x4 = x0 + (x0 - x)*1.25035;
+    y4 = y0 + (y0 - y)*1.25035;
+
+    jobj = env->GetObjectArrayElement(stPoint, 93);
+    x0 = env->GetFloatField(jobj,id_x);
+    y0 = env->GetFloatField(jobj,id_y);
+
+    k = (y4-y3)/(x4-x3);
+    theta = atanf(k);
+
+    d = fabsf(k*x0-y0+y3-k*x3)/sqrtf(k*k+1)*1.972;
+
+    x1 = x3 - d * sinf(theta);
+    y1 = y3 + d * cosf(theta);
+
+    x2 = x4 - d * sinf(theta);
+    y2 = y4 + d * cosf(theta);
+
+    x1  = changeToGLPointT(x1);
+    y1  = changeToGLPointR(y1);
+    x2  = changeToGLPointT(x2);
+    y2  = changeToGLPointR(y2);
+    x3  = changeToGLPointT(x3);
+    y3  = changeToGLPointR(y3);
+    x4  = changeToGLPointT(x4);
+    y4  = changeToGLPointR(y4);
+
+    squareVertices[0] = x1;
+    squareVertices[1] = y1;
+    squareVertices[2] = x2;
+    squareVertices[3] = y2;
+    squareVertices[4] = x3;
+    squareVertices[5] = y3;
+    squareVertices[6] = x4;
+    squareVertices[7] = y4;
+
+    static const float textureVertices2[] = {
+            0.0f,  1.0f,
+            1.0f,  1.0f,
+            0.0f, 0.5747f,
+            1.0f, 0.5747f
+    };
+    glUseProgram(mGLProgId);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+    glVertexAttribPointer(mGLAttribPosition, 2, GL_FLOAT, false, 0, squareVertices);
+    glEnableVertexAttribArray(mGLAttribPosition);
+    glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GL_FLOAT, false, 0, textureVertices2);
+    glEnableVertexAttribArray(mGLAttribTextureCoordinate);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisable( GL_BLEND);
+}
+
 JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nativeDrawSaiHong(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId,jfloatArray bgcolors )
 {
     jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
@@ -1231,9 +1373,6 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
     glVertexAttribPointer(facejawCoord, 2, GL_FLOAT, 0, 0, squareVertices1);
     glEnableVertexAttribArray(facejawCoord);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
     resultTexture = texture;
-
     return;
-
 }

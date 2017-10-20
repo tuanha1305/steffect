@@ -111,6 +111,13 @@ public class WelcomeActivity extends Activity {
                 startActivity(new Intent(WelcomeActivity.this,MainActivity.class));
             }
         });
+        Button mZhengxing = (Button)findViewById(R.id.zhengxing_sign_in_button);
+        mZhengxing.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(WelcomeActivity.this,ZhengxingActivity.class));
+            }
+        });
 
     }
 

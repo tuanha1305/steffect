@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.facebeauty.com.beautysdk.DBService;
 import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
@@ -49,6 +50,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.LinkedList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -117,6 +120,19 @@ public class CameraDisplay2 implements Renderer {
     private STHumanAction humanAction;
 
     private boolean mTakingScreenShoot = false;
+    private boolean mNeedTakingScreenShoot = true;
+    private Handler mTakingScreenShootHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0: {
+                    mNeedTakingScreenShoot= true;
+                }
+                break;
+            }
+        }
+    };
 
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
@@ -248,6 +264,8 @@ public class CameraDisplay2 implements Renderer {
     public boolean getTakingScreenShoot() {
         return mTakingScreenShoot;
     }
+
+
     public void setSaveImage(File file) {
         this.file = file;
         mNeedSave = true;
@@ -316,8 +334,8 @@ public class CameraDisplay2 implements Renderer {
         int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         LogUtils.i(TAG, "the result is for initBeautify " + result);
         if (result == 0) {
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.36f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.3f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.5f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.02f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.0f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.0f);
@@ -633,13 +651,16 @@ public class CameraDisplay2 implements Renderer {
             mNeedSave = false;
         }
 
-        if(mTakingScreenShoot){
-           long  time1 = System.currentTimeMillis();
+        if(mTakingScreenShoot&&mNeedTakingScreenShoot){
+//           long  time1 = System.currentTimeMillis();
             takeScreenShot(textureId);
-            long time2 = System.currentTimeMillis();
-            Log.d("liupan", "liupan----time1==" + time1);
-            Log.d("liupan", "liupan-----time2==" + time2);
-            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
+//            mNeedTakingScreenShoot =false;
+//            mTakingScreenShootHandler.sendEmptyMessageDelayed(0,500);
+
+//            long time2 = System.currentTimeMillis();
+//            Log.d("liupan", "liupan----time1==" + time1);
+//            Log.d("liupan", "liupan-----time2==" + time2);
+//            Log.d("liupan", "liupan-----preprocess===" + (time2-time1));
         }
 
         long dt = System.currentTimeMillis() - mStartTime;
@@ -648,10 +669,10 @@ public class CameraDisplay2 implements Renderer {
         }
 
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        if(stPoints != null) {
-            mGLRender.onDrawFrame(stPoints, textureId);
-        }
-        else
+//        if(stPoints != null) {
+//            mGLRender.onDrawFrame(stPoints, textureId);
+//        }
+//        else
             mGLRender.onDrawFrame(textureId);
         GlUtil.checkGlError("glUseProgram");
         stPoints = null;
@@ -675,27 +696,45 @@ public class CameraDisplay2 implements Renderer {
         msg.sendToTarget();
     }
 
+//    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
+    LinkedList<byte[]> byteBuffers = new LinkedList<>();
+    int count = 0;
+
     private void takeScreenShot(int textureId) {
         if (mImageWidth <= 0 || mImageHeight <= 0)
             return;
-
-        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth * 4);
+        long  time1 = System.currentTimeMillis();
+//        long  time1111 = System.currentTimeMillis();
+        ByteBuffer mTmpBuffer = ByteBuffer.allocate(mImageHeight * mImageWidth*4);
         mGLRender.saveTextureToFrameBuffer(textureId, mTmpBuffer);
         mTmpBuffer.position(0);
+//        byte[] tempdata =  mTmpBuffer.array();
+//        long time222 = System.currentTimeMillis();
+////        byteBuffers.add(tempdata);
+//        Log.d("liupan", "liupan preprocess===" + (time222-time1111));
+//
 
+//        DBService.getInstance(mContext).addData(tempdata);
+//        long time2 = System.currentTimeMillis();
+//
+//        Log.d("liupan", "liupan preprocess===" + (time2-time1));
+//        count++;
+//        Log.d("liupan","liupan takeScreenShot count =" +count);
 
-        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_4444);
+        Bitmap srcBitmap = Bitmap.createBitmap(mImageWidth/2, mImageHeight/2, Bitmap.Config.ARGB_4444);
+//        Bitmap srcBitmap = Bitmap.createBitmap(320, 480, Bitmap.Config.ARGB_4444);
         mTmpBuffer.position(0);
         srcBitmap.copyPixelsFromBuffer(mTmpBuffer);
+        mTmpBuffer.clear();
 
         Message msg = Message.obtain(mHandler);
         msg.what = CameraView.MSG_TAKE_SCREEN_SHOT;
         msg.obj = srcBitmap;
-        Bundle bundle = new Bundle();
-        bundle.putInt("imageWidth", mImageWidth);
-        bundle.putInt("imageHeight", mImageHeight);
-        msg.setData(bundle);
         msg.sendToTarget();
+        long time2 = System.currentTimeMillis();
+//
+        Log.d("liupan", "liupan preprocess===" + (time2-time1));
+//        srcBitmap.recycle();
     }
 
     private int getCurrentOrientation() {
@@ -912,6 +951,9 @@ public class CameraDisplay2 implements Renderer {
                 if(mNeedObject){
                     resetIndexRect();
                 }
+                if(mImageHeight==640){
+                    mImageHeight=480;
+                }
 
                 mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
                 if (mListener != null) {
@@ -999,6 +1041,7 @@ public class CameraDisplay2 implements Renderer {
     int textJieMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanYingId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
+    int textFendiId = OpenGLUtils.NO_TEXTURE;
     float[] jiemaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] meimaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] saihongbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -1006,6 +1049,7 @@ public class CameraDisplay2 implements Renderer {
     float[] yanxianbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] upMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] downMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] fendiColors = {1.0f, 0.0f, 0.0f, 1.0f};
 
     boolean bLeftMeiDirty = false;
     Bitmap leftMeiBitmap;
@@ -1019,6 +1063,8 @@ public class CameraDisplay2 implements Renderer {
     Bitmap yanYingBitmap;
     boolean bSaihongDirty = false;
     Bitmap saihongBitmap;
+    boolean bFendiDirty = false;
+    Bitmap fendiBitmap;
 
     public void setLeftMeiMao(Bitmap bitmap,float[] meimaobgcolors) {
         bLeftMeiDirty =true;
@@ -1054,6 +1100,11 @@ public class CameraDisplay2 implements Renderer {
         bSaihongDirty = true;
         saihongBitmap = bitmap;
         this.saihongbgcolors = saihongbgcolors;
+    }
+    public void setFendi(Bitmap bitmap,float[] fendibgcolors) {
+        bFendiDirty = true;
+        fendiBitmap = bitmap;
+//        this.fendiColors = fendibgcolors;
     }
 
     public void setUpMouseColors(float[] upMouseColors) {
@@ -1120,8 +1171,8 @@ public class CameraDisplay2 implements Renderer {
                             initMakeup();
                         }
                         mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
-                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
-                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
+                                textYanXianId,textYanYingId,textSiaHongId,textFendiId,upMouseColors,downMouseColors,
+                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors,fendiColors);
 //                        mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
@@ -1174,6 +1225,13 @@ public class CameraDisplay2 implements Renderer {
             Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
         }
+        if (bFendiDirty && fendiBitmap != null) {
+            textFendiId = OpenGLUtils.loadTexture(fendiBitmap, textFendiId, false);
+        } else {
+            Bitmap fdBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textFendiId = OpenGLUtils.loadTexture(fdBitmap, textFendiId, true);
+        }
+
     }
 
     public void startSurface(){
@@ -1189,5 +1247,6 @@ public class CameraDisplay2 implements Renderer {
     public void registerCameraDisplayFacePointsChangeListener(OnCameraDisplayFacePointsChangeListener onCameraDisplayFacePointsChangeListener) {
         mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
     }
+
 }
 
