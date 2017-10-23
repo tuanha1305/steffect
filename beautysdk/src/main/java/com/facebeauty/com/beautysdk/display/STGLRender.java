@@ -260,15 +260,29 @@ public class STGLRender {
             nativeDrawFenDi(stPoint240,texture_fendi,fendibgcolors);
             GlUtil.checkGlError("test");
         }
-
         GLES20.glUseProgram(0);
         GLES20.glFinish();
-
     }
 
-    public int onDrawFrame(STPoint[] points, int texid)
+    /**
+     * 双眼皮
+     * @param stPoint240
+     * @param texture_eyelidso
+     * @param jiemaobgcolors
+     */
+    public void makeup(STPoint[] stPoint240, int texture_eyelidso,float jiemaobgcolors[])
     {
-        nativeChangeFaceAndJaw(points, texid, 0.8f, 0.8f);
+        if( stPoint240 != null) {
+            nativeDrawRightJiemao(stPoint240,texture_eyelidso,null);
+            GlUtil.checkGlError("test");
+        }
+        GLES20.glUseProgram(0);
+        GLES20.glFinish();
+    }
+
+    public int onDrawFrame(STPoint[] points, int texid,float faceValue,float jawValue)
+    {
+         nativeChangeFaceAndJaw(points, texid,faceValue, jawValue);
         return OpenGLUtils.ON_DRAWN;
     }
 
@@ -394,7 +408,23 @@ public class STGLRender {
     }
 
 
-    private void bindFrameBuffer(int textureId, int frameBuffer, int width, int height) {
+    public int bindFrameByImaageBuffer(int textureId){
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mViewPortWidth, mViewPortHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[0]);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D,textureId, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        return mFrameBuffers[0];
+    }
+
+
+
+    public void bindFrameBuffer(int textureId, int frameBuffer, int width, int height) {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
                 GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
@@ -431,9 +461,43 @@ public class STGLRender {
         GlUtil.checkGlError("test");
     }
 
+    public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer,
+                           final FloatBuffer textureBuffer) {
+        GLES20.glUseProgram(mArrayPrograms.get(1).get(PROGRAM_ID));
+//        runPendingOnDrawTasks();
+        if (!mIsInitialized) {
+            return OpenGLUtils.NOT_INIT;
+        }
+
+        cubeBuffer.position(0);
+        int glAttribPosition = mArrayPrograms.get(0).get(POSITION_COORDINATE);
+        int glAttribTextureCoordinate = mArrayPrograms.get(0).get(TEXTURE_COORDINATE);
+        GLES20.glVertexAttribPointer(glAttribPosition, 2, GLES20.GL_FLOAT, false, 0, cubeBuffer);
+        GLES20.glEnableVertexAttribArray(glAttribPosition);
+        textureBuffer.position(0);
+        GLES20.glVertexAttribPointer(glAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0,
+                textureBuffer);
+        GLES20.glEnableVertexAttribArray(glAttribTextureCoordinate);
+        if (textureId != OpenGLUtils.NO_TEXTURE) {
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLES20.glUniform1i(mArrayPrograms.get(1).get(TEXTURE_UNIFORM), 0);
+        }
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisableVertexAttribArray(glAttribPosition);
+        GLES20.glDisableVertexAttribArray(glAttribTextureCoordinate);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        return OpenGLUtils.ON_DRAWN;
+    }
+
 
     public int getFrameBufferId(){
         return  mFrameBuffers[2];
+    };
+    public int getFrameBufferByImageId(){
+        return  mFrameBuffers[1];
     };
 
     public native void nativeDrawRightJiemao(STPoint[] points, int textureId, float bgcolors[]);
