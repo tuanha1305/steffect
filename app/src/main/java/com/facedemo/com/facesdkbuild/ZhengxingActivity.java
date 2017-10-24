@@ -40,9 +40,10 @@ public class ZhengxingActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.set);
         save = (Button)findViewById(R.id.save);
         shuangyanpin = (Button)findViewById(R.id.shuangyanpin);
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, REQUEST_PICK_IMAGE);
+        Intent  intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_PICK_IMAGE);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
