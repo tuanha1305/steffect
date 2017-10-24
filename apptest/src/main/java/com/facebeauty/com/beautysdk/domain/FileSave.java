@@ -12,6 +12,15 @@ import java.nio.ByteBuffer;
 public class FileSave {
     private ByteBuffer bitmap;
     private File file;
+    private Bitmap bitFile;
+
+    public void setBitFile(Bitmap bitFile) {
+        this.bitFile = bitFile;
+    }
+
+    public Bitmap getBitFile() {
+        return bitFile;
+    }
 
     public void setBitmap(ByteBuffer bitmap) {
         this.bitmap = bitmap;

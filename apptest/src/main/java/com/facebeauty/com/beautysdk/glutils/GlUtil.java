@@ -144,7 +144,6 @@ public class GlUtil {
             throw new RuntimeException(msg);
         }
     }
-
     /**
      * Allocates a direct float buffer, and populates it with the float array data.
      */

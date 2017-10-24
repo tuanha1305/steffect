@@ -111,6 +111,23 @@ public class WelcomeActivity extends Activity {
                 startActivity(new Intent(WelcomeActivity.this,MainActivity.class));
             }
         });
+        Button mZhengxing = (Button)findViewById(R.id.zhengxing_sign_in_button);
+        mZhengxing.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    } else {
+                        startActivity(new Intent(WelcomeActivity.this,ZhengxingActivity.class));
+                    }
+                } else {
+                    startActivity(new Intent(WelcomeActivity.this,ZhengxingActivity.class));
+                }
+            }
+        });
 
     }
 

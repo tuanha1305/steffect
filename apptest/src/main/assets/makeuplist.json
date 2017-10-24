@@ -299,7 +299,31 @@
                                          "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
                                          "organName" : "腮红",
                                          "organNameMini" : "腮红",
-                                         }
+                                         }, {
+                  "cosmeticList" :[
+                    {
+                      "content" : "dfbca5",
+                      "contentId" : "0",
+                      "cosmeticDesc" : "Foundation make-up",
+                      "cosmeticId" : "63",
+                      "cosmeticLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/10/598844d1N5263a65d.jpg",
+                      "cosmeticName" : "迪奥象牙白",
+                      "cosmeticNameMini" : "Diro Foundation make-up",
+                      "materialDesc" : "粉底",
+                      "materialImage" : "http://api.7fineday.com/userfiles/1/images/photo/2017/10/fendi 2.png",
+                      "materialName" : "粉底",
+                      "postion" : 7,
+                      "productId" : 63,
+                      "productUrl" : "",
+                      "rgbColor" : "223,188,165,1",
+                      "shopId" : 0
+                    }
+                  ],
+                  "organDesc" :"粉底",
+                  "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/10/fendi.png",
+                  "organName" : "粉底",
+                  "organNameMini" : "粉底",
+                }
                                          ],
                 "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/brand_dior.png",
                 "brandName" : "Dior",
@@ -656,7 +680,16 @@
                                          "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/blush.png",
                                          "organName" : "腮红",
                                          "organNameMini" : "腮红"
-                                         }
+                                         },{
+
+                    "cosmeticList":[{
+                    "organDesc" : "粉底",
+                    "organLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/10/fendi.png",
+                    "organName" : "粉底",
+                    "organNameMini" : "粉底"
+                    }
+                    ]
+                }
                                          ],
                 "brandLogo" : "http://api.7fineday.com/userfiles/1/images/photo/2017/07/ysl@3x.png",
                 "brandName" : "YSL",

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.facedemo.com.facesdkbuild.ZhengxingActivity">
+    <com.facebeauty.com.beautysdk.view.ImageCamerView
+        android:id="@+id/myImageCameraView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.facebeauty.com.beautysdk.view.ImageCamerView>
+    <Button
+        android:id="@+id/set"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="瘦脸"/>
+    <Button
+        android:id="@+id/shuangyanpin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="双眼皮"
+        android:layout_marginLeft="100dp"/>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="保存图片"
+        android:layout_marginTop="50dp"/>
+</RelativeLayout>

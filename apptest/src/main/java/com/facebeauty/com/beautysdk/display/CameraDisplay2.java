@@ -7,21 +7,31 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
 import android.hardware.Camera;
+import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
+import android.support.annotation.Size;
+import android.util.Log;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import com.facebeauty.com.beautysdk.camera.CameraProxy;
 import com.facebeauty.com.beautysdk.domain.FileSave;
+import com.facebeauty.com.beautysdk.encoder.MediaVideoEncoder;
 import com.facebeauty.com.beautysdk.glutils.GlUtil;
 import com.facebeauty.com.beautysdk.glutils.OpenGLUtils;
 import com.facebeauty.com.beautysdk.glutils.STUtils;
 import com.facebeauty.com.beautysdk.glutils.TextureRotationUtil;
-import com.facebeauty.com.beautysdk.glutils.Utils;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
+import com.facebeauty.com.beautysdk.utils.CarmerUtils;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.facebeauty.com.beautysdk.utils.LogUtils;
 import com.facebeauty.com.beautysdk.view.CameraView;
@@ -47,6 +57,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 /**
@@ -81,7 +93,7 @@ public class CameraDisplay2 implements Renderer {
     private float mCurrentFilterStrength = 0.5f;//阈值为[0,1]
     private float mFilterStrength = 0.5f;
     private String mFilterStyle;
-
+    private RelativeLayout bottomLayout;
     private int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private STGLRender mGLRender;
     private STMobileStickerNative mStStickerNative = new STMobileStickerNative();
@@ -113,6 +125,26 @@ public class CameraDisplay2 implements Renderer {
     private FloatBuffer mTextureBuffer;
     private float[] mBeautifyParams = new float[6];
     private STHumanAction humanAction;
+
+    private MediaVideoEncoder mVideoEncoder;
+    private final float[] mStMatrix = new float[16];
+    private int[] mVideoEncoderTexture;
+    private boolean mNeedResetEglContext = false;
+
+    private boolean mTakingScreenShoot = false;
+    private boolean mNeedTakingScreenShoot = true;
+    private Handler mTakingScreenShootHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0: {
+                    mNeedTakingScreenShoot= true;
+                }
+                break;
+            }
+        }
+    };
 
     public static int[] beautyTypes = {
             STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH,
@@ -146,7 +178,7 @@ public class CameraDisplay2 implements Renderer {
     private STPoint[] pointsEyeLeft;
     private STPoint[] pointsEyeRight;
     private STPoint[] pointsLips;
-
+    private int video_width,video_height;
     //face extra info swicth
     private boolean mNeedFaceExtraInfo = true;
     private int mHumanActionCreateConfig = STMobileHumanActionNative.ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_VIDEO;
@@ -228,17 +260,22 @@ public class CameraDisplay2 implements Renderer {
     }
 
     public boolean getSupportPreviewsize(int size) {
-        if(size == 0 && mSupportedPreviewSizes.contains("640x480")){
+         if(size == 1 && mSupportedPreviewSizes.contains("1280x720")){
             return true;
-        }else if(size == 1 && mSupportedPreviewSizes.contains("1280x720")){
+        }else if(size == 2 && mSupportedPreviewSizes.contains("640x480")){
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 
+
+    public boolean getTakingScreenShoot() {
+        return mTakingScreenShoot;
+    }
+
+
     public void setSaveImage(File file) {
-        this.file =file;
+        this.file = file;
         mNeedSave = true;
     }
 
@@ -305,8 +342,8 @@ public class CameraDisplay2 implements Renderer {
         int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
         LogUtils.i(TAG, "the result is for initBeautify " + result);
         if (result == 0) {
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.36f);
-            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.74f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.3f);
+            mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.5f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_WHITEN_STRENGTH, 0.02f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_ENLARGE_EYE_RATIO, 0.0f);
             mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SHRINK_FACE_RATIO, 0.0f);
@@ -406,6 +443,7 @@ public class CameraDisplay2 implements Renderer {
      *
      * @param gl
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onDrawFrame(GL10 gl) {
         // during switch camera
@@ -430,6 +468,10 @@ public class CameraDisplay2 implements Renderer {
         if (mTextureOutId == null) {
             mTextureOutId = new int[1];
             GlUtil.initEffectTexture(mImageWidth, mImageHeight, mTextureOutId, GLES20.GL_TEXTURE_2D);
+        }
+
+        if (mVideoEncoderTexture == null) {
+            mVideoEncoderTexture = new int[1];
         }
 
         if(mSurfaceTexture != null){
@@ -621,19 +663,30 @@ public class CameraDisplay2 implements Renderer {
             savePicture(textureId,file);
             mNeedSave = false;
         }
+        if(mVideoEncoder != null){
+            GLES20.glFinish();
+        }
+        mVideoEncoderTexture[0] = textureId;
+        mSurfaceTexture.getTransformMatrix(mStMatrix);
+        processStMatrix(mStMatrix, mCameraID == Camera.CameraInfo.CAMERA_FACING_FRONT);
+
+        synchronized (this) {
+            if (mVideoEncoder != null) {
+                if(mNeedResetEglContext){
+                    mVideoEncoder.setEglContext(EGL14.eglGetCurrentContext(), mVideoEncoderTexture[0]);
+                    mNeedResetEglContext = false;
+                }
+                mVideoEncoder.frameAvailableSoon(mStMatrix);
+
+            }
+        }
 
         long dt = System.currentTimeMillis() - mStartTime;
         if(mFpsListener != null) {
             mFpsListener.onFpsChanged((int) dt);
         }
-
         GLES20.glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
-        if(stPoints != null) {
-            mGLRender.onDrawFrame(stPoints, textureId);
-//            mGLRender.onDrawFrame(textureId);
-        }
-        else
-            mGLRender.onDrawFrame(textureId);
+        mGLRender.onDrawFrame(textureId);
         GlUtil.checkGlError("glUseProgram");
         stPoints = null;
     }
@@ -655,7 +708,6 @@ public class CameraDisplay2 implements Renderer {
         msg.setData(bundle);
         msg.sendToTarget();
     }
-
     private int getCurrentOrientation() {
         int dir = Accelerometer.getDirection();
         int orientation = dir - 1;
@@ -692,7 +744,21 @@ public class CameraDisplay2 implements Renderer {
         mImageHeight = Integer.parseInt(size.substring(0, index));
         mImageWidth = Integer.parseInt(size.substring(index + 1));
         if(mImageHeight==640){
-            mCameraProxy.setPreviewSize(480, 480);
+            boolean flag = false;
+            List<Camera.Size> sizes = mCameraProxy.getParameters().getSupportedPictureSizes();
+            for(int i=0;i<sizes.size();i++) {
+                if ((sizes.get(i).width == 480) && (sizes.get(i).height == 480)){
+                    flag = true;
+                }
+            }
+            if(flag){
+                mImageHeight = 480;
+                mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
+            }else {
+                setPreview();
+            }
+
+
         }else {
             mCameraProxy.setPreviewSize(mImageHeight, mImageWidth);
         }
@@ -728,19 +794,16 @@ public class CameraDisplay2 implements Renderer {
             }
             mCameraProxy.openCamera(mCameraID);
             mSupportedPreviewSizes = mCameraProxy.getSupportedPreviewSize(new String[]{"1280x720", "640x480","480x480"});
-            if(mSupportedPreviewSizes.contains("1280x720")){
+             if (mSupportedPreviewSizes.contains("1280x720")){
                 mCurrentPreview = mSupportedPreviewSizes.indexOf("1280x720");
-            }else if (mSupportedPreviewSizes.contains("480x480")){
-                mCurrentPreview = mSupportedPreviewSizes.indexOf("480x480");
+            }else if (mSupportedPreviewSizes.contains("640x480")){
+                mCurrentPreview = mSupportedPreviewSizes.indexOf("640x480");
             }
         }
 
 
         mImageHeight=320;
         mImageWidth = 240;
-//        mGlSurfaceView.onResume();
-//        mGlSurfaceView.forceLayout();
-//        mGlSurfaceView.requestRender();
     }
 
     public void onPause() {
@@ -810,6 +873,11 @@ public class CameraDisplay2 implements Renderer {
             GLES20.glDeleteTextures(1, mFilterTextureOutId, 0);
             mFilterTextureOutId = null;
         }
+
+        if(mVideoEncoderTexture != null){
+            GLES20.glDeleteTextures(1, mVideoEncoderTexture, 0);
+            mVideoEncoderTexture = null;
+        }
     }
 
     public void switchCamera() {
@@ -865,11 +933,17 @@ public class CameraDisplay2 implements Renderer {
                     setUpCamera();
                 }
 
+                if(mImageHeight==640){
+//                    mImageHeight=480*mImageWidth/480;
+//                    screenWidth, (screenWidth * video_width) / video_height;
+                    mImageHeight = 480;
+                }
                 mGLRender.init(mImageWidth, mImageHeight);
 
                 if(mNeedObject){
                     resetIndexRect();
                 }
+
 
                 mGLRender.calculateVertexBuffer(mSurfaceWidth, mSurfaceHeight, mImageWidth, mImageHeight);
                 if (mListener != null) {
@@ -877,7 +951,19 @@ public class CameraDisplay2 implements Renderer {
                 }
 
                 mCameraChanging = false;
-                mGlSurfaceView.requestRender();
+
+                /**
+                 * 设置surfaceView的尺寸 因为camera默认是横屏，所以取得支持尺寸也都是横屏的尺寸
+                 * 我们在startPreview方法里面把它矫正了过来，但是这里我们设置设置surfaceView的尺寸的时候要注意 previewSize.height<previewSize.width
+                 * previewSize.width才是surfaceView的高度
+                 * 一般相机都是屏幕的宽度 这里设置为屏幕宽度 高度自适应 你也可以设置自己想要的大小
+                 */
+//                if(mImageHeight==640) {
+//                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSurfaceWidth, (mSurfaceWidth * video_width) / video_height);
+//                    //这里当然可以设置拍照位置 比如居中 我这里就置顶了
+//                    mGlSurfaceView.setLayoutParams(params);
+//                }
+                    mGlSurfaceView.requestRender();
                 LogUtils.d(TAG, "exit  change Preview size queue event");
             }
         });
@@ -957,6 +1043,7 @@ public class CameraDisplay2 implements Renderer {
     int textJieMaoId = OpenGLUtils.NO_TEXTURE;
     int textYanYingId = OpenGLUtils.NO_TEXTURE;
     int textSiaHongId = OpenGLUtils.NO_TEXTURE;
+    int textFendiId = OpenGLUtils.NO_TEXTURE;
     float[] jiemaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] meimaobgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] saihongbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -964,6 +1051,7 @@ public class CameraDisplay2 implements Renderer {
     float[] yanxianbgcolors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] upMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
     float[] downMouseColors = {0.0f, 0.0f, 0.0f, 0.0f};
+    float[] fendiColors = {1.0f, 0.0f, 0.0f, 1.0f};
 
     boolean bLeftMeiDirty = false;
     Bitmap leftMeiBitmap;
@@ -977,6 +1065,8 @@ public class CameraDisplay2 implements Renderer {
     Bitmap yanYingBitmap;
     boolean bSaihongDirty = false;
     Bitmap saihongBitmap;
+    boolean bFendiDirty = false;
+    Bitmap fendiBitmap;
 
     public void setLeftMeiMao(Bitmap bitmap,float[] meimaobgcolors) {
         bLeftMeiDirty =true;
@@ -1012,6 +1102,11 @@ public class CameraDisplay2 implements Renderer {
         bSaihongDirty = true;
         saihongBitmap = bitmap;
         this.saihongbgcolors = saihongbgcolors;
+    }
+    public void setFendi(Bitmap bitmap,float[] fendibgcolors) {
+        bFendiDirty = true;
+        fendiBitmap = bitmap;
+//        this.fendiColors = fendibgcolors;
     }
 
     public void setUpMouseColors(float[] upMouseColors) {
@@ -1078,9 +1173,8 @@ public class CameraDisplay2 implements Renderer {
                             initMakeup();
                         }
                         mGLRender.makeup(stPoint240,textLeftMeiMaoId,textRightMeiMaoId,textJieMaoId ,
-                                textYanXianId,textYanYingId,textSiaHongId,upMouseColors,downMouseColors,
-                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors);
-//                        mGLRender.nativeChangeFaceAndJaw(stPoints, texid, 0.8f, 0.8f);
+                                textYanXianId,textYanYingId,textSiaHongId,textFendiId,upMouseColors,downMouseColors,
+                                jiemaobgcolors,meimaobgcolors,saihongbgcolors,yanyingbgcolors,yanxianbgcolors,fendiColors);
                     }
                     GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
@@ -1132,6 +1226,13 @@ public class CameraDisplay2 implements Renderer {
             Bitmap jieMaoBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
             textJieMaoId = OpenGLUtils.loadTexture(jieMaoBitmap, textJieMaoId, true);
         }
+        if (bFendiDirty && fendiBitmap != null) {
+            textFendiId = OpenGLUtils.loadTexture(fendiBitmap, textFendiId, false);
+        } else {
+            Bitmap fdBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.cosmetic_blank);
+            textFendiId = OpenGLUtils.loadTexture(fdBitmap, textFendiId, true);
+        }
+
     }
 
     public void startSurface(){
@@ -1147,5 +1248,91 @@ public class CameraDisplay2 implements Renderer {
     public void registerCameraDisplayFacePointsChangeListener(OnCameraDisplayFacePointsChangeListener onCameraDisplayFacePointsChangeListener) {
         mOnCameraDisplayFacePointsChangeListener = onCameraDisplayFacePointsChangeListener;
     }
+
+    private void processStMatrix(float[] matrix, boolean needMirror){
+        if(needMirror && matrix != null && matrix.length == 16){
+            for(int i = 0; i < 3; i++){
+                matrix[4 * i] = -matrix[4 * i];
+            }
+
+            if(matrix[4 * 3] == 0){
+                matrix[4 * 3] = 1.0f;
+            }else if(matrix[4 *3] == 1.0f){
+                matrix[4 *3] = 0f;
+            }
+        }
+
+        return;
+    }
+
+    public void setVideoEncoder(final MediaVideoEncoder encoder) {
+        mGlSurfaceView.queueEvent(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void run() {
+                synchronized (this) {
+                    if (encoder != null && mVideoEncoderTexture != null) {
+                        encoder.setEglContext(EGL14.eglGetCurrentContext(), mVideoEncoderTexture[0]);
+                    }
+                    mVideoEncoder = encoder;
+                }
+            }
+        });
+    }
+
+    public int getPreviewWidth(){
+        return mImageWidth;
+    }
+
+    public int getPreviewHeight(){
+        return mImageHeight;
+    }
+
+
+    public void setPreview() {
+        if (mCameraProxy != null) {
+            Camera.Parameters parameters = mCameraProxy.getParameters();
+
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes != null && focusModes.size() > 0) {
+                if (focusModes.contains(
+                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                    //设置自动对焦
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                }
+            }
+
+            List<Camera.Size> videoSiezes = null;
+            if (parameters != null) {
+                //获取相机所有支持尺寸
+                videoSiezes = parameters.getSupportedVideoSizes();
+                for (Camera.Size size : videoSiezes) {
+                }
+            }
+
+            if (videoSiezes != null && videoSiezes.size() > 0) {
+                //拿到一个预览宽度最小为720像素的预览值
+                Camera.Size videoSize = CarmerUtils.getInstance().getPropVideoSize(videoSiezes, 480);
+                video_width = videoSize.width;
+                video_height = videoSize.height;
+                //                video_height = videoSize.height;
+//                LogUtils.i("video_width===" + video_width);
+                LogUtils.i("video_height===" + videoSize.height);
+//               height mImageHeight = videoSize.height;
+//                mImageWidth = video_width;
+            }
+
+            //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
+            Camera.Size previewSize = CarmerUtils.getInstance().getPropPreviewSize(parameters.getSupportedPreviewSizes(), video_width);
+            Log.e("info",previewSize.width+":"+previewSize.height);
+//            parameters.setPreviewSize(previewSize.width, previewSize.height);
+            Camera.Size pictrueSize = CarmerUtils.getInstance().getPropPreviewSize(parameters.getSupportedPictureSizes(), video_width);
+//            parameters.setPictureSize(pictrueSize.width, pictrueSize.height);
+            mCameraProxy.setPreviewSize(previewSize.width, previewSize.height);
+
+        }
+    }
+
+
 }
 
