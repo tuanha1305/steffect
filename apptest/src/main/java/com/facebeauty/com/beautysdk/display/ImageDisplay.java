@@ -126,15 +126,29 @@ public class ImageDisplay implements Renderer {
 		glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
     	mContext = context;
-		mVertexBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.CUBE.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        mVertexBuffer.put(TextureRotationUtil.CUBE).position(0);
 
-        mTextureBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.TEXTURE_NO_ROTATION.length * 4)
+//		 final float CUBE[] = {
+//				-1.0f, -1.0f,
+//				1.0f, -1.0f,
+//				-1.0f, 1.0f,
+//				1.0f, 1.0f,
+//		};
+		final float CUBE[] = {
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+		};
+
+		mVertexBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        mTextureBuffer.put(TextureRotationUtil.TEXTURE_NO_ROTATION).position(0);
+        mVertexBuffer.put(CUBE).position(0);
+
+        mTextureBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.TEXTURE_ROTATED_180.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mTextureBuffer.put(TextureRotationUtil.TEXTURE_ROTATED_180).position(0);
 
         if(mNeedFaceExtraInfo){
 			mHumanActionCreateConfig = mHumanActionCreateConfig | STCommon.ST_MOBILE_ENABLE_FACE_240_DETECT;
@@ -425,9 +439,10 @@ public class ImageDisplay implements Renderer {
 					if(ret == 0){textureId = mFilterTextureOutId[0];}
 				}
 				int frameBuffer = mImageInputRender.getFrameBufferId();
+				int texid = 0;
 				if(mTemTextureId != textureId)
 				{
-					frameBuffer = mImageInputRender.bindFrameBuffer(textureId);
+					texid = mImageInputRender.bindFrameBuffer();
 				}
 				if(bitmap!=null){
 					textSiaHongId = OpenGLUtils.loadTexture(bitmap, textSiaHongId, false);
@@ -440,10 +455,16 @@ public class ImageDisplay implements Renderer {
 				GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 				GlUtil.checkGlError("glUseProgram");
 				if(points != null) {
+					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
 				   mImageInputRender.onDrawFrame(points, textureId,faceValue,jawValue);
-				}else {
-					mImageInputRender.onDrawFrame(mTextureId,mVertexBuffer,mTextureBuffer);
+					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 				}
+//				else
+					{
+						GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+					mImageInputRender.onDrawFrame(texid,mVertexBuffer,mTextureBuffer);
+				}
+				textureId = texid;
 				GlUtil.checkGlError("glUseProgram");
 			}
 		}
@@ -531,6 +552,13 @@ public class ImageDisplay implements Renderer {
 
         float ratioWidth = imageWidthNew / (float)mDisplayWidth;
         float ratioHeight = imageHeightNew / (float)mDisplayHeight;
+
+		final float CUBE[] = {
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+		};
 
         float[] cube = new float[]{
         		TextureRotationUtil.CUBE[0] / ratioHeight, TextureRotationUtil.CUBE[1] / ratioWidth,

@@ -1369,6 +1369,14 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
 
     };
 
+//    static const GLfloat textureVertices1[] = {
+//            0.0f,  1.0f,
+//            1.0f,  1.0f,
+//            0.0f, 0.0f,
+//            1.0f, 0.0f,
+//
+//    };
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uinputImageTexture, 0);
