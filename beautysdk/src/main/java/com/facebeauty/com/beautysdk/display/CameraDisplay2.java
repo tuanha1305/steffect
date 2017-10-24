@@ -1324,7 +1324,6 @@ public class CameraDisplay2 implements Renderer {
 
             //这里第三个参数为最小尺寸 getPropPreviewSize方法会对从最小尺寸开始升序排列 取出所有支持尺寸的最小尺寸
             Camera.Size previewSize = CarmerUtils.getInstance().getPropPreviewSize(parameters.getSupportedPreviewSizes(), video_width);
-            Log.e("info",previewSize.width+":"+previewSize.height);
 //            parameters.setPreviewSize(previewSize.width, previewSize.height);
             Camera.Size pictrueSize = CarmerUtils.getInstance().getPropPreviewSize(parameters.getSupportedPictureSizes(), video_width);
 //            parameters.setPictureSize(pictrueSize.width, pictrueSize.height);

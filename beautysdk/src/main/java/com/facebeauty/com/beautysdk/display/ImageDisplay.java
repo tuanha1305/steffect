@@ -144,26 +144,20 @@ public class ImageDisplay implements Renderer {
 
 	private void initFaceAttribute() {
 		int result = mSTFaceAttributeNative.createInstance(FileUtils.getFaceAttributeModelPath(mContext));
-		LogUtils.i(TAG, "the result for createInstance for faceAttribute is %d", result);
 	}
 
 	private void initHumanAction() {
 		int result = mSTHumanActionNative.createInstance(FileUtils.getTrackModelPath(mContext), mHumanActionCreateConfig);
-		LogUtils.i(TAG, "the result for createInstance for human action is %d", result);
 	}
 
 	private void initSticker() {
 		int result = mStStickerNative.createInstance(null);
-		LogUtils.i(TAG, "the result for createInstance for sticker is %d", result);
-
 		result = mStStickerNative.setWaitingMaterialLoaded(true);
-		LogUtils.i(TAG, "the result for createInstance for setWaitingMaterialLoaded is %d", result);
 	}
 
 	private void initBeauty() {
 		// 初始化beautify,preview的宽高
 		int result = mStBeautifyNative.createInstance(mImageHeight, mImageWidth);
-		LogUtils.i(TAG, "the result is for initBeautify " + result);
 		if (result == 0) {
 			mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_REDDEN_STRENGTH, 0.3f);
 			mStBeautifyNative.setParam(STBeautyParamsType.ST_BEAUTIFY_SMOOTH_STRENGTH, 0.5f);
@@ -303,7 +297,6 @@ public class ImageDisplay implements Renderer {
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		int textureId = OpenGLUtils.NO_TEXTURE;
-
 		if(mOriginBitmap != null && mTextureId == OpenGLUtils.NO_TEXTURE){
 			mTextureId = OpenGLUtils.loadTexture(mOriginBitmap, OpenGLUtils.NO_TEXTURE);
 			textureId = mTextureId;
@@ -326,12 +319,6 @@ public class ImageDisplay implements Renderer {
 			mFaceJAw = new int[1];
 			GlUtil.initEffectTexture(mImageWidth, mImageHeight, mFaceJAw, GLES20.GL_TEXTURE_2D);
 		}
-
-//		if (mTextureOutId == null) {
-//			mTextureOutId = new int[1];
-//			GlUtil.initEffectTexture(mImageWidth, mImageHeight, mTextureOutId, GLES20.GL_TEXTURE_2D);
-//		}
-
 		byte[] mTmpBuffer = null;
 		if(mOriginBitmap != null) {
 			if(mTmpBuffer == null){

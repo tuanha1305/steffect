@@ -149,15 +149,4 @@ public class ImageCamerView extends RelativeLayout {
 //        takeScreenShot();
 
     }
-
-//    public  Bitmap getSurfaceBitmap(){
-//        Bitmap bitmapSurface =  mGlSurfaceView.getDrawingCache();
-//        Bitmap bitmap = Bitmap.createBitmap(bitmapSurface.getWidth(), bitmapSurface.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bitmap);
-//        Rect frame = new Rect();
-////        canvas.d(bitmapSurface,frame);
-//        Canvas canvas =  mGlSurfaceView.getHolder().lockCanvas();
-//        return mGlSurfaceView.getBitmap();
-//    }
-
 }
