@@ -1,7 +1,11 @@
 package com.facedemo.com.facesdkbuild;
 
 import android.app.Activity;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,6 +23,9 @@ import com.facedemo.com.facesdkbuild.view.HorizontalListView;
 import com.sensetime.stmobile.model.STPoint;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -60,9 +67,8 @@ public class MainActivity extends Activity {
         btnChoice = (Button) findViewById(R.id.choice);
 
         LogUtils.setIsLoggable(false);
-//        String pathTiezhi = "/storage/emulated/0/Download/bunny.zip";
-//        String pathTiezhi = Environment.getExternalStorageDirectory()+"/Download/banny.zip";
-//        cameraView.setTiezhi(3,pathTiezhi);
+        String pathTiezhi = "/storage/emulated/0/Download/bunny.zip";
+        cameraView.setTiezhi(3,pathTiezhi);
 
         horizontalList = (HorizontalListView) findViewById(R.id.horizontalList);
         String data = openAssetsFile("makeuplist.json");
@@ -74,24 +80,19 @@ public class MainActivity extends Activity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                cameraView.cleanMakeUp();
-                if(cameraView.isRecoderScreen()){
-                    Toast.makeText(MainActivity.this,"正在录屏中，",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                cameraView.startRecoderScreen();
+//                String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/test.jpg";
+//                File file = new File(path);
+//                cameraView.saveImage(file);
+                cameraView.startRecording();
+
             }
         });
 
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!cameraView.isRecoderScreen()){
-                    Toast.makeText(MainActivity.this,"请先开始录屏",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                cameraView.endRecoderScreen();
-//                startActivity(new Intent(MainActivity.this,WelcomeActivity.class));
+              String path = cameraView.stopRecording();
+             Toast.makeText(MainActivity.this,path,Toast.LENGTH_LONG).show();
             }
         });
         btnTest.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +112,23 @@ public class MainActivity extends Activity {
                 cameraView.changeChoice();
             }
         });
+
+
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try
+        {
+            InputStream is = getClass().getResourceAsStream("/assets/banbaoyanying.png");
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        float[] color = {0.0f,0.0f,0.0f,0.0f};
+
+        cameraView.setEyeShadow(image,color);
     }
 
     @Override

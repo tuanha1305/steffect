@@ -1,11 +1,19 @@
 package com.facebeauty.com.beautysdk.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Environment;
+import android.view.SurfaceView;
+import android.view.View;
+
+import com.facebeauty.com.beautysdk.view.ImageCamerView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +53,7 @@ public class FileUtils {
         }
         for (int i = 0; i < files.length; i++) {
             String str = files[i];
-            if(str.indexOf(".zip") != -1){
+            if (str.indexOf(".zip") != -1) {
                 copyFileIfNeed(context, str);
             }
         }
@@ -80,8 +88,7 @@ public class FileUtils {
 
                     file.createNewFile();
                     InputStream in = context.getApplicationContext().getAssets().open(fileName);
-                    if(in == null)
-                    {
+                    if (in == null) {
                         LogUtils.e("copyMode", "the src is not existed");
                         return false;
                     }
@@ -199,7 +206,7 @@ public class FileUtils {
 //        return  stickerFiles;
 //    }
 
-    public static List<String> copyStickerZipFiles(Context context){
+    public static List<String> copyStickerZipFiles(Context context) {
         String files[] = null;
         ArrayList<String> modelFiles = new ArrayList<String>();
 
@@ -216,7 +223,7 @@ public class FileUtils {
         }
         for (int i = 0; i < files.length; i++) {
             String str = files[i];
-            if(str.indexOf(".zip") != -1){
+            if (str.indexOf(".zip") != -1) {
                 copyFileIfNeed(context, str);
             }
         }
@@ -239,7 +246,7 @@ public class FileUtils {
         return modelFiles;
     }
 
-    public static Map<String, Bitmap> copyStickerIconFiles(Context context){
+    public static Map<String, Bitmap> copyStickerIconFiles(Context context) {
         String files[] = null;
         TreeMap<String, Bitmap> iconFiles = new TreeMap<String, Bitmap>();
 
@@ -256,7 +263,7 @@ public class FileUtils {
         }
         for (int i = 0; i < files.length; i++) {
             String str = files[i];
-            if(str.indexOf(".png") != -1){
+            if (str.indexOf(".png") != -1) {
                 copyFileIfNeed(context, str);
             }
         }
@@ -280,7 +287,7 @@ public class FileUtils {
         return iconFiles;
     }
 
-    public static List<String> getStickerNames(Context context){
+    public static List<String> getStickerNames(Context context) {
         ArrayList<String> modelNames = new ArrayList<String>();
         String folderpath = null;
         File dataDir = context.getExternalFilesDir(null);
@@ -329,7 +336,7 @@ public class FileUtils {
 //        return  filterFiles;
 //    }
 
-    public static List<String> copyFilterModelFiles(Context context){
+    public static List<String> copyFilterModelFiles(Context context) {
         String files[] = null;
         ArrayList<String> modelFiles = new ArrayList<String>();
 
@@ -346,7 +353,7 @@ public class FileUtils {
         }
         for (int i = 0; i < files.length; i++) {
             String str = files[i];
-            if(str.indexOf(".model") != -1){
+            if (str.indexOf(".model") != -1) {
                 copyFileIfNeed(context, str);
             }
         }
@@ -369,7 +376,7 @@ public class FileUtils {
         return modelFiles;
     }
 
-    public static Map<String, Bitmap> copyFilterIconFiles(Context context){
+    public static Map<String, Bitmap> copyFilterIconFiles(Context context) {
         String files[] = null;
         TreeMap<String, Bitmap> iconFiles = new TreeMap<String, Bitmap>();
 
@@ -386,7 +393,7 @@ public class FileUtils {
         }
         for (int i = 0; i < files.length; i++) {
             String str = files[i];
-            if(str.indexOf(".png") != -1){
+            if (str.indexOf(".png") != -1) {
                 copyFileIfNeed(context, str);
             }
         }
@@ -410,7 +417,7 @@ public class FileUtils {
         return iconFiles;
     }
 
-    public static List<String> getFilterNames(Context context){
+    public static List<String> getFilterNames(Context context) {
         ArrayList<String> modelNames = new ArrayList<String>();
         String folderpath = null;
         File dataDir = context.getExternalFilesDir(null);
@@ -439,25 +446,28 @@ public class FileUtils {
     public static String getFileNameNoEx(String filename) {
         if ((filename != null) && (filename.length() > 0)) {
             int dot = filename.lastIndexOf('.');
-            if ((dot >-1) && (dot < (filename.length()))) {
+            if ((dot > -1) && (dot < (filename.length()))) {
                 return filename.substring(0, dot);
             }
         }
         return filename;
     }
-    /**将文件存放在SDCard
+
+    /**
+     * 将文件存放在SDCard
      * 需要权限
      * 在SDCard中创建与删除文件权限
      * <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
      * 往SDCard写入数据权限
      * <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     *
      * @param fileName 文件名称
      * @throws Exception
      */
 
-    public static void saveToSDCard(String fileName, InputStream stream) throws Exception{
+    public static void saveToSDCard(String fileName, InputStream stream) throws Exception {
         //第一个参数方法为获取SDCard目录
-        File file = new File(Environment.getExternalStorageDirectory(),fileName);
+        File file = new File(Environment.getExternalStorageDirectory(), fileName);
         FileOutputStream outputStream = new FileOutputStream(file);
         int bytesRead = 0;
         byte[] buffer = new byte[8192];
@@ -467,5 +477,86 @@ public class FileUtils {
         outputStream.close();
     }
 
+    /**
+     * 从assets目录中复制整个文件夹内容
+     *
+     * @param context Context 使用CopyFiles类的Activity
+     * @param oldPath String  原文件路径  如：/aa
+     * @param newPath String  复制后路径  如：xx:/bb/cc
+     */
+    public static void copyFilesFassets(Context context, String oldPath, String newPath) {
+        try {
+            String fileNames[] = context.getAssets().list(oldPath);//获取assets目录下的所有文件及目录名
+            if (fileNames.length > 0) {//如果是目录
+                File file = new File(newPath);
+                file.mkdirs();//如果文件夹不存在，则递归
+                for (String fileName : fileNames) {
+                    copyFilesFassets(context, oldPath + "/" + fileName, newPath + "/" + fileName);
+                }
+            } else {//如果是文件
+                InputStream is = context.getAssets().open(oldPath);
+                FileOutputStream fos = new FileOutputStream(new File(newPath));
+                byte[] buffer = new byte[1024];
+                int byteCount = 0;
+                while ((byteCount = is.read(buffer)) != -1) {//循环从输入流读取 buffer字节
+                    fos.write(buffer, 0, byteCount);//将读取的输入流写入到输出流
+                }
+                fos.flush();//刷新缓冲区
+                is.close();
+                fos.close();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            //如果捕捉到错误则通知UI线程
+        }
+    }
 
+    private static Bitmap takeScreenShot(Activity activity) {
+        View view = activity.getWindow().getDecorView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bitmap = view.getDrawingCache();
+        Rect frame = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+        int height = activity.getWindowManager().getDefaultDisplay()
+                .getHeight();
+        // 去掉标题栏
+        Bitmap b = Bitmap.createBitmap(bitmap, 0, statusBarHeight, width,
+                height - statusBarHeight);
+
+        Canvas bitcanvas = new Canvas(bitmap);
+
+        view.destroyDrawingCache();
+        return b;
+    }
+
+    public static void shoot(Activity a, File filePath) {
+        if (filePath == null) {
+            return;
+        }
+        if (!filePath.getParentFile().exists()) {
+            filePath.getParentFile().mkdirs();
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filePath);
+            if (null != fos) {
+                takeScreenShot(a).compress(Bitmap.CompressFormat.PNG, 100, fos);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

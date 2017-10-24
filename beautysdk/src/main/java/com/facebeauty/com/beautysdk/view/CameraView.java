@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -26,6 +27,9 @@ import com.facebeauty.com.beautysdk.R;
 import com.facebeauty.com.beautysdk.display.CameraDisplay;
 import com.facebeauty.com.beautysdk.display.CameraDisplay2;
 import com.facebeauty.com.beautysdk.domain.FileSave;
+import com.facebeauty.com.beautysdk.encoder.MediaEncoder;
+import com.facebeauty.com.beautysdk.encoder.MediaMuxerWrapper;
+import com.facebeauty.com.beautysdk.encoder.MediaVideoEncoder;
 import com.facebeauty.com.beautysdk.utils.Accelerometer;
 import com.facebeauty.com.beautysdk.utils.FileUtils;
 import com.sensetime.stmobile.model.STPoint;
@@ -61,12 +65,16 @@ public class CameraView extends RelativeLayout {
 
     private boolean mTakingScreenShoot = false;
 //    LinkedList<Bitmap> byteBuffers = new LinkedList<>();
-//    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
-//    LinkedList<Integer> imageWidths = new LinkedList<>();
-//    LinkedList<Integer> imageHeights = new LinkedList<>();
+    LinkedList<ByteBuffer> byteBuffers = new LinkedList<>();
+    LinkedList<Integer> imageWidths = new LinkedList<>();
+    LinkedList<Integer> imageHeights = new LinkedList<>();
     List<Bitmap> bitmaps = new ArrayList<Bitmap>();
-//    int position;
-//Bitmap bitmap;
+    MediaMuxerWrapper mMuxer;
+    private String mVideoFilePath = "";
+    private FrameLayout frameLayout;
+
+    //    int position;
+Bitmap bitmap;
     int count;
 
 //    Runnable runnable = new Runnable() {
@@ -102,7 +110,7 @@ public class CameraView extends RelativeLayout {
                 break;
                 case MSG_TAKE_SCREEN_SHOT: {
 //                    ByteBuffer byteBuffer = (ByteBuffer) msg.obj;
-                    Bitmap bitmap = (Bitmap) msg.obj;
+                     bitmap = (Bitmap) msg.obj;
 //                    Bundle bundle = msg.getData();
 //                    int imageWidth = bundle.getInt("imageWidth");
 //                    int imageHeight = bundle.getInt("imageHeight");
@@ -118,16 +126,13 @@ public class CameraView extends RelativeLayout {
                 }
                 break;
                 case MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME:
-                    if (mTakingScreenShoot)
-                        endRecoderScreen(true);
+
                     break;
                 case MSG_TAKE_SCREEN_SHOT_END: {
                     mTakingScreenShoot = false;
-//                    byteBuffers.clear();
-//                    imageHeights.clear();
-//                    imageWidths.clear();
-                    Log.d("liupan","liupan 录屏结束");
-                    Toast.makeText(getContext(), "录屏结束", Toast.LENGTH_SHORT).show();
+                    byteBuffers.clear();
+                    imageHeights.clear();
+                    imageWidths.clear();
                 }
                 break;
             }
@@ -182,6 +187,8 @@ public class CameraView extends RelativeLayout {
     }
 
     private void initView() {
+        frameLayout = new FrameLayout(mContext.getApplicationContext());
+        addView(frameLayout);
         mAccelerometer = new Accelerometer(mContext.getApplicationContext());
         GLSurfaceView glSurfaceView = new GLSurfaceView(mContext);
         addView(glSurfaceView);
@@ -235,8 +242,7 @@ public class CameraView extends RelativeLayout {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-                    requestLayout();
+                    frameLayout.requestLayout();
                 }
 
             });
@@ -404,105 +410,7 @@ public class CameraView extends RelativeLayout {
         return mTakingScreenShoot;
     }
 
-    public void startRecoderScreen() {
-        mCameraDisplay.setTakingScreenShoot(true);
-        Toast.makeText(getContext(), "录屏开始", Toast.LENGTH_SHORT).show();
-        mTakingScreenShoot = true;
-        mHandler.sendEmptyMessageDelayed(MSG_TAKE_SCREEN_SHOT_REACH_MAX_TIME, 15 * 1000);
-//        new Thread(runnable).start();
-    }
 
-    public void endRecoderScreen() {
-        if (mTakingScreenShoot) {
-            endRecoderScreen(false);
-        } else {
-            Toast.makeText(getContext(), "录屏已经结束", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void endRecoderScreen(final boolean bTimeout) {
-        mCameraDisplay.setTakingScreenShoot(false);
-        if (bTimeout) {
-            Toast.makeText(getContext(), "录屏最长15秒时间,录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "录屏结束中，请稍等", Toast.LENGTH_SHORT).show();
-        }
-
-////        new Thread(new Runnable() {
-////            @Override
-////            public void run() {
-//                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
-//                if (!destdirectory.exists()) {
-//                    destdirectory.mkdirs();
-//                }
-//                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
-//                File destFile = new File(destFileName);
-//                MyAndroidSequenceEncoder sequenceEncoderMp4;
-////                try {
-////                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
-////
-//////                    for (Bitmap frame : byteBuffers) {
-//////                        sequenceEncoderMp4.encodeImage(frame);
-//////                    }
-////
-//////                    ByteBuffer byteBuffer = mCameraDisplay.getmTmpBuffer();
-//////                    for(int i =0;i<byteBuffer.){
-//////
-//////                    }
-////                    for (int i = 0;i<byteBuffers.size();i++) {
-////                         ByteBuffer byteBuffer = byteBuffers.get(i);
-////                         Bitmap srcBitmap = Bitmap.createBitmap(imageWidths.get(i), imageHeights.get(i), Bitmap.Config.ARGB_4444);
-////                         byteBuffer.position(0);
-////                         srcBitmap.copyPixelsFromBuffer(byteBuffer);
-////                         sequenceEncoderMp4.encodeImage(srcBitmap);
-////                         srcBitmap.recycle();
-////                    }
-////
-////                    sequenceEncoderMp4.finish();
-////                } catch (IOException e) {
-////                    e.printStackTrace();
-////                }
-//////                catch (Throwable throwable){
-//////                    throwable.printStackTrace();
-//////                }finally {
-//////                }
-//////                for (Bitmap frame : byteBuffers) {
-//////                    if(!frame.isRecycled()){
-//////                        frame.recycle();
-//////                    }
-//////                }
-////                Message message = Message.obtain();
-////                message.what = MSG_TAKE_SCREEN_SHOT_END;
-////                mHandler.sendMessage(message);
-////            }
-////        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File destdirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/facesdkdest");
-                if (!destdirectory.exists()) {
-                    destdirectory.mkdirs();
-                }
-                String destFileName = destdirectory.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".mp4";
-                File destFile = new File(destFileName);
-                MyAndroidSequenceEncoder sequenceEncoderMp4;
-                try {
-                    sequenceEncoderMp4 = new MyAndroidSequenceEncoder(destFile);
-                    for (Bitmap frame : bitmaps) {
-                        sequenceEncoderMp4.encodeImage(frame);
-                    }
-                    sequenceEncoderMp4.finish();
-
-                    Message message = Message.obtain();
-                    message.what = MSG_TAKE_SCREEN_SHOT_END;
-                    mHandler.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
     private void saveToSDCard(File file, Bitmap bmp) {
 
@@ -588,5 +496,51 @@ public class CameraView extends RelativeLayout {
         setEyeliner(bitmap, color);
         setEyebrow(bitmap, color);
         setLip(0, 0, 0, 0);
+        setFoundation(bitmap,color);
     }
+
+    /**
+     * 开始录制方法
+     */
+    public void startRecording() {
+        try {
+            mMuxer = new MediaMuxerWrapper(".mp4");	// if you record audio only, ".m4a" is also OK.
+            // for video capturing
+            new MediaVideoEncoder(mMuxer, mMediaEncoderListener, mCameraDisplay.getPreviewWidth(), mCameraDisplay.getPreviewHeight());
+            // for audio capturing
+//            new MediaVideoEncoder(mMuxer, mMediaEncoderListener);
+            mMuxer.prepare();
+            mMuxer.startRecording();
+        } catch (final IOException e) {
+//            Log.e(TAG, "startCapture:", e);
+        }
+    }
+
+    public String stopRecording() {
+        if (mMuxer != null) {
+            mVideoFilePath = mMuxer.getFilePath();
+            mMuxer.stopRecording();
+            //mMuxer = null;
+        }
+        System.gc();
+        return mVideoFilePath;
+    }
+
+    /**
+     * callback methods from encoder
+     */
+    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
+        @Override
+        public void onPrepared(final MediaEncoder encoder) {
+            if (encoder instanceof MediaVideoEncoder && mCameraDisplay != null)
+                mCameraDisplay.setVideoEncoder((MediaVideoEncoder)encoder);
+        }
+        @Override
+        public void onStopped(final MediaEncoder encoder) {
+            if (encoder instanceof MediaVideoEncoder && mCameraDisplay != null)
+                mCameraDisplay.setVideoEncoder(null);
+        }
+    };
+
+
 }
