@@ -283,7 +283,7 @@ public class ImageDisplay implements Renderer {
 		mDisplayHeight = height;
 		adjustImageDisplaySize();
 		mInitialized = true;
-		mImageInputRender.init(mDisplayWidth,mDisplayHeight);
+		mImageInputRender.init(mImageWidth,mImageHeight);
 	}
 
 
