@@ -127,16 +127,10 @@ public class ImageDisplay implements Renderer {
 
     	mContext = context;
 
-//		 final float CUBE[] = {
-//				-1.0f, -1.0f,
-//				1.0f, -1.0f,
-//				-1.0f, 1.0f,
-//				1.0f, 1.0f,
-//		};
-		final float CUBE[] = {
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
+		 final float CUBE[] = {
+				-1.0f, -1.0f,
+				1.0f, -1.0f,
+				-1.0f, 1.0f,
 				1.0f, 1.0f,
 		};
 
@@ -145,10 +139,16 @@ public class ImageDisplay implements Renderer {
                 .asFloatBuffer();
         mVertexBuffer.put(CUBE).position(0);
 
-        mTextureBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.TEXTURE_ROTATED_180.length * 4)
+		final float TEXTURE_ROTATED_180[] = {
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+		};
+        mTextureBuffer = ByteBuffer.allocateDirect(TEXTURE_ROTATED_180.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        mTextureBuffer.put(TextureRotationUtil.TEXTURE_ROTATED_180).position(0);
+        mTextureBuffer.put(TEXTURE_ROTATED_180).position(0);
 
         if(mNeedFaceExtraInfo){
 			mHumanActionCreateConfig = mHumanActionCreateConfig | STCommon.ST_MOBILE_ENABLE_FACE_240_DETECT;
@@ -452,16 +452,15 @@ public class ImageDisplay implements Renderer {
 					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 				}
 
-				GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 				GlUtil.checkGlError("glUseProgram");
 				if(points != null) {
 					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
-				   mImageInputRender.onDrawFrame(points, textureId,faceValue,jawValue);
+					mImageInputRender.onDrawFrame(points, textureId,faceValue,jawValue);
 					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 				}
 //				else
-					{
-						GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+				{
+					GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 					mImageInputRender.onDrawFrame(texid,mVertexBuffer,mTextureBuffer);
 				}
 				textureId = texid;
@@ -554,17 +553,17 @@ public class ImageDisplay implements Renderer {
         float ratioHeight = imageHeightNew / (float)mDisplayHeight;
 
 		final float CUBE[] = {
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
+				-1.0f, -1.0f,
+				1.0f, -1.0f,
+				-1.0f, 1.0f,
 				1.0f, 1.0f,
 		};
 
         float[] cube = new float[]{
-        		TextureRotationUtil.CUBE[0] / ratioHeight, TextureRotationUtil.CUBE[1] / ratioWidth,
-        		TextureRotationUtil.CUBE[2] / ratioHeight, TextureRotationUtil.CUBE[3] / ratioWidth,
-        		TextureRotationUtil.CUBE[4] / ratioHeight, TextureRotationUtil.CUBE[5] / ratioWidth,
-        		TextureRotationUtil.CUBE[6] / ratioHeight, TextureRotationUtil.CUBE[7] / ratioWidth,
+        		CUBE[0] / ratioHeight, CUBE[1] / ratioWidth,
+        		CUBE[2] / ratioHeight, CUBE[3] / ratioWidth,
+        		CUBE[4] / ratioHeight, CUBE[5] / ratioWidth,
+        		CUBE[6] / ratioHeight, CUBE[7] / ratioWidth,
         };
         mVertexBuffer.clear();
         mVertexBuffer.put(cube).position(0);
