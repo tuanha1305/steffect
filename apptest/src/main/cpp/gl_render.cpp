@@ -1362,11 +1362,10 @@ JNIEXPORT void JNICALL Java_com_facebeauty_com_beautysdk_display_STGLRender_nati
             1.0f,   1.0f,
     };
     static const GLfloat textureVertices1[] = {
-            -1.0f,  1.0f,
-            1.0f,  1.0f,
             -1.0f, -1.0f,
             1.0f, -1.0f,
-
+            -1.0f,  1.0f,
+            1.0f,  1.0f,
     };
 
 //    static const GLfloat textureVertices1[] = {
