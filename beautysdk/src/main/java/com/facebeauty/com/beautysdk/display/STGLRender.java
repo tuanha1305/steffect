@@ -393,6 +393,23 @@ public class STGLRender {
         return texid[0];
     }
 
+    public int bindFrameBuffer(){
+        int[] textureId = new int[1];
+        GLES20.glGenTextures(1, textureId, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0]);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mViewPortWidth, mViewPortHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[2]);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D,textureId[0], 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        GLES20.glViewport(0, 0, mViewPortWidth, mViewPortHeight);
+        return textureId[0];
+    }
+
     public int bindFrameBuffer(int textureId){
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mViewPortWidth, mViewPortHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
@@ -406,7 +423,6 @@ public class STGLRender {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         return mFrameBuffers[2];
     }
-
 
     public int bindFrameByImaageBuffer(int textureId){
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
