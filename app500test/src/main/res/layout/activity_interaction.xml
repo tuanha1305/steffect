@@ -1,0 +1,850 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/close"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/tv_capture"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_selection_video"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:text="保存"
+        android:textSize="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/tv_change_camera"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/change_camera"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="15dp"
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
+
+    <ImageView
+        android:id="@+id/iv_setting_options_switch"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/tv_change_camera"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/setting"/>
+
+    <TextView
+        android:id="@+id/tv_face_attribute"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="#00000000"
+        android:text=""
+        android:textSize="@dimen/layout_resolution_font_size"
+        android:textColor="@color/white"
+        android:padding="@dimen/layout_resolution_padding"/>
+
+    <LinearLayout
+        android:id="@+id/ll_fps_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tv_cancel"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_marginLeft="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frame_radio"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_resolution_font_size"/>
+            <TextView
+                android:id="@+id/tv_frame_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5ms"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_resolution_font_size"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cpu_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cpu_radio"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_resolution_font_size"/>
+            <TextView
+                android:id="@+id/tv_cpu_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23%"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_resolution_font_size"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/tv_layout_tips"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="#00000000"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/iv_image_tips"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_text_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="20dp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_saving_image"
+        android:layout_width="255dp"
+        android:layout_height="40dp"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:text="@string/saving_image"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_save_picture"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="57dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_short_video_time"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/ll_select_options"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:text="00:00:00"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_time_count"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/tv_show_origin1"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/ll_select_options"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:text="对比"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_show_origin"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/tv_show_origin2"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/ll_select_options"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:text="对比"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_show_origin"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="170dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_mode_video"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_selection_video">
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:text="视频" />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="4dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/drop_icon" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_selection_mode"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:background="@drawable/bg_selection_video">
+        <LinearLayout
+            android:id="@+id/ll_selection_video"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="视频" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="4dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/drop_icon" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#66000000" />
+
+        <TextView
+            android:id="@+id/tv_selection_picture"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:text="图片" />
+    </LinearLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/rl_setting_options"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="#e0ffffff"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:clickable="true"
+        android:layout_above="@+id/ll_select_options">
+        <LinearLayout
+            android:id="@+id/ll_change_preview_size"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_marginLeft="40dp"
+                android:textSize="16dp"
+                android:text="分辨率" />
+
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp">
+                <TextView
+                    android:id="@+id/tv_small_size_selected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:background="@drawable/bg_button_corner_unpressed"
+                    android:textSize="16dp"
+                    android:text="640x480" />
+                <TextView
+                    android:id="@+id/tv_small_size_unselected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:background="@drawable/bg_preview_size_gap"
+                    android:visibility="invisible"
+                    android:textSize="16dp"
+                    android:text="640x480" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp">
+                <TextView
+                    android:id="@+id/tv_large_size_selected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:background="@drawable/bg_button_corner_unpressed"
+                    android:visibility="invisible"
+                    android:textSize="16dp"
+                    android:text="1280x720" />
+                <TextView
+                    android:id="@+id/tv_large_size_unselected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:background="@drawable/bg_preview_size_gap"
+                    android:textSize="16dp"
+                    android:text="1280x720" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_base_beauty_options"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#e0ffffff"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_above="@+id/ll_select_options">
+        <RelativeLayout
+            android:id="@+id/ll_beauty_redden_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="5dp"
+                android:src="@drawable/redden"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="红润" />
+            <SeekBar
+                android:id="@+id/sb_beauty_redden_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb"/>
+            <TextView
+                android:id="@+id/tv_beauty_redden_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_beauty_smooth_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/smooth"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="磨皮" />
+            <SeekBar
+                android:id="@+id/sb_beauty_smooth_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb" />
+            <TextView
+                android:id="@+id/tv_beauty_smooth_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="2dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/ll_beauty_whiten_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/whiten"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="美白" />
+            <SeekBar
+                android:id="@+id/sb_beauty_whiten_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb" />
+            <TextView
+                android:id="@+id/tv_beauty_whiten_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="2dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_professional_beauty_options"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#e0ffffff"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_above="@+id/ll_select_options">
+        <RelativeLayout
+            android:id="@+id/ll_beauty_enlarge_eye_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/enlarge_eye"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="大眼" />
+            <SeekBar
+                android:id="@+id/sb_beauty_enlarge_eye_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb"/>
+            <TextView
+                android:id="@+id/tv_beauty_enlarge_eye_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingLeft="2dp"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_beauty_shrink_face_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/shrink_face"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="瘦脸" />
+            <SeekBar
+                android:id="@+id/sb_beauty_shrink_face_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb" />
+            <TextView
+                android:id="@+id/tv_beauty_shrink_face_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="2dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/ll_beauty_shrink_jaw_strength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/shrink_jaw"/>
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="30dp"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="小脸" />
+            <SeekBar
+                android:id="@+id/sb_beauty_shrink_jaw_strength"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="50dp"
+                android:progressDrawable="@drawable/player_setting_bright_progressbar"
+                android:thumb="@drawable/seekbar_thumb" />
+            <TextView
+                android:id="@+id/tv_beauty_shrink_jaw_strength"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:layout_alignParentRight = "true"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="2dp"
+                android:textSize="18dp"
+                android:text="100" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_beauty_options"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:scrollbars="none"
+        android:padding="2dp"
+        android:visibility="invisible"
+        android:background="#eeffffff"
+        android:layout_above="@+id/ll_select_options"
+        android:layout_marginBottom="120dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_filter_icons"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_centerVertical="true"
+        android:scrollbars="none"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:background="#e0ffffff"
+        android:visibility="invisible"
+        android:layout_above="@+id/ll_select_options"/>
+
+    <LinearLayout
+        android:id="@+id/ll_sticker_options"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#eeffffff"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        android:layout_above="@+id/rv_sticker_icons">
+        <RelativeLayout
+            android:id="@+id/rv_close_sticker"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true">
+            <ImageView
+                android:id="@+id/iv_close_sticker"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/close_sticker" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#66666666" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_sticker_options"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:scrollbars="none"
+            android:padding="2dp"
+            android:background="#00ffffff"
+            android:layout_toRightOf="@+id/rv_close_sticker"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_sticker_icons"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_centerVertical="true"
+        android:scrollbars="none"
+        android:padding="5dp"
+        android:background="#e0ffffff"
+        android:visibility="invisible"
+        android:layout_above="@+id/ll_select_options"/>
+
+    <LinearLayout
+        android:id="@+id/ll_select_options"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffffff"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/ll_sticker_options_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="2">
+            <ImageView
+                android:id="@+id/iv_sticker_options_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="4dp"
+                android:src="@drawable/sticker"/>
+            <TextView
+                android:id="@+id/tv_sticker_options_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="特效"
+                android:textColor="#666666"
+                android:textSize="12dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_blank_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_beauty_options_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="2">
+            <ImageView
+                android:id="@+id/iv_beauty_options_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="4dp"
+                android:src="@drawable/beauty"/>
+            <TextView
+                android:id="@+id/tv_beauty_options_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="美颜"
+                android:textColor="#666666"
+                android:textSize="12dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_capture_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_circle_button"/>
+
+</merge>
