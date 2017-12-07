@@ -439,6 +439,6 @@ public class STGLRender {
     public native void nativeInitMousePrograme();
     public native void nativeInitWH(int w, int h);
     public native void nativeChangeFaceAndJaw(STPoint[] points, int texid, float scale, float jawsale);
-    public native void nativeDrawLianpu(STPoint[] points, int texid, int lianpuid, float scale, float jawsale);
+    public native void nativeDrawLianpu(float[] points, int texid, int lianpuid, float scale, float jawsale);
 
 }

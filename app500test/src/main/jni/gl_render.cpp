@@ -245,50 +245,74 @@ const char *const FaceLianpuF = SHADER_STRING
         uniform float jawContourPoints[7*2];
         uniform float jawDownPoints[7*2];
         uniform float deltaJawArray[7];
+        uniform float facePoints[212];
 
-        highp vec2 warpPositionToUse(vec2 currentPoint, vec2 contourPointA, vec2 contourPointB,float radius, float delta, float aspectRatio)
-{
-    vec2 positionToUse = currentPoint;
+//        highp vec2 warpPositionToUse(vec2 currentPoint, vec2 contourPointA, vec2 contourPointB,float radius, float delta, float aspectRatio)
+//        {
+//            vec2 positionToUse = currentPoint;
+//            vec2 currentPointToUse = currentPoint;
+//            vec2 contourPointAToUse = contourPointA;
+//
+//            float r = distance(currentPointToUse, contourPointAToUse);
+//            if(r < radius)
+//            {
+//                vec2 dir = normalize(contourPointB - contourPointA);
+//                float dist = radius * radius - r * r;
+//                float alpha = dist / (dist + (r-delta) * (r-delta));
+//                alpha = alpha * alpha;
+//                positionToUse = positionToUse - alpha * delta * dir;
+//            }
+//            return positionToUse;
+//        }
 
-    //    vec2 currentPointToUse = vec2(currentPoint.x, currentPoint.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
-    //    vec2 contourPointAToUse = vec2(contourPointA.x, contourPointA.y * aspectRatio + 0.5 - 0.5 * aspectRatio);
-
-    vec2 currentPointToUse = currentPoint;
-    vec2 contourPointAToUse = contourPointA;
-
-    float r = distance(currentPointToUse, contourPointAToUse);
-    if(r < radius)
-    {
-        vec2 dir = normalize(contourPointB - contourPointA);
-        float dist = radius * radius - r * r;
-        float alpha = dist / (dist + (r-delta) * (r-delta));
-        alpha = alpha * alpha;
-
-        positionToUse = positionToUse - alpha * delta * dir;
-    }
-
-    return positionToUse;
-}
+        bool ptInPolygon(vec2 pt, float facept[212])
+        {
+            int ncross = 0;
+            for( int i = 0; i < 105; ++ i)
+            {
+                vec2 p1 = vec2(facept[i * 2], facept[ i * 2 + 1]);
+                int index =  i + 1;
+                vec2 p2 = vec2(facept[index * 2], facept[ index * 2 + 1] );
+                if( p1.y == p2.y )
+                    continue;
+                if( pt.y < min(p1.y, p2.y))
+                    continue;
+                if( pt.y >= max(p1.y, p2.y))
+                    continue;
+                float x = (pt.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
+                if( x > pt.x)
+                    ++ncross;
+            }
+//            int val = ncross - 2 * floor(ncross / 2 );
+//            return ncross == 0;
+            return ncross == 1 || ncross == 3 || ncross == 5;
+//            return false;
+//            return (mod(ncross , 2) == 1);
+        }
 
         void main()
         {
             vec2 positionToUse = textureCoordinate;
 
-            for(int i = 0; i < 9; i++)
-            {
-                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-            }
+//            for(int i = 0; i < 9; i++)
+//            {
+//                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+//                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
+//            }
+//
+//            for(int i = 0; i < 7; i++)
+//            {
+//                positionToUse = warpPositionToUse(positionToUse,
+//                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
+//                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
+//                                                  radius, deltaJawArray[i], aspectRatio);
+//            }
 
-            for(int i = 0; i < 7; i++)
-            {
-                positionToUse = warpPositionToUse(positionToUse,
-                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
-                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
-                                                  radius, deltaJawArray[i], aspectRatio);
-            }
-
-            gl_FragColor = texture2D(inputImageTexture, positionToUse);
+            if( ptInPolygon(positionToUse, facePoints))
+//            if( mod(25, 2) == 1)
+                gl_FragColor = texture2D(lianpuTexture, positionToUse);
+            else
+                gl_FragColor = texture2D(inputImageTexture, positionToUse);
 
         }
 
@@ -340,6 +364,7 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
     facejawCoord = glGetAttribLocation(_faceandjawProgram, "inputTextureCoordinate");
     uinputImageTexture = glGetUniformLocation(_faceandjawProgram, "inputImageTexture");
 
+    int ilval = 25 % 2;
 
     faceLianpuProgram = esLoadProgram(FaceLianpuV, FaceLianpuF);
     faceLianpuAttPos = glGetAttribLocation(faceLianpuProgram, "position");
@@ -348,6 +373,28 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
     faceLianpuTexture = glGetUniformLocation(faceLianpuProgram, "lianpuTexture" );
 }
 
+
+//bool ptInPolygon(float  pt[2], float facept[212])
+//{
+//    int ncross = 0;
+//    for( int i = 0; i < 105; ++ i)
+//    {
+//        vec2 p1 = vec2(facept[i * 2], facept[ i * 2 + 1]);
+//        int index =  i + 1;
+//        vec2 p2 = vec2(facept[index * 2], facept[ index * 2 + 1] );
+//        if( p1.y == p2.y )
+//            continue;
+//        if( pt[1] < min(p1.y, p2.y))
+//            continue;
+//        if( pt[1] >= max(p1.y, p2.y))
+//            continue;
+//        float x = (float)(pt[1] - p1.y) * (float)(p2.x - p1.x) / (float)(p2.y - p1.y) + p1.x;
+//        if( x > pt[0])
+//            ++ncross;
+//    }
+//    return true;
+//////            return (mod(ncross , 2) == 1);
+//}
 
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawZuichun(JNIEnv* env, jobject obj, jobjectArray stPoint, jfloatArray downmousecolors)
 {
@@ -1480,14 +1527,16 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
 }
 
 
-JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawLianpu(JNIEnv* env, jobject obj, jobjectArray stPoint,
+JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawLianpu(JNIEnv* env, jobject obj, jfloatArray  stPoint,
                                                                                               int texture, int lianpuid, float scale, float jawscale)
 {
     GLuint resultTexture = 0;
 
-    jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
-    jfieldID id_x = env->GetFieldID(objClass, "x", "F");
-    jfieldID id_y = env->GetFieldID(objClass, "y", "F");
+    jfloat* stPoints = env->GetFloatArrayElements( stPoint,0);
+
+//    jclass objClass = env->FindClass("com/sensetime/stmobile/model/STPoint");
+//    jfieldID id_x = env->GetFieldID(objClass, "x", "F");
+//    jfieldID id_y = env->GetFieldID(objClass, "y", "F");
 
     GLfloat x,y,x0,y0,radius,theta0;
 
@@ -1496,116 +1545,119 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
 
     glUseProgram(faceLianpuProgram);
 
-    jobject jobj = env->GetObjectArrayElement(stPoint, 6);
-    float x6 = env->GetFloatField(jobj, id_x);
-    float y6 = env->GetFloatField(jobj, id_y);
-    jobj = env->GetObjectArrayElement(stPoint, 7);
-    float x7 = env->GetFloatField(jobj, id_x);
-    float y7 = env->GetFloatField(jobj, id_y);
-    jobj = env->GetObjectArrayElement(stPoint, 8);
-    float x8 = env->GetFloatField(jobj, id_x);
-    float y8 = env->GetFloatField(jobj, id_y);
-    jobj = env->GetObjectArrayElement(stPoint, 9);
-    float x9 = env->GetFloatField(jobj, id_x);
-    float y9 = env->GetFloatField(jobj, id_y);
-    jobj = env->GetObjectArrayElement(stPoint, 10);
-    float x10 = env->GetFloatField(jobj, id_x);
-    float y10 = env->GetFloatField(jobj, id_y);
-    jobj = env->GetObjectArrayElement(stPoint, 11);
-    float x11 = env->GetFloatField(jobj, id_x);
-    float y11 = env->GetFloatField(jobj, id_y);
+//    jobject jobj = env->GetObjectArrayElement(stPoint, 6);
+    float x6 = stPoints[6*2];           //env->GetFloatField(jobj, id_x);
+    float y6 = stPoints[6*2 + 1];       //env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 7);
+    float x7 = stPoints[7*2];//env->GetFloatField(jobj, id_x);
+    float y7 = stPoints[7*2 + 1]; // env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 8);
+    float x8 = stPoints[8*2]; // env->GetFloatField(jobj, id_x);
+    float y8 = stPoints[8*2 + 1]; // env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 9);
+    float x9 = stPoints[9*2]; // env->GetFloatField(jobj, id_x);
+    float y9 = stPoints[9*2 + 1]; // env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 10);
+    float x10 = stPoints[10*2]; // env->GetFloatField(jobj, id_x);
+    float y10 = stPoints[10*2 + 1]; // env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 11);
+    float x11 = stPoints[11*2]; // env->GetFloatField(jobj, id_x);
+    float y11 = stPoints[11*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 12);
-    float x12 = env->GetFloatField(jobj, id_x);
-    float y12 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 12);
+    float x12 = stPoints[12*2]; // env->GetFloatField(jobj, id_x);
+    float y12 = stPoints[12*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 13);
-    float x13 = env->GetFloatField(jobj, id_x);
-    float y13 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 13);
+    float x13 = stPoints[13*2]; // env->GetFloatField(jobj, id_x);
+    float y13 = stPoints[13*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 14);
-    float x14 = env->GetFloatField(jobj, id_x);
-    float y14 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 14);
+    float x14 = stPoints[14*2]; // env->GetFloatField(jobj, id_x);
+    float y14 = stPoints[14*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 15);
-    float x15 = env->GetFloatField(jobj, id_x);
-    float y15 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 15);
+    float x15 = stPoints[15*2];//env->GetFloatField(jobj, id_x);
+    float y15 = stPoints[15*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 16);
-    float x16 = env->GetFloatField(jobj, id_x);
-    float y16 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 16);
+    float x16 = stPoints[16*2]; //env->GetFloatField(jobj, id_x);
+    float y16 = stPoints[16*2  +1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 17);
-    float x17 = env->GetFloatField(jobj, id_x);
-    float y17 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 17);
+    float x17 = stPoints[17*2]; // env->GetFloatField(jobj, id_x);
+    float y17 = stPoints[17*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 18);
-    float x18 = env->GetFloatField(jobj, id_x);
-    float y18 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 18);
+    float x18 = stPoints[18*2];  //env->GetFloatField(jobj, id_x);
+    float y18 = stPoints[18*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 19);
-    float x19 = env->GetFloatField(jobj, id_x);
-    float y19 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 19);
+    float x19 = stPoints[19*2]; // env->GetFloatField(jobj, id_x);
+    float y19 = stPoints[19*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 20);
-    float x20 = env->GetFloatField(jobj, id_x);
-    float y20 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 20);
+    float x20 = stPoints[20*2]; // env->GetFloatField(jobj, id_x);
+    float y20 = stPoints[20*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 21);
-    float x21 = env->GetFloatField(jobj, id_x);
-    float y21 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 21);
+    float x21 = stPoints[21*2]; // env->GetFloatField(jobj, id_x);
+    float y21 = stPoints[21*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 22);
-    float x22 = env->GetFloatField(jobj, id_x);
-    float y22 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 22);
+    float x22 = stPoints[22*2]; // env->GetFloatField(jobj, id_x);
+    float y22 = stPoints[22*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 23);
-    float x23 = env->GetFloatField(jobj, id_x);
-    float y23 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 23);
+    float x23 = stPoints[23*2]; // env->GetFloatField(jobj, id_x);
+    float y23 = stPoints[23*2  +1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 24);
-    float x24 = env->GetFloatField(jobj, id_x);
-    float y24 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 24);
+    float x24 = stPoints[24*2]; // env->GetFloatField(jobj, id_x);
+    float y24 = stPoints[24*2 + 1] ; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 25);
-    float x25 = env->GetFloatField(jobj, id_x);
-    float y25 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 25);
+    float x25 = stPoints[25*2]; // env->GetFloatField(jobj, id_x);
+    float y25 = stPoints[25*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 26);
-    float x26 = env->GetFloatField(jobj, id_x);
-    float y26 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 26);
+    float x26 = stPoints[26*2] ;// env->GetFloatField(jobj, id_x);
+    float y26 = stPoints[26*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 43);
-    float x43 = env->GetFloatField(jobj, id_x);
-    float y43 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 43);
+    float x43 = stPoints[43*2]; // env->GetFloatField(jobj, id_x);
+    float y43 = stPoints[43*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 55);
-    float x55 = env->GetFloatField(jobj, id_x);
-    float y55 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 55);
+    float x55 = stPoints[55*2]; // env->GetFloatField(jobj, id_x);
+    float y55 = stPoints[55*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 56);
-    float x56 = env->GetFloatField(jobj, id_x);
-    float y56 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 56);
+    float x56 = stPoints[56*2]; // env->GetFloatField(jobj, id_x);
+    float y56 = stPoints[56*2 + 1]; //  env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 58);
-    float x58 = env->GetFloatField(jobj, id_x);
-    float y58 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 58);
+    float x58 = stPoints[58*2]; // env->GetFloatField(jobj, id_x);
+    float y58 = stPoints[58*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 63);
-    float x63 = env->GetFloatField(jobj, id_x);
-    float y63 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 63);
+    float x63 = stPoints[63*2]; // env->GetFloatField(jobj, id_x);
+    float y63 = stPoints[63*2 + 1] ; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 78);
-    float x78 = env->GetFloatField(jobj, id_x);
-    float y78 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 78);
+    float x78 = stPoints[78*2]; // env->GetFloatField(jobj, id_x);
+    float y78 = stPoints[78*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 79);
-    float x79 = env->GetFloatField(jobj, id_x);
-    float y79 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 79);
+    float x79 = stPoints[79*2];// env->GetFloatField(jobj, id_x);
+    float y79 = stPoints[79*2 + 1]; // env->GetFloatField(jobj, id_y);
 
-    jobj = env->GetObjectArrayElement(stPoint, 93);
-    float x93 = env->GetFloatField(jobj, id_x);
-    float y93 = env->GetFloatField(jobj, id_y);
+//    jobj = env->GetObjectArrayElement(stPoint, 93);
+    float x93 = stPoints[93*2]; // env->GetFloatField(jobj, id_x);
+    float y93 = stPoints[93*2 + 1]; // env->GetFloatField(jobj, id_y);
+
+//    mViewPortWidth = 1.0f;
+//    mViewPortHeight = 1.0f;
 
     float arrleft[iFaceArrSize*2] = {
             x6/mViewPortWidth, y6/mViewPortHeight,
@@ -1729,6 +1781,9 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
 
     static GLuint deltajawArray = glGetUniformLocation(faceLianpuProgram, "deltaJawArray");
     glUniform1fv(deltajawArray, iJawArrSize, deltajawarr);
+
+    static GLuint facePoints = glGetUniformLocation( faceLianpuProgram, "facePoints");
+    glUniform1fv(facePoints, 212, stPoints);
 
     GLfloat aspectratio = mViewPortWidth/mViewPortHeight;
     static GLuint GaspectRatio = glGetUniformLocation(faceLianpuProgram, "aspectRatio");

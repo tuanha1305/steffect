@@ -691,18 +691,22 @@ public class CameraDisplaySingleInput implements Renderer {
                 if(mNeedFaceExtraInfo && humanAction != null && humanAction.faceCount > 0){
                     for(int i = 0; i < humanAction.faceCount; i++){
                         float[] points = new float[106 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+                        float[] lianpupoints = new float[ 106 * 2];
                         STMobile106 []st106 = humanAction.getMobileFaces();
                         STPoint[] stPoints = st106[0].getPoints_array();
                         for (int j = 0; j < 106; ++j )
                         {
-                            points[j * 2] = st106[0].getPoints_array()[j].getX() / mImageWidth * 2 - 1;
-                            points[j * 2+1] = st106[0].getPoints_array()[j].getY() / mImageHeight * 2 -1;
+                            points[j * 2] = st106[0].getPoints_array()[j].getX() / mImageWidth * 2 - 1.0f;
+                            points[j * 2+1] = st106[0].getPoints_array()[j].getY() / mImageHeight * 2 - 1.0f;
+
+                            lianpupoints[j * 2] = st106[0].getPoints_array()[j].getX() / 640.0f;
+                            lianpupoints[j * 2+1] = st106[0].getPoints_array()[j].getY() / 480.0f;
                         }
 //                        STMobile106 []stPoint = humanAction.getMobileFaces();
 //                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
 //                        mGLRender.onDrawPoints(mLianpuId, points);
                         mGLRender.onDrawPoints(textureId, points);
-                        mGLRender.nativeDrawLianpu(stPoints, textureId, mLianpuId, 0.5f, 0.5f);
+                        mGLRender.nativeDrawLianpu(lianpupoints, textureId, mLianpuId, 0.5f, 0.5f);
                     }
 
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
