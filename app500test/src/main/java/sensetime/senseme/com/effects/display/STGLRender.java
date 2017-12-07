@@ -1,10 +1,14 @@
 package sensetime.senseme.com.effects.display;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 
 import com.sensetime.stmobile.model.STPoint;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -435,5 +439,6 @@ public class STGLRender {
     public native void nativeInitMousePrograme();
     public native void nativeInitWH(int w, int h);
     public native void nativeChangeFaceAndJaw(STPoint[] points, int texid, float scale, float jawsale);
+    public native void nativeDrawLianpu(STPoint[] points, int texid, int lianpuid, float scale, float jawsale);
 
 }

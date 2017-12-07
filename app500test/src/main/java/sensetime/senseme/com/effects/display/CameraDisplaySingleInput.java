@@ -1,6 +1,8 @@
 package sensetime.senseme.com.effects.display;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -8,6 +10,7 @@ import android.opengl.EGL14;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -29,7 +32,9 @@ import com.sensetime.stmobile.STRotateType;
 import com.sensetime.stmobile.model.STMobile106;
 import com.sensetime.stmobile.model.STPoint;
 import com.sensetime.stmobile.model.STRect;
+import com.tatata.hearst.R;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -96,6 +101,7 @@ public class CameraDisplaySingleInput implements Renderer {
     private int[] mBeautifyTextureId;
     private int[] mTextureOutId;
     private int[] mFilterTextureOutId;
+    private int mLianpuId = 0;
     private boolean mCameraChanging = false;
     private int mCurrentPreview = 0;
     private ArrayList<String> mSupportedPreviewSizes;
@@ -501,6 +507,11 @@ public class CameraDisplaySingleInput implements Renderer {
             GlUtil.initEffectTexture(mImageWidth, mImageHeight, mBeautifyTextureId, GLES20.GL_TEXTURE_2D);
         }
 
+        if( mLianpuId == 0 )
+        {
+            mLianpuId = initImageTexture(R.drawable.facemask_001);
+        }
+
         if (mTextureOutId == null) {
             mTextureOutId = new int[1];
             GlUtil.initEffectTexture(mImageWidth, mImageHeight, mTextureOutId, GLES20.GL_TEXTURE_2D);
@@ -689,8 +700,9 @@ public class CameraDisplaySingleInput implements Renderer {
                         }
 //                        STMobile106 []stPoint = humanAction.getMobileFaces();
 //                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+//                        mGLRender.onDrawPoints(mLianpuId, points);
                         mGLRender.onDrawPoints(textureId, points);
-//                        mGLRender.nativeChangeFaceAndJaw(stPoints, textureId, 0.5f, 0.5f);
+                        mGLRender.nativeDrawLianpu(stPoints, textureId, mLianpuId, 0.5f, 0.5f);
                     }
 
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
@@ -1185,8 +1197,36 @@ public class CameraDisplaySingleInput implements Renderer {
         return mFrameCost;
     }
 
-    public boolean isChangingPreviewSize(){
+    public boolean isChangingPreviewSize()
+    {
         return mIsChangingPreviewSize;
+    }
+
+    /////////////////////////////
+
+    public int initImageTexture(int iResourceID) {
+
+        InputStream is = mContext.getResources().openRawResource(iResourceID);//mContext.getResources().openRawResource(R.drawable.strip);
+        //InputStream is = mContext.getResources().openRawResource(R.drawable.bmp123);
+        Bitmap bitmap;
+        bitmap = BitmapFactory.decodeStream(is);
+
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
+
+        int textureId=textures[0];
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_CLAMP_TO_EDGE);
+
+        GLUtils.texImage2D( GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        bitmap.recycle();
+
+        return textureId;
     }
 
 }

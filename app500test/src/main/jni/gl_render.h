@@ -15,6 +15,7 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawRightMeiMao(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawSaiHong(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeChangeFaceAndJaw(JNIEnv* env, jobject obj, jobjectArray stPoint, int texture,  float scale, float jawscale);
+JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawLianpu(JNIEnv* env, jobject obj, jobjectArray stPoint, int texture, int lianpuid, float scale, float jawscale);
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nativeDrawFenDi(JNIEnv* env, jobject obj, jobjectArray stPoint, int textureId , jfloatArray bgcolors);;
 JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_ImageInputRender_nativeChangeFaceAndJaw(JNIEnv* env, jobject obj, jobjectArray stPoint, int texture,  float scale, float jawscale);
 
