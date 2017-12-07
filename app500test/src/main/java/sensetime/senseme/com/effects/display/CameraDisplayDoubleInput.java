@@ -172,7 +172,7 @@ public class CameraDisplayDoubleInput implements Renderer {
     private boolean mNeedResetEglContext = false;
 
     //face extra info swicth
-    private boolean mNeedFaceExtraInfo = false;
+    private boolean mNeedFaceExtraInfo = true;
 
     public interface ChangePreviewSizeListener {
         void onChangePreviewSize(int previewW, int previewH);

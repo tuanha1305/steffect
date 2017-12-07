@@ -87,10 +87,10 @@ public class CameraActivity extends Activity implements View.OnClickListener{
     private Accelerometer mAccelerometer = null;
 
     //双输入使用
-    private CameraDisplayDoubleInput mCameraDisplay;
+//    private CameraDisplayDoubleInput mCameraDisplay;
 
     //单输入使用
-    //private CameraDisplaySingleInput mCameraDisplay;
+    private CameraDisplaySingleInput mCameraDisplay;
 
     private FrameLayout mPreviewFrameLayout;
 
@@ -337,10 +337,10 @@ public class CameraActivity extends Activity implements View.OnClickListener{
         mPreviewFrameLayout = (FrameLayout) findViewById(R.id.id_preview_layout);
 
         //单输入使用
-        //mCameraDisplay = new CameraDisplaySingleInput(getApplicationContext(), mSingleInputChangePreviewSizeListener, glSurfaceView);
+        mCameraDisplay = new CameraDisplaySingleInput(getApplicationContext(), mSingleInputChangePreviewSizeListener, glSurfaceView);
 
         //双输入使用
-        mCameraDisplay = new CameraDisplayDoubleInput(getApplicationContext(), mDoubleInputChangePreviewSizeListener, glSurfaceView);
+//        mCameraDisplay = new CameraDisplayDoubleInput(getApplicationContext(), mDoubleInputChangePreviewSizeListener, glSurfaceView);
         mCameraDisplay.setHandler(mHandler);
 
         mStickerOptionsRecycleView = (RecyclerView) findViewById(R.id.rv_sticker_options);

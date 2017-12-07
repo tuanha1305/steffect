@@ -27,6 +27,7 @@ import com.sensetime.stmobile.STMobileStickerNative;
 import com.sensetime.stmobile.STMobileStreamFilterNative;
 import com.sensetime.stmobile.STRotateType;
 import com.sensetime.stmobile.model.STMobile106;
+import com.sensetime.stmobile.model.STPoint;
 import com.sensetime.stmobile.model.STRect;
 
 import java.nio.ByteBuffer;
@@ -161,7 +162,7 @@ public class CameraDisplaySingleInput implements Renderer {
     private boolean mNeedResetEglContext = false;
 
     //face extra info swicth
-    private boolean mNeedFaceExtraInfo = false;
+    private boolean mNeedFaceExtraInfo = true;
 
     public interface ChangePreviewSizeListener {
         void onChangePreviewSize(int previewW, int previewH);
@@ -678,8 +679,18 @@ public class CameraDisplaySingleInput implements Renderer {
                 //画点
                 if(mNeedFaceExtraInfo && humanAction != null && humanAction.faceCount > 0){
                     for(int i = 0; i < humanAction.faceCount; i++){
-                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+                        float[] points = new float[106 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+                        STMobile106 []st106 = humanAction.getMobileFaces();
+                        STPoint[] stPoints = st106[0].getPoints_array();
+                        for (int j = 0; j < 106; ++j )
+                        {
+                            points[j * 2] = st106[0].getPoints_array()[j].getX() / mImageWidth * 2 - 1;
+                            points[j * 2+1] = st106[0].getPoints_array()[j].getY() / mImageHeight * 2 -1;
+                        }
+//                        STMobile106 []stPoint = humanAction.getMobileFaces();
+//                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
                         mGLRender.onDrawPoints(textureId, points);
+//                        mGLRender.nativeChangeFaceAndJaw(stPoints, textureId, 0.5f, 0.5f);
                     }
 
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);

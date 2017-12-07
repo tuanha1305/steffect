@@ -3,6 +3,8 @@ package sensetime.senseme.com.effects.display;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
+import com.sensetime.stmobile.model.STPoint;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -133,8 +135,10 @@ public class STGLRender {
         }
         initProgram(CAMERA_INPUT_FRAGMENT_SHADER_OES, mArrayPrograms.get(0));
         initProgram(CAMERA_INPUT_FRAGMENT_SHADER, mArrayPrograms.get(1));
+        nativeInitMousePrograme();
         mViewPortWidth = width;
         mViewPortHeight = height;
+        nativeInitWH(mViewPortWidth, mViewPortHeight);
         initFrameBuffers(width, height);
         mIsInitialized = true;
     }
@@ -287,8 +291,7 @@ public class STGLRender {
 
         FloatBuffer buff = null;
 
-        buff = ByteBuffer.allocateDirect(points.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        buff = ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         buff.clear();
         buff.put(points).position(0);
@@ -297,8 +300,7 @@ public class STGLRender {
         GLES20.glEnableVertexAttribArray(mPosition);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mPointsFrameBuffers[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
-                GLES20.GL_TEXTURE_2D, textureId, 0);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureId, 0);
 
         GlUtil.checkGlError("glBindFramebuffer");
         GLES20.glViewport(0, 0, mViewPortWidth, mViewPortHeight);
@@ -429,4 +431,9 @@ public class STGLRender {
         GLES20.glDeleteProgram(mArrayPrograms.get(0).get(PROGRAM_ID));
         GLES20.glDeleteProgram(mArrayPrograms.get(1).get(PROGRAM_ID));
     }
+
+    public native void nativeInitMousePrograme();
+    public native void nativeInitWH(int w, int h);
+    public native void nativeChangeFaceAndJaw(STPoint[] points, int texid, float scale, float jawsale);
+
 }

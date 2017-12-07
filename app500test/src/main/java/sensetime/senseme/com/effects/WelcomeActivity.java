@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -42,6 +43,7 @@ public class WelcomeActivity extends Activity {
                 case MSG_LOADING_GONE:
                     mLoading.setVisibility(View.INVISIBLE);
                     mProgressBar.setVisibility(View.INVISIBLE);
+                    Log.e("thread", "handleMessage pid=" + android.os.Process.myPid() +"; tid=" + android.os.Process.myTid() + "; name=" + Thread.currentThread().getName());
 
                     break;
 
@@ -62,8 +64,10 @@ public class WelcomeActivity extends Activity {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if(mIsPaused)return;
+            if(mIsPaused)
+                return;
 
+            Log.e("thread", "Runnable pid=" + android.os.Process.myPid() +"; tid=" + android.os.Process.myTid() + "; name=" + Thread.currentThread().getName());
             startActivity(new Intent(getApplicationContext(), CameraActivity.class));
             finish();
         }
@@ -74,6 +78,9 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Thread thread = Thread.currentThread();
+        Log.e("thread", "onCreate pid=" + android.os.Process.myPid() +"; tid=" + android.os.Process.myTid() + "; name=" + Thread.currentThread().getName());
 
         mContext = this;
         mProgressBar = (ProgressBar) findViewById(R.id.process_loading);
@@ -192,7 +199,10 @@ public class WelcomeActivity extends Activity {
                 FileUtils.copyStickerFiles(mContext, "segment");
                 FileUtils.copyStickerFiles(mContext, "deformation");
 
-                if(mIsPaused)return;
+                Log.e("thread", "startCameraActivity pid=" + android.os.Process.myPid() +"; tid=" + android.os.Process.myTid() + "; name=" + Thread.currentThread().getName());
+
+                if(mIsPaused)
+                    return;
 
                 Message msg1 = mHandleMessege.obtainMessage(MSG_LOADING_GONE);
                 mHandleMessege.sendMessage(msg1);

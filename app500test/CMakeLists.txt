@@ -20,6 +20,9 @@ add_library(stmobile_jni
                 src/main/jni/stmobile_object_jni.cpp
                 src/main/jni/stmobile_sound_play_jni.cpp
                 src/main/jni/jvmutil.cpp
+                src/main/jni/gl_render.cpp
+                src/main/jni/esShader.c
+                src/main/jni/esUtil.c
             )
 
 include_directories(./src/main/jni/prebuilt/include)
@@ -29,4 +32,4 @@ find_library(dl-lib dl)
 find_library(android-lib android)
 find_library(stmobile-lib st_mobile PATHS ./src/main/jni/prebuilt/lib/${ANDROID_ABI}/ NO_CMAKE_FIND_ROOT_PATH)
 
-target_link_libraries( stmobile_jni ${log-lib} ${dl-lib} ${stmobile-lib} ${android-lib})
+target_link_libraries( stmobile_jni GLESv2 ${log-lib} ${dl-lib} ${stmobile-lib} ${android-lib})
