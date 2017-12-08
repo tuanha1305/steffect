@@ -690,7 +690,7 @@ public class CameraDisplaySingleInput implements Renderer {
                 //画点
                 if(mNeedFaceExtraInfo && humanAction != null && humanAction.faceCount > 0){
                     for(int i = 0; i < humanAction.faceCount; i++){
-                        float[] points = new float[106 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+                        float[] points = new float[206 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
                         float[] lianpupoints = new float[ 106 * 2];
                         STMobile106 []st106 = humanAction.getMobileFaces();
                         STPoint[] stPoints = st106[0].getPoints_array();
@@ -702,11 +702,42 @@ public class CameraDisplaySingleInput implements Renderer {
                             lianpupoints[j * 2] = st106[0].getPoints_array()[j].getX() / 640.0f;
                             lianpupoints[j * 2+1] = st106[0].getPoints_array()[j].getY() / 480.0f;
                         }
+                        float flenx = (float) Math.sqrt((points[43 * 2] - points[0]) * (points[43 * 2] - points[0]) +
+                                (points[43 * 2 + 1] - points[1]) * (points[43 * 2 + 1] - points[1]));
+
+                        float fleny = (float) Math.sqrt((points[43 * 2] - points[87 * 2]) * (points[43 * 2] - points[87 * 2]) +
+                                (points[43 * 2 + 1] - points[87 * 2 + 1]) * (points[43 * 2 + 1] - points[87 * 2 + 1]));
+//                        flenx = fleny;
+
+                        float dx = Math.abs( points[43 * 2] - points[87 * 2]);
+                        float dy = Math.abs( points[43 * 2 + 1] - points[87 * 2 + 1]);
+
+                        float angle = (float) Math.atan2(dx, dy);
+
+                        float p43x = points[43 * 2];
+                        float p43y = points[43 * 2 + 1];
+                        float ytemp = -fleny + p43y ;
+                        float alphe = 5.0f;
+                        points[106 * 2] = p43x;
+                        points[106 * 2 + 1] = ytemp;
+                        int index = 2;
+                        while( ytemp < points[1])
+                        {
+                            float radian = (float)((90 + alphe) * Math.PI / 180.0f);
+                            float tx = (float)(flenx * Math.cos(radian));
+                            points[106 * 2 + index] = p43x + tx;
+                            float ty =  (float) ( fleny * Math.sin(radian));
+                            ytemp = p43y - ty;
+                            points[106 * 2 + index + 1] = ytemp;
+                            index += 2;
+                            alphe += 5.0f;
+                        }
+
 //                        STMobile106 []stPoint = humanAction.getMobileFaces();
 //                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
 //                        mGLRender.onDrawPoints(mLianpuId, points);
                         mGLRender.onDrawPoints(textureId, points);
-                        mGLRender.nativeDrawLianpu(lianpupoints, textureId, mLianpuId, 0.5f, 0.5f);
+//                        mGLRender.nativeDrawLianpu(lianpupoints, textureId, mLianpuId, 0.5f, 0.5f);
                     }
 
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
