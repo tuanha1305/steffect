@@ -277,13 +277,13 @@ public class ImageActivity extends Activity implements View.OnClickListener {
             mBeautifyParams[i] = DEFAULT_BEAUTIFY_PARAMS[i];
         }
 
-        int mode = 0;
-        mode = this.getIntent().getBundleExtra("bundle").getInt("mode");
+        int mode = 1;
+//        mode = this.getIntent().getBundleExtra("bundle").getInt("mode");
 
         switch (mode){
             case LoadImageActivity.MODE_DERAWABLE_IMAGE:
                 int index = 1;
-                index = this.getIntent().getBundleExtra("bundle").getInt("drawableIndex");
+//                index = this.getIntent().getBundleExtra("bundle").getInt("drawableIndex");
 
                 if(index == 1){
                     mImageBitmap = STUtils.getBitmapFromDrawable(mContext, R.drawable.dilireba);

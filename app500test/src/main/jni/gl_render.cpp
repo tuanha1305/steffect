@@ -247,70 +247,32 @@ const char *const FaceLianpuF = SHADER_STRING
         uniform float deltaJawArray[7];
         uniform float facePoints[212];
 
-//        highp vec2 warpPositionToUse(vec2 currentPoint, vec2 contourPointA, vec2 contourPointB,float radius, float delta, float aspectRatio)
-//        {
-//            vec2 positionToUse = currentPoint;
-//            vec2 currentPointToUse = currentPoint;
-//            vec2 contourPointAToUse = contourPointA;
-//
-//            float r = distance(currentPointToUse, contourPointAToUse);
-//            if(r < radius)
-//            {
-//                vec2 dir = normalize(contourPointB - contourPointA);
-//                float dist = radius * radius - r * r;
-//                float alpha = dist / (dist + (r-delta) * (r-delta));
-//                alpha = alpha * alpha;
-//                positionToUse = positionToUse - alpha * delta * dir;
-//            }
-//            return positionToUse;
-//        }
-
         bool ptInPolygon(vec2 pt, float facept[212])
         {
-            int ncross = 0;
-            for( int i = 0; i < 105; ++ i)
+            bool ncross = false;
+            int i =0;
+            int j = 0;
+            for( i = 0, j = 32; i < 33; j = i++)
             {
                 vec2 p1 = vec2(facept[i * 2], facept[ i * 2 + 1]);
-                int index =  i + 1;
-                vec2 p2 = vec2(facept[index * 2], facept[ index * 2 + 1] );
-                if( p1.y == p2.y )
-                    continue;
-                if( pt.y < min(p1.y, p2.y))
-                    continue;
-                if( pt.y >= max(p1.y, p2.y))
-                    continue;
-                float x = (pt.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
-                if( x > pt.x)
-                    ++ncross;
+                vec2 p2 = vec2(facept[j * 2], facept[ j * 2 + 1] );
+
+                if( ((p1.y > pt.y) != (p2.y > pt.y)) && (pt.x < (p2.x - p1.x) * (pt.y - p1.y) / (p2.y - p1.y) + p1.x))
+                    ncross = !ncross;
             }
-//            int val = ncross - 2 * floor(ncross / 2 );
-//            return ncross == 0;
-            return ncross == 1 || ncross == 3 || ncross == 5;
-//            return false;
-//            return (mod(ncross , 2) == 1);
+            return ncross;
         }
 
         void main()
         {
             vec2 positionToUse = textureCoordinate;
-
-//            for(int i = 0; i < 9; i++)
-//            {
-//                positionToUse = warpPositionToUse(positionToUse, vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-//                positionToUse = warpPositionToUse(positionToUse, vec2(rightContourPoints[i * 2], rightContourPoints[i * 2 + 1]), vec2(leftContourPoints[i * 2], leftContourPoints[i * 2 + 1]), radius, deltaFaceArray[i], aspectRatio);
-//            }
-//
-//            for(int i = 0; i < 7; i++)
-//            {
-//                positionToUse = warpPositionToUse(positionToUse,
-//                                                  vec2(jawContourPoints[i * 2], jawContourPoints[i * 2 + 1]),
-//                                                  vec2(jawDownPoints[i * 2], jawDownPoints[i * 2 + 1]),
-//                                                  radius, deltaJawArray[i], aspectRatio);
-//            }
-
             if( ptInPolygon(positionToUse, facePoints))
-//            if( mod(25, 2) == 1)
-                gl_FragColor = texture2D(lianpuTexture, positionToUse);
+            {
+                float dx = positionToUse.x - facePoints[34 * 2];
+                float dy = positionToUse.y - facePoints[34 * 2 + 1];
+                vec2 coord = vec2(0.5f + dx, 0.5f + dy);
+                gl_FragColor = texture2D(lianpuTexture, coord);
+            }
             else
                 gl_FragColor = texture2D(inputImageTexture, positionToUse);
 

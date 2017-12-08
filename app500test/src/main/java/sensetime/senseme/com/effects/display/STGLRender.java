@@ -1,5 +1,6 @@
 package sensetime.senseme.com.effects.display;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
@@ -434,6 +435,32 @@ public class STGLRender {
         destroyFrameBuffers();
         GLES20.glDeleteProgram(mArrayPrograms.get(0).get(PROGRAM_ID));
         GLES20.glDeleteProgram(mArrayPrograms.get(1).get(PROGRAM_ID));
+    }
+
+
+    public int initImageTexture(Context context, int iResourceID) {
+
+        InputStream is = context.getResources().openRawResource(iResourceID);//mContext.getResources().openRawResource(R.drawable.strip);
+        //InputStream is = mContext.getResources().openRawResource(R.drawable.bmp123);
+        Bitmap bitmap;
+        bitmap = BitmapFactory.decodeStream(is);
+
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
+
+        int textureId=textures[0];
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_CLAMP_TO_EDGE);
+
+        GLUtils.texImage2D( GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        bitmap.recycle();
+
+        return textureId;
     }
 
     public native void nativeInitMousePrograme();

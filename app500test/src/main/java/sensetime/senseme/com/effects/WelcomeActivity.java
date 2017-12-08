@@ -69,6 +69,7 @@ public class WelcomeActivity extends Activity {
 
             Log.e("thread", "Runnable pid=" + android.os.Process.myPid() +"; tid=" + android.os.Process.myTid() + "; name=" + Thread.currentThread().getName());
             startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+//            startActivity(new Intent(getApplicationContext(), ImageActivity.class));
             finish();
         }
     };

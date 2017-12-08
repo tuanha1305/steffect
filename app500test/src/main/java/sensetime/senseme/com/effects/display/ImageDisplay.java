@@ -20,6 +20,7 @@ import com.sensetime.stmobile.STMobileStickerNative;
 import com.sensetime.stmobile.STMobileStreamFilterNative;
 import com.sensetime.stmobile.model.STMobile106;
 import com.sensetime.stmobile.model.STPoint;
+import com.tatata.hearst.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -57,6 +58,8 @@ public class ImageDisplay implements Renderer{
 	private Bitmap mProcessedImage;
 	private boolean mNeedSave = false;
 	private Handler mHandler;
+	private STGLRender mGLRender;
+	private int mLianpuId = 0;
 
 	private STMobileStickerNative mStStickerNative = new STMobileStickerNative();
 	private STBeautifyNative mStBeautifyNative = new STBeautifyNative();
@@ -96,7 +99,7 @@ public class ImageDisplay implements Renderer{
 	private int mHumanActionCreateConfig = STMobileHumanActionNative.ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_IMAGE;
 	private long mHumanActionDetectConfig = STMobileHumanActionNative.ST_MOBILE_HUMAN_ACTION_DEFAULT_CONFIG_DETECT;
 
-	private boolean mNeedFaceExtraInfo = false;
+	private boolean mNeedFaceExtraInfo = true;
 
 	/**
 	 * SurfaceTexureid
@@ -110,6 +113,8 @@ public class ImageDisplay implements Renderer{
     	glSurfaceView.setEGLContextClientVersion(2);
 		glSurfaceView.setRenderer(this);
 		glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+		mGLRender = new STGLRender();
 
     	mContext = context;
 		mVertexBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.CUBE.length * 4)
@@ -290,6 +295,7 @@ public class ImageDisplay implements Renderer{
 		GLES20.glViewport(0, 0, width, height);
 		mDisplayWidth = width;
 		mDisplayHeight = height;
+		mGLRender.init(mImageWidth, mImageHeight);
 		adjustImageDisplaySize();
 		mInitialized = true;
 	}
@@ -311,6 +317,11 @@ public class ImageDisplay implements Renderer{
 			textureId = mTextureId;
 		}else{
 			return;
+		}
+
+		if( mLianpuId == 0 )
+		{
+			mLianpuId = mGLRender.initImageTexture(mContext, R.drawable.facemask_001);
 		}
 
 		if (mBeautifyTextureId == null) {
@@ -394,6 +405,31 @@ public class ImageDisplay implements Renderer{
 							textureId = mTextureOutId[0];
 						}
 					}
+
+					if(mNeedFaceExtraInfo && humanAction != null && humanAction.faceCount > 0) {
+						for (int i = 0; i < humanAction.faceCount; i++) {
+							float[] points = new float[33 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+							float[] lianpupoints = new float[35 * 2];
+							STMobile106[] st106 = humanAction.getMobileFaces();
+							STPoint[] stPoints = st106[0].getPoints_array();
+
+							for (int j = 0; j < 33; ++j) {
+								points[j * 2] = st106[0].getPoints_array()[j].getX() / mImageWidth * 2 - 1.0f;
+								points[j * 2 + 1] = st106[0].getPoints_array()[j].getY() / mImageHeight * 2 - 1.0f;
+
+								lianpupoints[j * 2] = st106[0].getPoints_array()[j].getX() / 640.0f;
+								lianpupoints[j * 2 + 1] = st106[0].getPoints_array()[j].getY() / 480.0f;
+							}
+							lianpupoints[33 * 2] = lianpupoints[0];
+							lianpupoints[33 * 2 + 1] = lianpupoints[1];
+							lianpupoints[34 * 2] = st106[0].getPoints_array()[44].getX() / 640.0f;
+							lianpupoints[34 * 2 + 1] = st106[0].getPoints_array()[44].getY() / 480.0f;
+
+//							mGLRender.onDrawPoints(textureId, points);
+							mGLRender.nativeDrawLianpu(lianpupoints, textureId, mLianpuId, 0.5f, 0.5f);
+						}
+					}
+
 				}
 
 				if(mCurrentFilterStyle != mFilterStyle){
