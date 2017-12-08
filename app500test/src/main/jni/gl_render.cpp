@@ -1226,9 +1226,46 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
 
     glUseProgram(faceLianpuProgram);
 
+    float leftEyes[16];
+    float rightEyes[16];
+    float mousePoints[16];
 
-    static GLuint facePoints = glGetUniformLocation( faceLianpuProgram, "facePoints");
-    glUniform1fv(facePoints, 212, stPoints);
+    for( int k = 0; k < 6; ++k )
+    {
+        leftEyes[k * 2] =    stPoints[(52 + k) * 2];
+        leftEyes[k * 2 + 1] =  stPoints[(52 + k) * 2 + 1];
+
+        rightEyes[k * 2] =     stPoints[(58 + k) * 2];
+        rightEyes[k * 2 + 1] =  stPoints[(58 + k) * 2 + 1];
+    }
+    for( int k = 6; k < 8; ++k)
+    {
+        leftEyes[k * 2 ] =     stPoints[(72 + k - 6 )* 2];
+        leftEyes[k * 2 + 1] =  stPoints[(72 + k - 6) * 2 + 1];
+
+        rightEyes[k * 2] =     stPoints[(75 + k - 6) * 2];
+        rightEyes[k * 2 + 1] = stPoints[(75 + k - 6) * 2 + 1];
+    }
+
+    for( int k = 0;  k < 8; ++k )
+    {
+        mousePoints[k * 2 ] =     stPoints[(96 + k)* 2];
+        mousePoints[k * 2 + 1] =  stPoints[(96 + k)* 2 + 1];
+    }
+
+
+
+    static GLuint ufacePoints = glGetUniformLocation( faceLianpuProgram, "facePoints");
+    glUniform1fv(ufacePoints, 212, stPoints);
+
+    static GLuint uleftEyes = glGetUniformLocation( faceLianpuProgram, "leftEyes");
+    glUniform1fv(uleftEyes, 16, leftEyes);
+
+    static GLuint uRightEyes = glGetUniformLocation( faceLianpuProgram, "rightEyes");
+    glUniform1fv(uRightEyes, 16, rightEyes);
+
+    static GLuint uMousePoints = glGetUniformLocation(faceLianpuProgram, "mousePoints");
+    glUniform1fv(uMousePoints, 16, mousePoints);
 
     static const GLfloat squareVertices1[] = {
             0.0f,  0.0f,
@@ -1242,14 +1279,6 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
             -1.0f,  1.0f,
             1.0f,  1.0f,
     };
-
-//    static const GLfloat textureVertices1[] = {
-//            0.0f,  1.0f,
-//            1.0f,  1.0f,
-//            0.0f, 0.0f,
-//            1.0f, 0.0f,
-//
-//    };
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);

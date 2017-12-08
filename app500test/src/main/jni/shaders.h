@@ -237,15 +237,32 @@ const char *const FaceLianpuF = SHADER_STRING
         uniform float rightEyes[16];
         uniform float mousePoints[16];
 
-        bool ptInPolygon(vec2 pt, float facept[212])
+        bool ptInPolygon(vec2 pt, float facept[212], int len)
         {
             bool ncross = false;
             int i =0;
             int j = 0;
-            for( i = 0, j = 32; i < 33; j = i++)
+
+            for( i = 0, j = len - 1; i < len; j = i++)
             {
                 vec2 p1 = vec2(facept[i * 2], facept[ i * 2 + 1]);
                 vec2 p2 = vec2(facept[j * 2], facept[ j * 2 + 1] );
+
+                if( ((p1.y > pt.y) != (p2.y > pt.y)) && (pt.x < (p2.x - p1.x) * (pt.y - p1.y) / (p2.y - p1.y) + p1.x))
+                    ncross = !ncross;
+            }
+            return ncross;
+        }
+
+        bool ptInEyes(vec2 pt, float points[16], int len)
+        {
+            bool ncross = false;
+            int i =0;
+            int j = 0;
+            for( i = 0, j = len - 1; i < len; j = i++)
+            {
+                vec2 p1 = vec2(points[i * 2], points[ i * 2 + 1]);
+                vec2 p2 = vec2(points[j * 2], points[ j * 2 + 1] );
 
                 if( ((p1.y > pt.y) != (p2.y > pt.y)) && (pt.x < (p2.x - p1.x) * (pt.y - p1.y) / (p2.y - p1.y) + p1.x))
                     ncross = !ncross;
@@ -285,16 +302,22 @@ const char *const FaceLianpuF = SHADER_STRING
         {
 
             vec2 positionToUse = textureCoordinate;
-            if( ptInPolygon(positionToUse, facePoints) || ptInEllipse(positionToUse))
+
+//            if( ptInEyes(positionToUse,leftEyes, 16 ))
+//            {
+//                gl_FragColor = texture2D(lianpuTexture, positionToUse);
+//            }
+
+            if( ptInPolygon(positionToUse, facePoints, 33) || ptInEllipse(positionToUse))
             {
                 float dx = positionToUse.x - facePoints[34 * 2];
                 float dy = positionToUse.y - facePoints[34 * 2 + 1];
                 vec2 coord = vec2(0.4f + dx, 0.4f + dy);
                 gl_FragColor = texture2D(lianpuTexture, coord);
             }
-            else
+            else {
                 gl_FragColor = texture2D(inputImageTexture, positionToUse);
-
+            }
         }
 
 );
