@@ -690,12 +690,15 @@ public class CameraDisplaySingleInput implements Renderer {
                 //画点
                 if(mNeedFaceExtraInfo && humanAction != null && humanAction.faceCount > 0){
                     for(int i = 0; i < humanAction.faceCount; i++){
-                        float[] points = new float[33 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
-                        float[] lianpupoints = new float[ 35 * 2];
+                        float[] points = new float[106 * 2];// STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
+                        float[] lianpupoints = new float[ 106 * 2];
+//                        float[] leftEyes = new float[8 * 2];
+//                        float[] rightEyes = new float[8 * 2];
+//                        float[] mousePts = new float[8 * 2];
                         STMobile106 []st106 = humanAction.getMobileFaces();
                         STPoint[] stPoints = st106[0].getPoints_array();
 
-                        for (int j = 0; j < 33; ++j )
+                        for (int j = 0; j < 106; ++j )
                         {
                             points[j * 2] = st106[0].getPoints_array()[j].getX() / mImageWidth * 2 - 1.0f;
                             points[j * 2+1] = st106[0].getPoints_array()[j].getY() / mImageHeight * 2 - 1.0f;
@@ -703,10 +706,40 @@ public class CameraDisplaySingleInput implements Renderer {
                             lianpupoints[j * 2] = st106[0].getPoints_array()[j].getX() / 480.0f;
                             lianpupoints[j * 2+1] = st106[0].getPoints_array()[j].getY() / 640.0f;
                         }
-                        lianpupoints[33 * 2] = lianpupoints[0];
-                        lianpupoints[33 * 2+1] = lianpupoints[1];
-                        lianpupoints[34 * 2] = st106[0].getPoints_array()[44].getX() / 640.0f;
-                        lianpupoints[34 * 2+1] = st106[0].getPoints_array()[44].getY() / 480.0f;
+//                        lianpupoints[33 * 2] =  st106[0].getPoints_array()[43].getX() / 640.0f;
+//                        lianpupoints[33 * 2+1] = st106[0].getPoints_array()[43].getY() / 480.0f;
+//                        lianpupoints[34 * 2] = st106[0].getPoints_array()[44].getX() / 640.0f;
+//                        lianpupoints[34 * 2+1] = st106[0].getPoints_array()[44].getY() / 480.0f;
+//                        lianpupoints[35 * 2] =  st106[0].getPoints_array()[87].getX() / 640.0f;
+//                        lianpupoints[35 * 2+1] = st106[0].getPoints_array()[87].getY() / 480.0f;
+
+//                        //leftEyes and rightEyes
+//                       for( int k = 0; k < 6; ++k )
+//                       {
+//                           leftEyes[k * 2] =    st106[0].getPoints_array()[52 + k].getX() / 480.0f;
+//                           leftEyes[k * 2 + 1] = st106[0].getPoints_array()[52 + k].getY() / 640.0f;
+//
+//                           rightEyes[k * 2] =    st106[0].getPoints_array()[58 + k].getX() / 480.0f;
+//                           rightEyes[k * 2 + 1] = st106[0].getPoints_array()[58 + k].getY() / 640.0f;
+//                       }
+//                       for( int k = 6; i < 8; ++k)
+//                       {
+//                           leftEyes[k * 2 ] =    st106[0].getPoints_array()[72 + k].getX() / 480.0f;
+//                           leftEyes[k * 2 + 1] = st106[0].getPoints_array()[72 + k].getY() / 640.0f;
+//
+//                           rightEyes[k * 2] =    st106[0].getPoints_array()[75 + k].getX() / 480.0f;
+//                           rightEyes[k * 2 + 1] = st106[0].getPoints_array()[75 + k].getY() / 640.0f;
+//                       }
+//
+//                       //mousePts
+//                        for( int k = 0;  k < 5; ++k )
+//                        {
+//                            leftEyes[k * 2 ] =    st106[0].getPoints_array()[72 + k].getX() / 480.0f;
+//                            leftEyes[k * 2 + 1] = st106[0].getPoints_array()[72 + k].getY() / 640.0f;
+//                        }
+//
+
+                        ///
 //                        float flenx = (float) Math.sqrt((points[43 * 2] - points[0]) * (points[43 * 2] - points[0]) +
 //                                (points[43 * 2 + 1] - points[1]) * (points[43 * 2 + 1] - points[1]));
 //
