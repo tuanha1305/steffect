@@ -1253,8 +1253,6 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
         mousePoints[k * 2 + 1] =  stPoints[(96 + k)* 2 + 1];
     }
 
-
-
     static GLuint ufacePoints = glGetUniformLocation( faceLianpuProgram, "facePoints");
     glUniform1fv(ufacePoints, 212, stPoints);
 
