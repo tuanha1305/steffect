@@ -313,7 +313,9 @@ const char *const FaceLianpuF = SHADER_STRING
                 float dy = positionToUse.y - facePoints[34 * 2 + 1];
                 vec2 coord = vec2(0.4f + dx, 0.4f + dy);
                 vec4 color = texture2D(lianpuTexture, coord);
-                gl_FragColor = color * color.a;
+                if( color.a < 0.1 )
+                    discard;
+                gl_FragColor = color;
             }
             else {
                 gl_FragColor = texture2D(inputImageTexture, positionToUse);
