@@ -1225,6 +1225,49 @@ JNIEXPORT void JNICALL Java_sensetime_senseme_com_effects_display_STGLRender_nat
     static const int iJawArrSize = 7;
 
     glUseProgram(faceLianpuProgram);
+    float fwidth = 800.0f;
+    float fheight = 1067.0f;  // 中心点 400， 505
+    float lianpuCoord[33 * 2] = {
+            108,  450,
+            143,  481,
+            146,  515,
+            150,  552,
+            156,  578,
+            163,  612,
+            173,  644,
+            180,  675,
+            192,  706,
+            204,  738,
+            222,  765,
+            243,  790,
+            269,  811,
+            291,  832,
+            316,  848,
+            348,  359,
+            380,  865,
+            413,  862,
+            445,  851,
+            475,  839,
+            502,  818,
+            526,  798,
+            550,  773,
+            570,  747,
+            586,  717,
+            600,  688,
+            609,  655,
+            617,  621,
+            622,  589,
+            628,  555,
+            632,  522,
+            637,  489,
+            640,  456,
+    };
+
+    for( int i = 0; i < 33; ++i )
+    {
+        lianpuCoord[i * 2] = lianpuCoord[i * 2] / fwidth;
+        lianpuCoord[i * 2 + 1] = lianpuCoord[i * 2 + 1] / fheight;
+    }
 
     float leftEyes[16];
     float rightEyes[16];

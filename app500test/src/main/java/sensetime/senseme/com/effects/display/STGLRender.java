@@ -316,6 +316,42 @@ public class STGLRender {
 
     }
 
+    public void bindFrameBuffer(int textureId, float[] points)
+    {
+//        if (mDrawPointsProgram == 0) {
+//            initDrawPoints();
+//        }
+
+        if (mPointsFrameBuffers == null) {
+            mPointsFrameBuffers = new int[1];
+
+            GLES20.glGenFramebuffers(1, mPointsFrameBuffers, 0);
+        }
+//
+//        GLES20.glUseProgram(mDrawPointsProgram);
+//        GLES20.glUniform4f(mColor, 0.0f, 1.0f, 0.0f, 1.0f);
+//
+//        FloatBuffer buff = null;
+//
+//        buff = ByteBuffer.allocateDirect(points.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+//
+//        buff.clear();
+//        buff.put(points).position(0);
+//
+//        GLES20.glVertexAttribPointer(mPosition, 2, GLES20.GL_FLOAT, false, 0, buff);
+//        GLES20.glEnableVertexAttribArray(mPosition);
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mPointsFrameBuffers[0]);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureId, 0);
+
+//        GlUtil.checkGlError("glBindFramebuffer");
+//        GLES20.glViewport(0, 0, mViewPortWidth, mViewPortHeight);
+//
+//        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, points.length/2);
+//
+//        GLES20.glDisableVertexAttribArray(mPosition);
+    }
+
     public int onDrawFrame(final int textureId) {
 
         if (!mIsInitialized) {

@@ -815,7 +815,8 @@ public class CameraDisplaySingleInput implements Renderer {
 //                        STMobile106 []stPoint = humanAction.getMobileFaces();
 //                        float[] points = STUtils.getExtraPoints(humanAction, i, mImageWidth, mImageHeight);
 //                        mGLRender.onDrawPoints(mLianpuId, points);
-                        mGLRender.onDrawPoints(textureId, points);
+//                        mGLRender.onDrawPoints(textureId, points);
+                        mGLRender.bindFrameBuffer(textureId, points);
                         mGLRender.nativeDrawLianpu(lianpupoints, textureId, mLianpuId, 0.5f, 0.5f);
                     }
 
