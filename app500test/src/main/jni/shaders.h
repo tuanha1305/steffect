@@ -309,16 +309,19 @@ const char *const FaceLianpuF = SHADER_STRING
 //            }
             if( ptInPolygon(positionToUse, facePoints, 33) || ptInEllipse(positionToUse))
             {
+                vec4 originalColor = texture2D(inputImageTexture, positionToUse);
                 float yscale = (0.81f - 0.473f) / distance(vec2(facePoints[43 * 2], facePoints[43 * 2 + 1]), vec2(facePoints[16 * 2], facePoints[16 * 2 + 1]));
                 float xscale = (0.6f) / distance(vec2(facePoints[0], facePoints[1]), vec2(facePoints[32 * 2], facePoints[32 * 2 + 1]));
                 float dx = (positionToUse.x - facePoints[43 * 2] ) * xscale;
                 float dy = (positionToUse.y - facePoints[43 * 2 + 1]) * yscale;
                 vec2 coord = vec2(0.5f + dx, 0.473f + dy);
                 vec4 color = texture2D(lianpuTexture, coord);
-                if( color.a < 0.1 )
-                    discard;
-                gl_FragColor = color * color.a;
-                gl_FragColor.a = 0.0f;
+                if( color.a < 0.1f )
+                    gl_FragColor = originalColor;
+
+                gl_FragColor = color * color.a + originalColor * (1.0f - color.a);
+                //gl_FragColor = color * color.a;
+                //gl_FragColor.a = 0.0f;
             }
             else {
                 gl_FragColor = texture2D(inputImageTexture, positionToUse);
