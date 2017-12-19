@@ -127,11 +127,22 @@ public class ImageDisplay implements Renderer {
 
     	mContext = context;
 
-		 final float CUBE[] = {
-				-1.0f, -1.0f,
-				1.0f, -1.0f,
-				-1.0f, 1.0f,
+//		 final float CUBE[] = {
+//				-1.0f, -1.0f,
+//				1.0f, -1.0f,
+//				-1.0f, 1.0f,
+//				1.0f, 1.0f,
+//		};
+		final float CUBE[] = {
+//				0.0f, 0.0f,
+//				1.0f, 0.0f,
+//				0.0f, 1.0f,
+//				1.0f, 1.0f,
+				0.0f, 1.0f,
 				1.0f, 1.0f,
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+
 		};
 
 		mVertexBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
@@ -444,18 +455,15 @@ public class ImageDisplay implements Renderer {
 				{
 					texid = mImageInputRender.bindFrameBuffer();
 				}
-				if(bitmap!=null){
-					textSiaHongId = OpenGLUtils.loadTexture(bitmap, textSiaHongId, false);
-					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
-					mImageInputRender.makeup(stPoints,textSiaHongId,yanxianbgcolors);
-					GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
-					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-				}
 
 				GlUtil.checkGlError("glUseProgram");
 				if(points != null) {
 					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer);
 					mImageInputRender.onDrawFrame(points, textureId,faceValue,jawValue);
+					if( bitmap != null){
+						textSiaHongId = OpenGLUtils.loadTexture(bitmap, textSiaHongId, false);
+						mImageInputRender.makeup(stPoints,textSiaHongId,yanxianbgcolors);
+					}
 					GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 				}
 //				else

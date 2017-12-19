@@ -1,9 +1,11 @@
 //include ':apptest'
 //include ':STMobileJNI'
-include ':app500test'
+//include ':app500test'
+include ':facelianpu'
 //include ':STMobileJNI500'
 //include ':app'
 //include ':beautysdk'
 //include ':STMobileJNI'
 //include ':demo'
 //include ':STMobiledemo'
+
